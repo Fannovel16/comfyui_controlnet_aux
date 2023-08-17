@@ -10,7 +10,8 @@ from .log import log, blue_text, cyan_text, get_summary, get_label
 sys.path.append(str(Path(here, "src")))
 
 def load_nodes():
-    errors = []
+    shorted_errors = []
+    full_error_messages = []
     node_class_mappings = {}
     node_display_name_mappings = {}
 
@@ -30,15 +31,19 @@ def load_nodes():
         except AttributeError:
             pass  # wip nodes
         except Exception:
-            error_message = traceback.format_exc().splitlines()[-1]
-            errors.append(
+            error_message = traceback.format_exc()
+            full_error_messages.append(error_message)
+            error_message = error_message.splitlines()[-1]
+            shorted_errors.append(
                 f"Failed to import module {module_name} because {error_message}"
             )
     
-    if len(errors) > 0:
+    if len(shorted_errors) > 0:
+        full_err_log = '\n\n'.join(full_error_messages)
+        print(f"Full error log: {full_err_log}\n\n")
         log.info(
             f"Some nodes failed to load:\n\t"
-            + "\n\t".join(errors)
+            + "\n\t".join(shorted_errors)
             + "\n\n"
             + "Check that you properly installed the dependencies.\n"
             + "If you think this is a bug, please report it on the github page (https://github.com/Fannovel16/comfyui_controlnet_aux/issues)"

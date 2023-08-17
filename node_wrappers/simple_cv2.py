@@ -16,7 +16,7 @@ class Canny_Edge_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "preprocessors/edge_line"
+    CATEGORY = "ControlNet Preprocessors"
 
     def execute(self, image, low_threshold, high_threshold, **kwargs):
         return (common_annotator_call(CannyDetector(), image, low_threshold=low_threshold, high_threshold=high_threshold), )

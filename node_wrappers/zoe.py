@@ -11,7 +11,7 @@ class Zoe_Depth_Map_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "preprocessors/normal_depth_map"
+    CATEGORY = "ControlNet Preprocessors"
 
     def execute(self, image, **kwargs):
         model = ZoeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())

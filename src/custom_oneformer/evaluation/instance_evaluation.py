@@ -12,10 +12,10 @@ import numpy as np
 import os
 import pickle
 from collections import OrderedDict
-import annotator.oneformer.pycocotools.mask as mask_util
+import custom_pycocotools.mask as mask_util
 import torch
-from annotator.oneformer.pycocotools.coco import COCO
-from annotator.oneformer.pycocotools.cocoeval import COCOeval
+from custom_pycocotools.coco import COCO
+from custom_pycocotools.cocoeval import COCOeval
 from tabulate import tabulate
 
 import custom_detectron2.utils.comm as comm

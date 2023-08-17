@@ -10,7 +10,7 @@ class PIDINET_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "preprocessors/edge_line"
+    CATEGORY = "ControlNet Preprocessors"
 
     def execute(self, image, safe, **kwargs):
         model = PidiNetDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())

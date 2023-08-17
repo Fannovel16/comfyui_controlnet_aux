@@ -3,7 +3,7 @@ import copy
 import logging
 import numpy as np
 import time
-from annotator.oneformer.pycocotools.cocoeval import COCOeval
+from custom_pycocotools.cocoeval import COCOeval
 
 from custom_detectron2 import _C
 

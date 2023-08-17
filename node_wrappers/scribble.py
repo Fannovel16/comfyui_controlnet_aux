@@ -10,7 +10,7 @@ class Scribble_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "preprocessors/edge_line"
+    CATEGORY = "ControlNet Preprocessors"
 
     def execute(self, image, **kwargs):
         model = PickyScribble()

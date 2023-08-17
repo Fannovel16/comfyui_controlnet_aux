@@ -6,7 +6,7 @@ import multiprocessing as mp
 import numpy as np
 import os
 from itertools import chain
-import annotator.oneformer.pycocotools.mask as mask_util
+import custom_pycocotools.mask as mask_util
 from PIL import Image
 
 from custom_detectron2.structures import BoxMode

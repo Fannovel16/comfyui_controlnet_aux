@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 import numpy as np
 from typing import List
-import annotator.oneformer.pycocotools.mask as mask_util
+import custom_pycocotools.mask as mask_util
 
 from custom_detectron2.structures import Instances
 from custom_detectron2.utils.visualizer import (

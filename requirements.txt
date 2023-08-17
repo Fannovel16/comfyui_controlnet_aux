@@ -15,3 +15,5 @@ mediapipe
 svglib
 fvcore
 yapf
+omegaconf
+ftfy

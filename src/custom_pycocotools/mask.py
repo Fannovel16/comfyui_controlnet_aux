@@ -1,6 +1,6 @@
 __author__ = 'tsungyi'
 
-# import annotator.oneformer.pycocotools._mask as _mask
+# import custom_pycocotools._mask as _mask
 
 # Interface for manipulating masks stored in RLE format.
 #

@@ -4,7 +4,7 @@ import json
 import numpy as np
 import os
 import torch
-from annotator.oneformer.pycocotools.cocoeval import COCOeval, maskUtils
+from custom_pycocotools.cocoeval import COCOeval, maskUtils
 
 from custom_detectron2.structures import BoxMode, RotatedBoxes, pairwise_iou_rotated
 from custom_detectron2.utils.file_io import PathManager

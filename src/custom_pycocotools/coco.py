@@ -3,12 +3,12 @@ __version__ = '2.0'
 # Interface for accessing the Microsoft COCO dataset.
 
 # Microsoft COCO is a large image dataset designed for object detection,
-# segmentation, and caption generation. annotator.oneformer.pycocotools is a Python API that
+# segmentation, and caption generation. custom_pycocotools is a Python API that
 # assists in loading, parsing and visualizing the annotations in COCO.
 # Please visit http://mscoco.org/ for more information on COCO, including
 # for the data, paper, and tutorials. The exact format of the annotations
-# is also described on the COCO website. For example usage of the annotator.oneformer.pycocotools
-# please see annotator.oneformer.pycocotools_demo.ipynb. In addition to this API, please download both
+# is also described on the COCO website. For example usage of the custom_pycocotools
+# please see custom_pycocotools_demo.ipynb. In addition to this API, please download both
 # the COCO images and annotations in order to run the demo.
 
 # An alternative to using the API is to load the annotations directly

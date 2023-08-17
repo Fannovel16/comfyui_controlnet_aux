@@ -14,7 +14,7 @@ import contextlib
 import logging
 import io
 from fvcore.common.timer import Timer
-import annotator.oneformer.pycocotools.mask as mask_util
+import custom_pycocotools.mask as mask_util
 from custom_detectron2.structures import BoxMode
 
 
@@ -41,7 +41,7 @@ _PREDEFINED_SPLITS_COCO_PANOPTIC = {
 }
 
 def load_coco_instance_json(json_file, image_root, dataset_name=None):
-    from annotator.oneformer.pycocotools.coco import COCO
+    from custom_pycocotools.coco import COCO
 
     timer = Timer()
     json_file = PathManager.get_local_path(json_file)

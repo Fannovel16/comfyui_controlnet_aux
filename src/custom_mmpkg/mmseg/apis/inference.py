@@ -6,10 +6,9 @@ from custom_mmpkg.mmcv.runner import load_checkpoint
 
 from custom_mmpkg.mmseg.datasets.pipelines import Compose
 from custom_mmpkg.mmseg.models import build_segmentor
-from modules import devices
 
 
-def init_segmentor(config, checkpoint=None, device=devices.get_device_for("controlnet")):
+def init_segmentor(config, checkpoint=None, device="cpu"):
     """Initialize a segmentor from config file.
 
     Args:
@@ -91,7 +90,7 @@ def inference_segmentor(model, img):
         # scatter to specified GPU
         data = scatter(data, [device])[0]
     else:
-        data['img'][0] = data['img'][0].to(devices.get_device_for("controlnet"))
+        data['img'][0] = data['img'][0].to(device)
         data['img_metas'] = [i.data[0] for i in data['img_metas']]
 
     # forward the model
