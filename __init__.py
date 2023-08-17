@@ -40,7 +40,7 @@ def load_nodes():
     
     if len(shorted_errors) > 0:
         full_err_log = '\n\n'.join(full_error_messages)
-        print(f"Full error log: {full_err_log}\n\n")
+        print(f"\n\nFull error log from comfyui_controlnet_aux: \n{full_err_log}\n\n")
         log.info(
             f"Some nodes failed to load:\n\t"
             + "\n\t".join(shorted_errors)

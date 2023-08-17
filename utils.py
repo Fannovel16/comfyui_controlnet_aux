@@ -25,7 +25,7 @@ def common_annotator_call(model, tensor_image, **kwargs):
     for image in tensor_image:
         H, W, C = image.shape
         np_image = np.asarray(image * 255., dtype=np.uint8) 
-        np_result = model(np_image, output_type="numpy", **kwargs)
+        np_result = model(np_image, output_type="np", **kwargs)
         np_result = cv2.resize(np_result, (W, H), interpolation=cv2.INTER_AREA)
         out_list.append(torch.from_numpy(np_result.astype(np.float32) / 255.0))
     return torch.stack(out_list, dim=0)

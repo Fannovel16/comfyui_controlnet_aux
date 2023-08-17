@@ -4,7 +4,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, resize_image, get_palette
+from ..util import HWC3, resize_image
 from huggingface_hub import hf_hub_download
 import torch
 
@@ -80,7 +80,7 @@ class UniformerSegmentor:
         input_image = HWC3(input_image)
         input_image = resize_image(input_image, detect_resolution)
 
-        detected_map = self._inference(img)
+        detected_map = self._inference(input_image)
         detected_map = HWC3(detected_map)      
          
         img = resize_image(input_image, image_resolution)

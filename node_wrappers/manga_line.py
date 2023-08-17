@@ -20,5 +20,5 @@ NODE_CLASS_MAPPINGS = {
     "Manga2Anime_LineArt_Preprocessor": Manga2Anime_LineArt_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Manga2Anime_LineArt_Preprocessor": "Manga Lineart"
+    "Manga2Anime_LineArt_Preprocessor": "Manga Lineart (aka lineart_anime_denoise)"
 }

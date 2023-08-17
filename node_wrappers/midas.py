@@ -45,6 +45,6 @@ NODE_CLASS_MAPPINGS = {
     "MiDaS-DepthMapPreprocessor": MIDAS_Depth_Map_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "MiDaS-NormalMapPreprocessor": "MiDaS - Normal Map",
+    "MiDaS-NormalMapPreprocessor": "MiDaS - Normal Map (aka normal_map)",
     "MiDaS-DepthMapPreprocessor": "MiDaS - Depth Map"
 }

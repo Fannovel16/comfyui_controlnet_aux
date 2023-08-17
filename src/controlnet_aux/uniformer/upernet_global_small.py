@@ -6,7 +6,7 @@ _base_ = [
 ]
 
 custom_imports = dict(
-    imports=['annotator.uniformer.uniformer'],
+    imports=['controlnet_aux.uniformer.uniformer'],
     allow_failed_imports=False
 )
 

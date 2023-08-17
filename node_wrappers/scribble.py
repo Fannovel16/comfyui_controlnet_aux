@@ -1,5 +1,5 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.picky_scribble import PickyScribble
+from controlnet_aux.scribble import ScribbleDetector
 import comfy.model_management as model_management
 
 class Scribble_Preprocessor:
@@ -13,7 +13,7 @@ class Scribble_Preprocessor:
     CATEGORY = "ControlNet Preprocessors"
 
     def execute(self, image, **kwargs):
-        model = PickyScribble()
+        model = ScribbleDetector()
         return (common_annotator_call(model, image), )
 
 NODE_CLASS_MAPPINGS = {
