@@ -8,7 +8,7 @@ numpy
 Pillow
 einops
 torchvision
-timm==0.6.13 #https://github.com/isl-org/MiDaS/issues/215#issuecomment-1554468063
+timm==0.6.13
 scikit-image
 python-dateutil
 mediapipe
