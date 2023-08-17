@@ -1,5 +1,5 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-import controlnet_aux
+from controlnet_aux.mlsd import MLSDdetector
 import comfy.model_management as model_management
 import numpy as np
 
@@ -20,7 +20,7 @@ class MLSD_Preprocessor:
     CATEGORY = "preprocessors/edge_line"
 
     def execute(self, image, score_threshold, dist_threshold, **kwargs):
-        model = controlnet_aux.MLSDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
+        model = MLSDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         return (common_annotator_call(model, image, thr_v=score_threshold, thr_d=dist_threshold), )
 
 NODE_CLASS_MAPPINGS = {

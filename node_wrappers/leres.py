@@ -1,5 +1,5 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-import controlnet_aux
+from controlnet_aux.leres import LeresDetector
 import comfy.model_management as model_management
 
 class LERES_Depth_Map_Preprocessor:
@@ -19,7 +19,7 @@ class LERES_Depth_Map_Preprocessor:
     CATEGORY = "preprocessors/normal_depth_map"
 
     def execute(self, image, rm_nearest, rm_background, **kwargs):
-        model = controlnet_aux.LeresDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
+        model = LeresDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         return (common_annotator_call(model, image, thr_a=rm_nearest, thr_b=rm_background,), )
     
 NODE_CLASS_MAPPINGS = {
