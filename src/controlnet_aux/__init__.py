@@ -11,7 +11,6 @@ from .normalbae import NormalBaeDetector
 from .open_pose import OpenposeDetector
 from .pidi import PidiNetDetector
 from .zoe import ZoeDetector
-from .oneformer import OneformerSegmentor
 
 from .canny import CannyDetector
 from .mediapipe_face import MediapipeFaceDetector
