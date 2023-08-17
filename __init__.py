@@ -1,11 +1,13 @@
 import sys
 from .utils import here
 from pathlib import Path
-sys.path.append(str(Path(here, "src")))
+import threading
 import traceback
 import warnings
 import importlib
 from .log import log, blue_text, cyan_text, get_summary, get_label
+
+sys.path.append(str(Path(here, "src")))
 
 def load_nodes():
     errors = []

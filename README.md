@@ -4,6 +4,8 @@ This is a WIP rework of [comfyui_controlnet_preprocessors](https://github.com/Fa
 
 All old workflow will still be work with this repo but the version option won't do anything. Almost all v1 preprocessors are replaced by v1.1 except those doesn't apppear in v1.1.
 
+You don't need to care about the differences between v1 and v1.1 lol.
+
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 
 All credit & copyright goes to https://github.com/lllyasviel.
