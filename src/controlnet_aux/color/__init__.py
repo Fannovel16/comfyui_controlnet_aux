@@ -42,7 +42,7 @@ class ColorDetector:
         input_image = HWC3(input_image)
         input_image = resize_image(input_image, detect_resolution)
 
-        detected_map = apply_color(img, detect_resolution)
+        detected_map = apply_color(input_image, detect_resolution)
         detected_map = HWC3(detected_map)
          
         img = resize_image(input_image, image_resolution)
