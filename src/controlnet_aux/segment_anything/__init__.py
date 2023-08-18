@@ -41,7 +41,7 @@ class SamDetector:
         return cls(mask_generator)
 
     def to(self, device):
-        self.mask_generator.to(device)
+        self.mask_generator.predictor.model.to(device)
         return self
 
 
