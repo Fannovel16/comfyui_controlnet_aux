@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.pidi import PidiNetDetector
 import comfy.model_management as model_management
 
 class PIDINET_Preprocessor:
@@ -13,6 +12,8 @@ class PIDINET_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, safe, **kwargs):
+        from controlnet_aux.pidi import PidiNetDetector
+
         model = PidiNetDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         out = common_annotator_call(model, image, safe = safe == "enable")
         del model

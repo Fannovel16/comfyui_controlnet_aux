@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.uniformer import UniformerSegmentor
 import comfy.model_management as model_management
 
 class Uniformer_SemSegPreprocessor:
@@ -13,6 +12,8 @@ class Uniformer_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image):
+        from controlnet_aux.uniformer import UniformerSegmentor
+
         model = UniformerSegmentor.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         out = common_annotator_call(model, image)
         del model

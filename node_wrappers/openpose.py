@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, DWPOSE_MODEL_NAME
-from controlnet_aux.open_pose import OpenposeDetector
 import comfy.model_management as model_management
 
 class OpenPose_Preprocessor:
@@ -19,6 +18,8 @@ class OpenPose_Preprocessor:
     CATEGORY = "ControlNet Preprocessors"
 
     def estimate_pose(self, image, detect_hand, detect_body, detect_face, **kwargs):
+        from controlnet_aux.open_pose import OpenposeDetector
+
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"
