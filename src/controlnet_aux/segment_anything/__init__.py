@@ -35,13 +35,14 @@ class SamDetector:
             model_path = hf_hub_download(pretrained_model_or_path, filename, subfolder=subfolder, cache_dir=cache_dir)  
         
         sam = sam_model_registry[model_type](checkpoint=model_path)
-        
         mask_generator = SamAutomaticMaskGenerator(sam)
 
         return cls(mask_generator)
 
     def to(self, device):
-        self.mask_generator.predictor.model.to(device)
+        model = self.mask_generator.predictor.model.to(device)
+        model.train(False) #Update attention_bias in https://github.com/Fannovel16/comfyui_controlnet_aux/blob/main/src/controlnet_aux/segment_anything/modeling/tiny_vit_sam.py#L251
+        self.mask_generator = SamAutomaticMaskGenerator(model)
         return self
 
 
