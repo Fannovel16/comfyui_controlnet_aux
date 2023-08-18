@@ -10,7 +10,7 @@ class Manga2Anime_LineArt_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, **kwargs):
         model = LineartMangaDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())

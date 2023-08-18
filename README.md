@@ -1,8 +1,8 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
 
-This is a WIP rework of [comfyui_controlnet_preprocessors](https://github.com/Fannovel16/comfy_controlnet_preprocessors) based on [ControlNet auxiliary models by 🤗](https://github.com/patrickvonplaten/controlnet_aux). I think the old repo isn't good enough to maintain.
+This is a rework of [comfyui_controlnet_preprocessors](https://github.com/Fannovel16/comfy_controlnet_preprocessors) based on [ControlNet auxiliary models by 🤗](https://github.com/patrickvonplaten/controlnet_aux). I think the old repo isn't good enough to maintain.
 
-All old workflow will still be work with this repo but the version option won't do anything. Almost all v1 preprocessors are replaced by v1.1 except those doesn't apppear in v1.1.
+All old workflows still can be used with custom nodes in this repo but the version option won't do anything. Almost all v1 preprocessors are replaced by v1.1 except those doesn't apppear in v1.1.
 
 You don't need to care about the differences between v1 and v1.1 lol.
 
@@ -30,18 +30,10 @@ If you can't run **install.bat** (e.g. you are a Linux user). Open the CMD/Shell
   - Start ComfyUI
 
 ## Nodes
-- HEDPreprocessor
-- ScribblePreprocessor
-- FakeScribblePreprocessor
-- PiDiNetPreprocessor
-- LineArtPreprocessor
-- AnimeLineArtPreprocessor
-- Manga2Anime-LineArtPreprocessor
-- CannyEdgePreprocessor
-- M-LSDPreprocessor
-- DWPosePreprocessor
+> A picture is worth a thousand words
+
+
 
 ## Testing workflow
-If you meet OOM, just click Queue Prompt one more time and it will continue from the unfinished node.
-https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_aux_workflow.json
+https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_aux_full.json
 ![](https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/pose.png?raw=true)

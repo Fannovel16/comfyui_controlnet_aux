@@ -12,7 +12,7 @@ class Color_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/T2IAdapter-only"
 
     def execute(self, image, **kwargs):
         return (common_annotator_call(ColorDetector(), image), )

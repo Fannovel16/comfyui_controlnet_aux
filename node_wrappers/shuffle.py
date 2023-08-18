@@ -9,7 +9,7 @@ class Shuffle_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "preprocess"
 
-    CATEGORY = "preprocessors/shuffle"
+    CATEGORY = "ControlNet Preprocessors/T2IAdapter-only"
 
     def preprocess(self, image):
         return (common_annotator_call(ContentShuffleDetector(), image), )

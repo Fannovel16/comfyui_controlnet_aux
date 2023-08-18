@@ -15,7 +15,7 @@ class Binary_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, bin_threshold, **kwargs):
         return (common_annotator_call(BinaryDetector(), image, bin_threshold=bin_threshold), )

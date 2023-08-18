@@ -10,7 +10,7 @@ class Uniformer_SemSegPreprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "semantic_segmentate"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image):
         model = UniformerSegmentor.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())

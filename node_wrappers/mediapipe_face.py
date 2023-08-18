@@ -12,7 +12,7 @@ class Media_Pipe_Face_Mesh_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "detect"
 
-    CATEGORY = "preprocessors/face_mesh"
+    CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
     def detect(self, image, max_faces, min_confidence):
         return (common_annotator_call(MediapipeFaceDetector(), image, max_faces=max_faces, min_confidence=min_confidence), )

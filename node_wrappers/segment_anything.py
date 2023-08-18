@@ -12,7 +12,7 @@ class SAM_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/others"
 
     def execute(self, image, **kwargs):
         mobile_sam = SamDetector.from_pretrained("dhkim2810/MobileSAM", model_type="vit_t", filename="mobile_sam.pt").to(model_management.get_torch_device())

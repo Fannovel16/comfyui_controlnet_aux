@@ -14,7 +14,7 @@ class InpaintPreprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "preprocess"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/others"
 
     def preprocess(self, image, mask):
         return (preprocess(image, mask),)

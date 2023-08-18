@@ -14,7 +14,7 @@ class MIDAS_Normal_Map_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
 
     def execute(self, image, a, bg_threshold, **kwargs):
         model = MidasDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
@@ -35,7 +35,7 @@ class MIDAS_Depth_Map_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
 
     def execute(self, image, a, bg_threshold, **kwargs):
         # Ref: https://github.com/lllyasviel/ControlNet/blob/main/gradio_depth2image.py

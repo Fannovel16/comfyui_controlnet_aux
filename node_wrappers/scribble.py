@@ -10,7 +10,7 @@ class Scribble_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, **kwargs):
         model = ScribbleDetector()
@@ -29,7 +29,7 @@ class Scribble_XDoG_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors"
+    CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, **kwargs):
         model = ScribbleXDog_Detector()
