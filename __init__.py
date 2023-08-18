@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from .utils import here
 from pathlib import Path
 import threading
