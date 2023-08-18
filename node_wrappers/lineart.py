@@ -19,7 +19,9 @@ class LineArt_Preprocessor:
 
     def execute(self, image, **kwargs):
         model = LineartDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image, coarse = kwargs["coarse"] == "enable"), )
+        out = common_annotator_call(model, image, coarse = kwargs["coarse"] == "enable")
+        del model
+        return (out, )
 
 NODE_CLASS_MAPPINGS = {
     "LineArtPreprocessor": LineArt_Preprocessor

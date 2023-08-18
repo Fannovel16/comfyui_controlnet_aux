@@ -14,7 +14,9 @@ class AnimeLineArt_Preprocessor:
 
     def execute(self, image, **kwargs):
         model = LineartAnimeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image), )
+        out = common_annotator_call(model, image)
+        del model
+        return (out, )
 
 NODE_CLASS_MAPPINGS = {
     "AnimeLineArtPreprocessor": AnimeLineArt_Preprocessor

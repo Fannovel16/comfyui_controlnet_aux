@@ -14,7 +14,9 @@ class Manga2Anime_LineArt_Preprocessor:
 
     def execute(self, image, **kwargs):
         model = LineartMangaDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image), )
+        out = common_annotator_call(model, image)
+        del model
+        return (out, )
 
 NODE_CLASS_MAPPINGS = {
     "Manga2Anime_LineArt_Preprocessor": Manga2Anime_LineArt_Preprocessor

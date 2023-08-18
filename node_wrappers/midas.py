@@ -20,7 +20,9 @@ class MIDAS_Normal_Map_Preprocessor:
         model = MidasDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         #Dirty hack :))
         cb = lambda image, **kargs: model(image, **kargs)[1]
-        return (common_annotator_call(cb, image, a=a, bg_th=bg_threshold, depth_and_normal=True), )
+        out = common_annotator_call(cb, image, a=a, bg_th=bg_threshold, depth_and_normal=True)
+        del model
+        return (out, )
 
 class MIDAS_Depth_Map_Preprocessor:
     @classmethod
@@ -38,7 +40,9 @@ class MIDAS_Depth_Map_Preprocessor:
     def execute(self, image, a, bg_threshold, **kwargs):
         # Ref: https://github.com/lllyasviel/ControlNet/blob/main/gradio_depth2image.py
         model = MidasDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image, a=a, bg_th=bg_threshold,), )
+        out = common_annotator_call(model, image, a=a, bg_th=bg_threshold)
+        del model
+        return (out, )
 
 NODE_CLASS_MAPPINGS = {
     "MiDaS-NormalMapPreprocessor": MIDAS_Normal_Map_Preprocessor,

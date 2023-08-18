@@ -1,8 +1,8 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, DWPOSE_MODEL_NAME
-from controlnet_aux.open_pose import OpenposeDetector
+from controlnet_aux.dwpose import DwposeDetector
 import comfy.model_management as model_management
 
-class OpenPose_Preprocessor:
+class DWPose_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -23,14 +23,14 @@ class OpenPose_Preprocessor:
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"
 
-        model = OpenposeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
+        model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         out = common_annotator_call(model, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body)
         del model
         return (out, )
 
 NODE_CLASS_MAPPINGS = {
-    "OpenposePreprocessor": OpenPose_Preprocessor,
+    "DWPreprocessor": DWPose_Preprocessor
 }
-NODE_DISPLAY_NAME_MAPPINGS = {
-    "OpenposePreprocessor": "OpenPose Pose Recognition",
+NODE_DISPLAY_CLASS_MAPPINGS = {
+    "DWPreprocessor": "DWPose Pose Recognition"
 }

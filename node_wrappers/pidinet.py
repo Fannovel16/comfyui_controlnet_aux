@@ -14,7 +14,9 @@ class PIDINET_Preprocessor:
 
     def execute(self, image, safe, **kwargs):
         model = PidiNetDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image, safe = safe == "enable"), )
+        out = common_annotator_call(model, image, safe = safe == "enable")
+        del model
+        return (out, )
 
 NODE_CLASS_MAPPINGS = {
     "PiDiNetPreprocessor": PIDINET_Preprocessor,

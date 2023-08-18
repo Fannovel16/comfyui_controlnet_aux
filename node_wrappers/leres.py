@@ -23,7 +23,9 @@ class LERES_Depth_Map_Preprocessor:
 
     def execute(self, image, rm_nearest, rm_background, **kwargs):
         model = LeresDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image, thr_a=rm_nearest, thr_b=rm_background, boost=kwargs["boost"] == "enable"), )
+        out = common_annotator_call(model, image, thr_a=rm_nearest, thr_b=rm_background, boost=kwargs["boost"] == "enable")
+        del model
+        return (out, )
     
 NODE_CLASS_MAPPINGS = {
     "LeReS-DepthMapPreprocessor": LERES_Depth_Map_Preprocessor

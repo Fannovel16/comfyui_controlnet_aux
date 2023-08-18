@@ -15,7 +15,9 @@ class OneFormer_COCO_SemSegPreprocessor:
     def semantic_segmentate(self, image):
         model = OneformerSegmentor.from_pretrained(HF_MODEL_NAME, "150_16_swin_l_oneformer_coco_100ep.pth", cache_dir=annotator_ckpts_path)
         model = model.to(model_management.get_torch_device())
-        return (common_annotator_call(model, image),)
+        out = common_annotator_call(model, image)
+        del model
+        return (out,)
 
 class OneFormer_ADE20K_SemSegPreprocessor:
     @classmethod
@@ -30,7 +32,9 @@ class OneFormer_ADE20K_SemSegPreprocessor:
     def semantic_segmentate(self, image):
         model = OneformerSegmentor.from_pretrained(HF_MODEL_NAME, "250_16_swin_l_oneformer_ade20k_160k.pth", cache_dir=annotator_ckpts_path)
         model = model.to(model_management.get_torch_device())
-        return (common_annotator_call(model, image),)
+        out = common_annotator_call(model, image)
+        del model
+        return (out,)
 
 NODE_CLASS_MAPPINGS = {
     "OneFormer-COCO-SemSegPreprocessor": OneFormer_COCO_SemSegPreprocessor,

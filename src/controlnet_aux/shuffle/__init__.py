@@ -3,6 +3,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
+import random
 
 from ..util import HWC3, img2mask, make_noise_disk, resize_image
 

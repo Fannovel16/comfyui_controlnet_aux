@@ -21,7 +21,8 @@ class MLSD_Preprocessor:
 
     def execute(self, image, score_threshold, dist_threshold, **kwargs):
         model = MLSDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image, thr_v=score_threshold, thr_d=dist_threshold), )
+        out = common_annotator_call(model, image, thr_v=score_threshold, thr_d=dist_threshold)
+        return (out, )
 
 NODE_CLASS_MAPPINGS = {
     "M-LSDPreprocessor": MLSD_Preprocessor

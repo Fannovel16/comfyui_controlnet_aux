@@ -15,7 +15,9 @@ class Zoe_Depth_Map_Preprocessor:
 
     def execute(self, image, **kwargs):
         model = ZoeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image), )
+        out = common_annotator_call(model, image)
+        del model
+        return (out, )
 
 NODE_CLASS_MAPPINGS = {
     "Zoe-DepthMapPreprocessor": Zoe_Depth_Map_Preprocessor

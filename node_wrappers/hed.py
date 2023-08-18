@@ -19,7 +19,9 @@ class HED_Preprocessor:
 
     def execute(self, image, **kwargs):
         model = HEDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image, safe = kwargs["safe"] == "enable"), )
+        out = common_annotator_call(model, image, safe = kwargs["safe"] == "enable")
+        del model
+        return (out, )
 
 class Fake_Scribble_Preprocessor:
     @classmethod
@@ -38,7 +40,9 @@ class Fake_Scribble_Preprocessor:
 
     def execute(self, image, **kwargs):
         model = HEDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        return (common_annotator_call(model, image, scribble=True, safe=kwargs["safe"]=="enable"), )
+        out = common_annotator_call(model, image, scribble=True, safe=kwargs["safe"]=="enable")
+        del model
+        return (out, )
 
 NODE_CLASS_MAPPINGS = {
     "HEDPreprocessor": HED_Preprocessor,
