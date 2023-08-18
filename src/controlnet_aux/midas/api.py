@@ -6,10 +6,10 @@ import torch
 import torch.nn as nn
 from torchvision.transforms import Compose
 
-from .midas.dpt_depth import DPTDepthModel
-from .midas.midas_net import MidasNet
-from .midas.midas_net_custom import MidasNet_small
-from .midas.transforms import Resize, NormalizeImage, PrepareForNet
+from custom_midas_repo.midas.dpt_depth import DPTDepthModel
+from custom_midas_repo.midas.midas_net import MidasNet
+from custom_midas_repo.midas.midas_net_custom import MidasNet_small
+from custom_midas_repo.midas.transforms import Resize, NormalizeImage, PrepareForNet
 from ..util import annotator_ckpts_path
 
 

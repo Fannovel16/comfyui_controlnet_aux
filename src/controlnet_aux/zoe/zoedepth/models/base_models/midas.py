@@ -27,6 +27,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 from torchvision.transforms import Normalize
+import inspect
+from pathlib import Path
 
 
 def denormalize(x):
@@ -267,7 +269,7 @@ class MidasCore(nn.Module):
 
             # print("Input size to Midascore", x.shape)
             rel_depth = self.core(x)
-            # print("Output from midas shape", rel_depth.shape)
+            # print("Output from custom_midas_repo.midas shape", rel_depth.shape)
             if not self.fetch_features:
                 return rel_depth
         out = [self.core_out[k] for k in self.layer_names]
@@ -339,7 +341,9 @@ class MidasCore(nn.Module):
             kwargs = MidasCore.parse_img_size(kwargs)
         img_size = kwargs.pop("img_size", [384, 384])
         # print("img_size", img_size)
-        midas_path = os.path.join(os.path.dirname(__file__), 'midas_repo')
+        import custom_midas_repo
+        midas_path = Path(inspect.getfile(custom_midas_repo)).parent.resolve()
+        del custom_midas_repo
         midas = torch.hub.load(midas_path, midas_model_type,
                                pretrained=use_pretrained_midas, force_reload=force_reload, source='local')
         kwargs.update({'keep_aspect_ratio': force_keep_ar})

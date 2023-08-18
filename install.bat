@@ -3,7 +3,7 @@
 set "requirements_txt=%~dp0\requirements.txt"
 set "python_exec=..\..\..\python_embeded\python.exe"
 
-echo Installing WAS-NS ...
+echo Installing ComfyUI's ControlNet Auxiliary Preprocessors..
 
 if exist "%python_exec%" (
     echo Installing with ComfyUI Portable

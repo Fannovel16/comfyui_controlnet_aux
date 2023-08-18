@@ -4,9 +4,11 @@ import random
 import cv2
 import numpy as np
 import torch
+from pathlib import Path
 
 annotator_ckpts_path = os.path.join(os.path.dirname(__file__), 'ckpts')
 
+here = Path(__file__).parent.resolve()
 
 def HWC3(x):
     assert x.dtype == np.uint8

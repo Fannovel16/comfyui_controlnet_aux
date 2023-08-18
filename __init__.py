@@ -7,7 +7,8 @@ import warnings
 import importlib
 from .log import log, blue_text, cyan_text, get_summary, get_label
 
-sys.path.append(str(Path(here, "src")))
+sys.path.append(str(Path(here, "src").resolve()))
+print(f"Registered sys.path: {sys.path}")
 
 def load_nodes():
     shorted_errors = []
