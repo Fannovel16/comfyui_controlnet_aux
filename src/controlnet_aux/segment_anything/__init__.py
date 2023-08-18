@@ -36,12 +36,13 @@ class SamDetector:
         
         sam = sam_model_registry[model_type](checkpoint=model_path)
         
-        if torch.cuda.is_available():
-            sam.to("cuda")
-        
         mask_generator = SamAutomaticMaskGenerator(sam)
 
         return cls(mask_generator)
+
+    def to(self, device):
+        self.mask_generator.to(device)
+        return self
 
 
     def show_anns(self, anns):
