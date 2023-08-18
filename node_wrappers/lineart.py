@@ -27,5 +27,5 @@ NODE_CLASS_MAPPINGS = {
     "LineArtPreprocessor": LineArt_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "LineArtPreprocessor": "Realistic Lineart"
+    "LineArtPreprocessor": "Normal Lineart"
 }

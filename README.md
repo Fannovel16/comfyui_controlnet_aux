@@ -29,11 +29,76 @@ If you can't run **install.bat** (e.g. you are a Linux user). Open the CMD/Shell
 	   - Run `pip install -r requirements.txt`
   - Start ComfyUI
 
-## Nodes
+# Nodes
+Please note that this repo only supports preprocessors making hint images (e.g. stickman, canny edge, etc).
+## Line Extractors
+* Binary Lines
+* Canny Edge
+* HED Lines
+* Normal Lineart
+* Anime Lineart
+* Manga Lineart
+* M-LSD Lines
+* PiDiNet Lines
+* Scribble Lines
+* Scribble XDoG Lines
+
+## Normal and Depth Map
+* LeReS - Depth Map
+* MiDaS - Normal Map
+* MiDaS - Depth Map
+* BAE - Normal Map
+* Zoe - Depth Map
+
+## Faces and Poses
+* DWPose Pose Recognition
+* OpenPose Pose Recognition
+* MediaPipe Face Mesh
+
+## Semantic Segmentation
+* OneFormer ADE20K Segmentor
+* UniFormer Segmentor
+* OneFormer COCO Segmentor
+
+## T2IAdapter-only
+* Color Pallete
+* Content Shuffle
+
+# Examples
 > A picture is worth a thousand words
 
+Credit to https://huggingface.co/thibaud/controlnet-sd21. You get the same kind of results from preprocessor nodes of this repo.
+## Line Extractors
+### Canny Edge
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_canny.png)
+### HED Lines
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_hed.png)
+### Normal Lineart
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_lineart.png)
+### Scribble/Fake Scribble
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_scribble.png)
 
+## Normal and Depth Map
+### Depth (idk the preprocessor they use)
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_depth.png)
+## Zoe - Depth Map
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_zoedepth.png)
+## BAE - Normal Map
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_normalbae.png)
 
-## Testing workflow
+## Faces and Poses
+### OpenPose
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openpose.png)
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openposev2.png)
+
+## Semantic Segmantation
+### OneFormer ADE20K Segmentor
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_ade20k.png)
+
+## T2IAdapter-only
+### Color Pallete for T2I-Adapter
+![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_color.png)
+
+# Testing workflow
 https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_aux_full.json
 ![](https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/pose.png?raw=true)

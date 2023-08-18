@@ -23,5 +23,5 @@ NODE_CLASS_MAPPINGS = {
     "ColorPreprocessor": Color_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ColorPreprocessor": "Color Pallete for T2I-Adapter"
+    "ColorPreprocessor": "Color Pallete"
 }

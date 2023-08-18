@@ -26,5 +26,5 @@ NODE_CLASS_MAPPINGS = {
     "BinaryPreprocessor": Binary_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "BinaryPreprocessor": "Binary Line"
+    "BinaryPreprocessor": "Binary Lines"
 }

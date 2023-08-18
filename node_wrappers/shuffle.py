@@ -13,3 +13,11 @@ class Shuffle_Preprocessor:
 
     def preprocess(self, image):
         return (common_annotator_call(ContentShuffleDetector(), image), )
+
+NODE_CLASS_MAPPINGS = {
+    "ShufflePreprocessor": Shuffle_Preprocessor
+}
+
+NODE_DISPLAY_CLASS_MAPPINGS = {
+    "ShufflePreprocessor": "Content Shuffle"
+}
