@@ -14,7 +14,7 @@ class Color_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors"
 
-    def execute(self, image, bin_threshold, **kwargs):
+    def execute(self, image, **kwargs):
         return (common_annotator_call(ColorDetector(), image), )
 
 
