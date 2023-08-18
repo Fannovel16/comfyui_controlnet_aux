@@ -67,7 +67,7 @@ Please note that this repo only supports preprocessors making hint images (e.g. 
 # Examples
 > A picture is worth a thousand words
 
-Credit to https://huggingface.co/thibaud/controlnet-sd21. You get the same kind of results from preprocessor nodes of this repo.
+Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same kind of results from preprocessor nodes of this repo.
 ## Line Extractors
 ### Canny Edge
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_canny.png)
