@@ -31,6 +31,7 @@ class BinaryDetector:
             _, img_bin = cv2.threshold(img_gray, bin_threshold, 255, cv2.THRESH_BINARY_INV)
         
         detected_map = cv2.cvtColor(img_bin, cv2.COLOR_GRAY2RGB)
+        detected_map = 255 - detected_map
 
         detected_map = HWC3(detected_map)      
          

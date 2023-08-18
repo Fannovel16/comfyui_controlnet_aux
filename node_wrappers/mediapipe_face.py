@@ -7,7 +7,7 @@ class Media_Pipe_Face_Mesh_Preprocessor:
     def INPUT_TYPES(s):
         return {"required": { "image": ("IMAGE", ),
                               "max_faces": ("INT", {"default": 10, "min": 1, "max": 50, "step": 1}), #Which image has more than 50 detectable faces?
-                              "min_confidence": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1, "step": 0.1})
+                              "min_confidence": ("FLOAT", {"default": 0.5, "min": 0.01, "max": 1.0, "step": 0.01})
                             }}
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "detect"

@@ -28,8 +28,8 @@ class MIDAS_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {"image": ("IMAGE",),
-                                "a": ("FLOAT", {"default": np.pi * 2.0, "min": 0.0, "max": np.pi * 5.0, "step": 0.05}),
-                                "bg_threshold": ("FLOAT", {"default": 0.1, "min": 0, "max": 1, "step": 0.05})
+                                "a": ("FLOAT", {"default": np.pi * 2.0, "min": 0.0, "max": np.pi * 5.0, "step": 0.01}),
+                                "bg_threshold": ("FLOAT", {"default": 0.4, "min": 0, "max": 1, "step": 0.01})
                                 }}
 
     RETURN_TYPES = ("IMAGE",)

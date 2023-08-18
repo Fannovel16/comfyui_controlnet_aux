@@ -24,5 +24,5 @@ NODE_CLASS_MAPPINGS = {
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "UniFormer-SemSegPreprocessor": "UniFormer Segmentor",
-    "SemSegPreprocessor": "Semantic Segmentor (legacy, aka UniFormer)",
+    "SemSegPreprocessor": "Semantic Segmentor (legacy, alias for UniFormer)",
 }

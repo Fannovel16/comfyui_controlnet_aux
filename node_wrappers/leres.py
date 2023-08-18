@@ -8,8 +8,8 @@ class LERES_Depth_Map_Preprocessor:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "rm_nearest": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1, "step": 0.05}),
-                "rm_background": ("FLOAT", {"default": 0.0, "min": 0, "max": 1, "step": 0.05})
+                "rm_nearest": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 100, "step": 0.1}),
+                "rm_background": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 100, "step": 0.1})
             },
             "optional": {
                 "boost": (["enable", "disable"], {"default": "disable"})

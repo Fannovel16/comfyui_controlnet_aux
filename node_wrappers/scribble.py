@@ -19,7 +19,12 @@ class Scribble_Preprocessor:
 class Scribble_XDoG_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"image": ("IMAGE",)}}
+        return {
+            "required": {
+                "image": ("IMAGE",),
+                "threshold": ("INT", {"default": 32, "min": 1, "max": 64, "step": 64})
+            }
+        }
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"

@@ -9,8 +9,8 @@ class MLSD_Preprocessor:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "score_threshold": ("FLOAT", {"default": 0.1, "min": 0.0, "max": 1.0, "step": 0.05}),
-                "dist_threshold": ("FLOAT", {"default": 0.1, "min": 0.0, "max": 1.0, "step": 0.05})
+                "score_threshold": ("FLOAT", {"default": 0.1, "min": 0.01, "max": 2.0, "step": 0.01}),
+                "dist_threshold": ("FLOAT", {"default": 0.1, "min": 0.01, "max": 20.0, "step": 0.01})
             }
         }
 
