@@ -27,7 +27,8 @@ class ScribbleDetector:
         H, W, C = img.shape
 
         detected_map = np.zeros_like(img, dtype=np.uint8)
-        detected_map[np.min(img, axis=2) < 127] = 255 
+        detected_map[np.min(img, axis=2) < 127] = 255
+        detected_map = 255 - detected_map
 
         detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
         
@@ -62,8 +63,9 @@ class ScribbleXDog_Detector:
         dog = (255 - np.min(g2 - g1, axis=2)).clip(0, 255).astype(np.uint8)
         result = np.zeros_like(img, dtype=np.uint8)
         result[2 * (255 - dog) > thr_a] = 255
+        result = 255 - result
 
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
+        detected_map = cv2.resize(result, (W, H), interpolation=cv2.INTER_LINEAR)
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

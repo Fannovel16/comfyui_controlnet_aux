@@ -25,10 +25,12 @@ class BinaryDetector:
         img_gray = cv2.cvtColor(input_image, cv2.COLOR_RGB2GRAY)
         if bin_threshold == 0 or bin_threshold == 255:
         # Otsu's threshold
-            otsu_threshold, detected_map = cv2.threshold(img_gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+            otsu_threshold, img_bin = cv2.threshold(img_gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
             print("Otsu threshold:", otsu_threshold)
         else:
-            _, detected_map = cv2.threshold(img_gray, bin_threshold, 255, cv2.THRESH_BINARY_INV)
+            _, img_bin = cv2.threshold(img_gray, bin_threshold, 255, cv2.THRESH_BINARY_INV)
+        
+        detected_map = cv2.cvtColor(img_bin, cv2.COLOR_GRAY2RGB)
 
         detected_map = HWC3(detected_map)      
          
