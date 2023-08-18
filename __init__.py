@@ -7,7 +7,9 @@ import warnings
 import importlib
 from .log import log, blue_text, cyan_text, get_summary, get_label
 
-sys.path.append(str(Path(here, "src").resolve()))
+#Ref: https://github.com/comfyanonymous/ComfyUI/blob/76d53c4622fc06372975ed2a43ad345935b8a551/nodes.py#L17
+for pkg_name in os.listdir(str(Path(here, "src"))):
+    sys.path.append(str(Path(here, "src", pkg_name).resolve()))
 print(f"Registered sys.path: {sys.path}")
 
 def load_nodes():
