@@ -14,7 +14,7 @@ class OpenPose_Preprocessor:
             }
         }
     RETURN_TYPES = ("IMAGE",)
-    FUNCTION = "ControlNet Preprocessors/Faces and Poses"
+    FUNCTION = "estimate_pose"
 
     CATEGORY = "ControlNet Preprocessors"
 
