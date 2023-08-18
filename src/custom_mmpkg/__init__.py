@@ -1,1 +1,1 @@
-#Dummy file to ensure that this will be recognized
+#Dummy file to ensure that this module will be recognized
