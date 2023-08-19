@@ -4,10 +4,6 @@ import warnings
 try:
     import mediapipe as mp
 except ImportError:
-    warnings.warn(
-        "The module 'mediapipe' is not installed. The package will have limited functionality. Please install it using the command: pip install 'mediapipe'"
-    )
-
     mp = None
 
 import numpy

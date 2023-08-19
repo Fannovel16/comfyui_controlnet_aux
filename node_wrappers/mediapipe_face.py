@@ -18,7 +18,7 @@ class Media_Pipe_Face_Mesh_Preprocessor:
     def detect(self, image, max_faces, min_confidence):
         try:
             import mediapipe
-        except ModuleNotFoundError:
+        except ImportError:
             os.system("pip install mediapipe")
         return (common_annotator_call(MediapipeFaceDetector(), image, max_faces=max_faces, min_confidence=min_confidence), )
 
