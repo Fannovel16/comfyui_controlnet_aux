@@ -10,6 +10,11 @@ The code is copy-pasted from the respective folders in https://github.com/lllyas
 
 All credit & copyright goes to https://github.com/lllyasviel.
 
+# Q&A:
+* Why some nodes doesn't appear after I installed this repo?
+
+This repo has a new mechanism which will skip any custom node can't be imported. If you meet this case, please create a issue on [Issues tab](https://github.com/Fannovel16/comfyui_controlnet_aux/issues) with the log from the command line.
+
 # Installation:
 ## Using ComfyUI Manager (recommended):
 Install [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager) and do steps introduced there to install this repo.
