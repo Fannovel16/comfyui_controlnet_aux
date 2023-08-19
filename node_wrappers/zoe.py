@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.zoe import ZoeDetector
 import comfy.model_management as model_management
 
 class Zoe_Depth_Map_Preprocessor:
@@ -14,6 +13,8 @@ class Zoe_Depth_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
 
     def execute(self, image, **kwargs):
+        from controlnet_aux.zoe import ZoeDetector
+
         model = ZoeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         out = common_annotator_call(model, image)
         del model

@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.canny import CannyDetector
 import comfy.model_management as model_management
 
 class Canny_Edge_Preprocessor:
@@ -19,6 +18,8 @@ class Canny_Edge_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, low_threshold, high_threshold, **kwargs):
+        from controlnet_aux.canny import CannyDetector
+
         return (common_annotator_call(CannyDetector(), image, low_threshold=low_threshold, high_threshold=high_threshold), )
 
 

@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.binary import BinaryDetector
 import comfy.model_management as model_management
 
 class Binary_Preprocessor:
@@ -18,6 +17,8 @@ class Binary_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, bin_threshold, **kwargs):
+        from controlnet_aux.binary import BinaryDetector
+
         return (common_annotator_call(BinaryDetector(), image, bin_threshold=bin_threshold), )
 
 

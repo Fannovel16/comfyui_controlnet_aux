@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.shuffle import ContentShuffleDetector
 import comfy.model_management as model_management
 
 class Shuffle_Preprocessor:
@@ -12,6 +11,8 @@ class Shuffle_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/T2IAdapter-only"
 
     def preprocess(self, image):
+        from controlnet_aux.shuffle import ContentShuffleDetector
+
         return (common_annotator_call(ContentShuffleDetector(), image), )
 
 NODE_CLASS_MAPPINGS = {

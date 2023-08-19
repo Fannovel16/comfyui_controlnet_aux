@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, DWPOSE_MODEL_NAME
-from controlnet_aux.dwpose import DwposeDetector
 import comfy.model_management as model_management
 
 class DWPose_Preprocessor:
@@ -19,6 +18,8 @@ class DWPose_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
     def estimate_pose(self, image, detect_hand, detect_body, detect_face, **kwargs):
+        from controlnet_aux.dwpose import DwposeDetector
+
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"

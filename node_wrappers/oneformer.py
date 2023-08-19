@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.oneformer import OneformerSegmentor
 import comfy.model_management as model_management
 
 class OneFormer_COCO_SemSegPreprocessor:
@@ -13,6 +12,8 @@ class OneFormer_COCO_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image):
+        from controlnet_aux.oneformer import OneformerSegmentor
+
         model = OneformerSegmentor.from_pretrained(HF_MODEL_NAME, "150_16_swin_l_oneformer_coco_100ep.pth", cache_dir=annotator_ckpts_path)
         model = model.to(model_management.get_torch_device())
         out = common_annotator_call(model, image)
@@ -30,6 +31,8 @@ class OneFormer_ADE20K_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image):
+        from controlnet_aux.oneformer import OneformerSegmentor
+
         model = OneformerSegmentor.from_pretrained(HF_MODEL_NAME, "250_16_swin_l_oneformer_ade20k_160k.pth", cache_dir=annotator_ckpts_path)
         model = model.to(model_management.get_torch_device())
         out = common_annotator_call(model, image)

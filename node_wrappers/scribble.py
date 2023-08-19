@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.scribble import ScribbleDetector, ScribbleXDog_Detector
 import comfy.model_management as model_management
 
 class Scribble_Preprocessor:
@@ -13,6 +12,8 @@ class Scribble_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, **kwargs):
+        from controlnet_aux.scribble import ScribbleDetector
+
         model = ScribbleDetector()
         return (common_annotator_call(model, image), )
 
@@ -32,6 +33,8 @@ class Scribble_XDoG_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, **kwargs):
+        from controlnet_aux.scribble import ScribbleXDog_Detector
+
         model = ScribbleXDog_Detector()
         return (common_annotator_call(model, image), )
 

@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
-from controlnet_aux.midas import MidasDetector
 import comfy.model_management as model_management
 import numpy as np
 
@@ -17,6 +16,8 @@ class MIDAS_Normal_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
 
     def execute(self, image, a, bg_threshold, **kwargs):
+        from controlnet_aux.midas import MidasDetector
+
         model = MidasDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         #Dirty hack :))
         cb = lambda image, **kargs: model(image, **kargs)[1]
@@ -38,6 +39,8 @@ class MIDAS_Depth_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
 
     def execute(self, image, a, bg_threshold, **kwargs):
+        from controlnet_aux.midas import MidasDetector
+
         # Ref: https://github.com/lllyasviel/ControlNet/blob/main/gradio_depth2image.py
         model = MidasDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         out = common_annotator_call(model, image, a=a, bg_th=bg_threshold)
