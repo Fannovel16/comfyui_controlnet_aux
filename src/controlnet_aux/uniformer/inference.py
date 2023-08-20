@@ -1,18 +1,11 @@
 
 import torch
 
-try:
-    import mmcv as mmcv
-    from mmcv.parallel import collate, scatter
-    from mmcv.runner import load_checkpoint
-    from mmseg.datasets.pipelines import Compose
-    from mmseg.models import build_segmentor
-except ImportError:
-    import custom_mmpkg.mmcv as mmcv
-    from custom_mmpkg.mmcv.parallel import collate, scatter
-    from custom_mmpkg.mmcv.runner import load_checkpoint
-    from custom_mmpkg.mmseg.datasets.pipelines import Compose
-    from custom_mmpkg.mmseg.models import build_segmentor
+import custom_mmpkg.mmcv as mmcv
+from custom_mmpkg.mmcv.parallel import collate, scatter
+from custom_mmpkg.mmcv.runner import load_checkpoint
+from custom_mmpkg.mmseg.datasets.pipelines import Compose
+from custom_mmpkg.mmseg.models import build_segmentor
     
 def init_segmentor(config, checkpoint=None, device='cuda:0'):
     """Initialize a segmentor from config file.
