@@ -8,10 +8,7 @@ from ..util import HWC3, resize_image
 from huggingface_hub import hf_hub_download
 import torch
 
-try:
-    from mmseg.core.evaluation import get_palette
-except ImportError:
-    from custom_mmpkg.mmseg.core.evaluation import get_palette
+from custom_mmpkg.mmseg.core.evaluation import get_palette
 
 config_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),  "upernet_global_small.py")
 

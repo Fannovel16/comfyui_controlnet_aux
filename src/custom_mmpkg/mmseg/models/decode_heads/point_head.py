@@ -3,12 +3,8 @@
 import torch
 import torch.nn as nn
 
-try: 
-    from mmcv.cnn import ConvModule, normal_init
-    from mmcv.ops import point_sample
-except ImportError:
-    from custom_mmpkg.mmcv.cnn import ConvModule, normal_init
-    from custom_mmpkg.mmcv.ops import point_sample
+from custom_mmpkg.mmcv.cnn import ConvModule, normal_init
+from custom_mmpkg.mmcv.ops import point_sample
 
 from custom_mmpkg.mmseg.models.builder import HEADS
 from custom_mmpkg.mmseg.ops import resize

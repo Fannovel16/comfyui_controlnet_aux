@@ -14,13 +14,8 @@ import torch.utils.checkpoint as checkpoint
 from functools import partial
 from collections import OrderedDict
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
-
-try:
-    from mmseg.utils import get_root_logger
-    from mmseg.models.builder import BACKBONES
-except ImportError:
-    from custom_mmpkg.mmseg.utils import get_root_logger
-    from custom_mmpkg.mmseg.models.builder import BACKBONES
+from custom_mmpkg.mmseg.utils import get_root_logger
+from custom_mmpkg.mmseg.models.builder import BACKBONES
     
 from .mmcv_custom import load_checkpoint
 
