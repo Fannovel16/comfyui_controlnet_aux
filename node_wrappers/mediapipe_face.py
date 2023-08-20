@@ -19,9 +19,10 @@ class Media_Pipe_Face_Mesh_Preprocessor:
             import mediapipe
         except ImportError:
             os.system("pip install mediapipe")
+
         #Ref: https://github.com/Fannovel16/comfy_controlnet_preprocessors/issues/70#issuecomment-1677967369
         from controlnet_aux.mediapipe_face import MediapipeFaceDetector
-        
+
         return (common_annotator_call(MediapipeFaceDetector(), image, max_faces=max_faces, min_confidence=min_confidence), )
 
 NODE_CLASS_MAPPINGS = {
