@@ -1,5 +1,4 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, DWPOSE_MODEL_NAME
-from controlnet_aux.mediapipe_face import MediapipeFaceDetector
 import comfy.model_management as model_management
 import os
 
@@ -20,6 +19,7 @@ class Media_Pipe_Face_Mesh_Preprocessor:
             import mediapipe
         except ImportError:
             os.system("pip install mediapipe")
+        from controlnet_aux.mediapipe_face import MediapipeFaceDetector
         return (common_annotator_call(MediapipeFaceDetector(), image, max_faces=max_faces, min_confidence=min_confidence), )
 
 NODE_CLASS_MAPPINGS = {
