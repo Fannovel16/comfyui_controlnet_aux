@@ -1,11 +1,7 @@
 from typing import Mapping
 import warnings
 
-try:
-    import mediapipe as mp
-except ImportError:
-    mp = None
-
+import mediapipe as mp
 import numpy
 
 if mp:
