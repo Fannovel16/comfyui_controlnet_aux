@@ -14,7 +14,7 @@ class SAM_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/others"
 
     def execute(self, image, **kwargs):
-        from controlnet_aux.segment_anything import SamDetector
+        from src.controlnet_aux.sam import SamDetector
 
         mobile_sam = SamDetector.from_pretrained("dhkim2810/MobileSAM", model_type="vit_t", filename="mobile_sam.pt").to(model_management.get_torch_device())
         out = common_annotator_call(mobile_sam, image)
