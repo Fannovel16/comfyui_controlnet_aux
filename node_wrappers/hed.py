@@ -40,6 +40,8 @@ class Fake_Scribble_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, **kwargs):
+        from controlnet_aux.hed import HEDdetector
+        
         model = HEDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         out = common_annotator_call(model, image, scribble=True, safe=kwargs["safe"]=="enable")
         del model
