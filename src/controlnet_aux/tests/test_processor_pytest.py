@@ -32,7 +32,8 @@ from controlnet_aux.processor import MODELS, Processor
     'depth_zoe',
     'depth_leres',
     'depth_leres++',
-    'mediapipe_face'
+    'mediapipe_face',
+    'tile'
 ])
 def processor(request):
     return Processor(request.param)

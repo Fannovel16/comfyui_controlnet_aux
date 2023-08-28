@@ -11,7 +11,7 @@ from controlnet_aux import (CannyDetector, ContentShuffleDetector, HEDdetector,
                             LeresDetector, LineartAnimeDetector,
                             LineartDetector, MediapipeFaceDetector,
                             MidasDetector, MLSDdetector, NormalBaeDetector,
-                            OpenposeDetector, PidiNetDetector, ZoeDetector)
+                            OpenposeDetector, PidiNetDetector, ZoeDetector, TileDetector)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,6 +44,7 @@ MODELS = {
     'shuffle': {'class': ContentShuffleDetector, 'checkpoint': False},
     'mediapipe_face': {'class': MediapipeFaceDetector, 'checkpoint': False},
     'canny': {'class': CannyDetector, 'checkpoint': False},
+    'tile': {'class': TileDetector, 'checkpoint': False},
 }
 
 
@@ -73,6 +74,7 @@ MODEL_PARAMS = {
     'depth_leres': {'boost': False},
     'depth_leres++': {'boost': True},
     'mediapipe_face': {},
+    'tile': {},
 }
 
 CHOICES = f"Choices for the processor are {list(MODELS.keys())}"
@@ -85,7 +87,7 @@ class Processor:
         Args:
             processor_id (str): processor name, options are 'hed, midas, mlsd, openpose,
                                 pidinet, normalbae, lineart, lineart_coarse, lineart_anime,
-                                canny, content_shuffle, zoe, mediapipe_face
+                                canny, content_shuffle, zoe, mediapipe_face, tile'
             params (Optional[Dict]): parameters for the processor
         """
         LOGGER.info("Loading %s".format(processor_id))
