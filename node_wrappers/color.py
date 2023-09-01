@@ -5,7 +5,10 @@ class Color_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return {
-            "required": { "image": ("IMAGE",) }
+            "required": {
+                "image": ("IMAGE",),
+                "resolution": ("INT", {"default": 512, "min": 1, "max": 2048, "step": 1})
+                }
         }
 
     RETURN_TYPES = ("IMAGE",)
@@ -13,10 +16,10 @@ class Color_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/T2IAdapter-only"
 
-    def execute(self, image, **kwargs):
+    def execute(self, image, resolution, **kwargs):
         from controlnet_aux.color import ColorDetector
 
-        return (common_annotator_call(ColorDetector(), image), )
+        return (common_annotator_call(ColorDetector(), image, detect_resolution=resolution), )
 
 
 
