@@ -17,8 +17,8 @@ if os.path.exists(config_path):
 else:
     annotator_ckpts_path = str(Path(here, "./ckpts"))
 
-HF_MODEL_NAME = "lllyasviel/Annotators"
-DWPOSE_MODEL_NAME = "yzd-v/DWPose"
+HF_MODEL_NAME = f"{annotator_ckpts_path}/lllyasviel/Annotators"
+DWPOSE_MODEL_NAME = f"{annotator_ckpts_path}/yzd-v/DWPose"
 
 def common_annotator_call(model, tensor_image, **kwargs):
     out_list = []
