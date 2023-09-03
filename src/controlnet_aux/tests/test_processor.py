@@ -84,6 +84,12 @@ class TestProcessor(unittest.TestCase):
         processed_image = processor(image)
         self.assertIsInstance(processed_image, bytes)
 
+    def test_tile(self):
+        processor = Processor('tile')
+        image = Image.open('test_image.png')
+        processed_image = processor(image)
+        self.assertIsInstance(processed_image, bytes)
+
 
 if __name__ == '__main__':
     unittest.main()

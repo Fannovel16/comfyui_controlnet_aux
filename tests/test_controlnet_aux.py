@@ -12,7 +12,7 @@ from controlnet_aux import (CannyDetector, ContentShuffleDetector, HEDdetector,
                             LineartDetector, MediapipeFaceDetector,
                             MidasDetector, MLSDdetector, NormalBaeDetector,
                             OpenposeDetector, PidiNetDetector, SamDetector,
-                            ZoeDetector)
+                            ZoeDetector, TileDetector)
 
 OUTPUT_DIR = "tests/outputs"
 
@@ -119,3 +119,8 @@ def test_shuffle(img):
 def test_zoe(img):
     zoe = ZoeDetector.from_pretrained("lllyasviel/Annotators")
     common("zoe", zoe, img)
+
+def test_tile(img):
+    tile = TileDetector()
+    common("tile", tile, img)
+    output("tile_img", tile(img))
