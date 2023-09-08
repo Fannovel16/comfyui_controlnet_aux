@@ -84,19 +84,23 @@ for (const poseNode of poseNodes) {
 For API users:
 Javascript
 ```js
-const promptId = '' //Too lazy to POST /queue
-let history = await fetch(`http://127.0.0.1:8188/history/${promptId}`).then(re => re.json())
-history = history[promptId]
-const nodeOutputs = Object.values(history.outputs).filter(output => output.openpose_json)
-for (const nodeOutput of nodeOutputs) {
-    const openpose = JSON.parse(nodeOutput.openpose_json[0])
-    console.log(openpose)
+import fetch from "node-fetch" //Remember to add "type": "module" to "package.json"
+async function main() {
+    const promptId = '792c1905-ecfe-41f4-8114-83e6a4a09a9f' //Too lazy to POST /queue
+    let history = await fetch(`http://127.0.0.1:8188/history/${promptId}`).then(re => re.json())
+    history = history[promptId]
+    const nodeOutputs = Object.values(history.outputs).filter(output => output.openpose_json)
+    for (const nodeOutput of nodeOutputs) {
+        const openpose = JSON.parse(nodeOutput.openpose_json[0])
+        console.log(openpose)
+    }
 }
+main()
 ```
 
 Python
 ```py
-import json, urllib
+import json, urllib.request
 
 server_address = "127.0.0.1:8188"
 prompt_id = '' #Too lazy to POST /queue
