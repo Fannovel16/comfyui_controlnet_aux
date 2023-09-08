@@ -72,7 +72,7 @@ You need to use its node directly to set thresholds.
 
 You can get [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) from DWPose and OpenPose through two ways
 
-For extension developers:
+For extension developers (e.g. Openpose editor):
 ```js
 const poseNodes = app.graph._nodes.filter(node => ["OpenposePreprocessor", "DWPreprocessor"].includes(node.type))
 for (const poseNode of poseNodes) {
