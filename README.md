@@ -14,7 +14,8 @@ All credit & copyright goes to https://github.com/lllyasviel.
 
 # Updates
 * `AIO Aux Preprocessor` intergrating all loadable aux preprocessors as dropdown options. Easy to copy, paste and get the preprocessor faster.
-* `OpenPose-format JSON output from OpenPose Preprocessor and DWPose Preprocessor. Checks [here](#faces-and-poses) 
+* Add OpenPose-format JSON output from OpenPose Preprocessor and DWPose Preprocessor. Checks [here](#faces-and-poses) .
+* Fix wrong model path when downloading DWPose.
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
