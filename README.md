@@ -1,5 +1,4 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
-**Update**: `AIO Aux Preprocessor` including all loadable aux preprocessors as dropdown options. Easy to copy, paste and get the preprocessor faster.
 
 This is a rework of [comfyui_controlnet_preprocessors](https://github.com/Fannovel16/comfy_controlnet_preprocessors) based on [ControlNet auxiliary models by 🤗](https://github.com/patrickvonplaten/controlnet_aux). I think the old repo isn't good enough to maintain.
 
@@ -12,6 +11,10 @@ You don't need to care about the differences between v1 and v1.1 lol.
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 
 All credit & copyright goes to https://github.com/lllyasviel.
+
+# Updates
+* `AIO Aux Preprocessor` intergrating all loadable aux preprocessors as dropdown options. Easy to copy, paste and get the preprocessor faster.
+* `OpenPose-format JSON output from OpenPose Preprocessor and DWPose Preprocessor. Checks [here](#faces-and-poses) 
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
@@ -39,7 +42,7 @@ If you can't run **install.bat** (e.g. you are a Linux user). Open the CMD/Shell
 
 # Nodes
 Please note that this repo only supports preprocessors making hint images (e.g. stickman, canny edge, etc).
-All preprocessors except Inpaint are packed into `AIO Aux Preprocessor` node. 
+All preprocessors except Inpaint are intergrated into `AIO Aux Preprocessor` node. 
 This node allow you to quickly get the preprocessor but a preprocessor's own threshold parameters won't be able to set.
 You need to use its node directly to set thresholds.
 
@@ -67,6 +70,45 @@ You need to use its node directly to set thresholds.
 * OpenPose Pose Recognition
 * MediaPipe Face Mesh
 
+You can get OpenPose-format JSON from DWPose and OpenPose through two ways
+
+For extension developers:
+```js
+const poseNodes = app.graph._nodes.filter(node => ["OpenposePreprocessor", "DWPreprocessor"].includes(node.type))
+for (const poseNode of poseNodes) {
+    const openpose = JSON.parse(app.nodeOutputs[poseNode.id].openpose_json[0])
+    console.log(openpose)
+}
+```
+
+For API users:
+Javascript
+```js
+const promptId = '' //Too lazy to POST /queue
+let history = await fetch(`http://localhost:8188/history/${promptId}`).then(re => re.json())
+history = history[promptId]
+const nodeOutputs = Object.values(history.outputs).filter(output => output.openpose_json)
+for (const nodeOutput of nodeOutputs) {
+    const openpose = JSON.parse(nodeOutput.openpose_json[0])
+    console.log(openpose)
+}
+```
+
+Python
+```py
+import json, urllib
+def get_history(prompt_id):
+    with urllib.request.urlopen("http://{}/history/{}".format(server_address, prompt_id)) as response:
+        return json.loads(response.read())
+
+prompt_id = '' #Too lazy to POST /queue
+history = get_history(prompt_id)[prompt_id]
+for o in history['outputs']:
+    for node_id in history['outputs']:
+        node_output = history['outputs'][node_id]
+        if 'openpose_json' in node_output:
+            print(json.loads(node_output['openpose_json'][0]))
+```
 ## Semantic Segmentation
 * OneFormer ADE20K Segmentor
 * UniFormer Segmentor

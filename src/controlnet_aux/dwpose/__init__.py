@@ -180,7 +180,7 @@ class DwposeDetector:
             keypoints_info = self.dw_pose_estimation(oriImg.copy())
             return Wholebody.format_result(keypoints_info)
     
-    def __call__(self, input_image, detect_resolution=512, image_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", **kwargs):
+    def __call__(self, input_image, detect_resolution=512, image_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", image_and_json=False, **kwargs):
         if hand_and_face is not None:
             warnings.warn("hand_and_face is deprecated. Use include_hand and include_face instead.", DeprecationWarning)
             include_hand = hand_and_face
@@ -214,5 +214,8 @@ class DwposeDetector:
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
+        
+        if image_and_json:
+            return (detected_map, encode_poses_as_json(poses, canvas_height=H, canvas_width=W))
 
         return detected_map

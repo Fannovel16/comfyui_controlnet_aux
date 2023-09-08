@@ -24,10 +24,21 @@ class OpenPose_Preprocessor:
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"
 
+
+        self.openpose_json = None
         model = OpenposeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        out = common_annotator_call(model, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body)
+        
+        def cb(image, **kwargs):
+            result = model(image, **kwargs)
+            self.openpose_json = result[1]
+            return result[0]
+        
+        out = common_annotator_call(cb, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True)
         del model
-        return (out, )
+        return {
+            'ui': { "openpose_json": [self.openpose_json] },
+            "result": (out, )
+        }
 
 NODE_CLASS_MAPPINGS = {
     "OpenposePreprocessor": OpenPose_Preprocessor,

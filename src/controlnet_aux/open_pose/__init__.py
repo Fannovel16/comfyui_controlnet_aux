@@ -65,7 +65,38 @@ def draw_poses(poses: List[PoseResult], H, W, draw_body=True, draw_hand=True, dr
             canvas = util.draw_facepose(canvas, pose.face)
 
     return canvas
-    
+
+def encode_poses_as_json(poses: List[PoseResult], canvas_height: int, canvas_width: int) -> str:
+    """ Encode the pose as a JSON string following openpose JSON output format:
+    https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md
+    """
+    def compress_keypoints(keypoints: Union[List[Keypoint], None]) -> Union[List[float], None]:
+        if not keypoints:
+            return None
+        
+        return [
+            value
+            for keypoint in keypoints
+            for value in (
+                [float(keypoint.x), float(keypoint.y), 1.0]
+                if keypoint is not None
+                else [0.0, 0.0, 0.0]
+            )
+        ]
+
+    return json.dumps({
+        'people': [
+            {
+                'pose_keypoints_2d': compress_keypoints(pose.body.keypoints),
+                "face_keypoints_2d": compress_keypoints(pose.face),
+                "hand_left_keypoints_2d": compress_keypoints(pose.left_hand),
+                "hand_right_keypoints_2d":compress_keypoints(pose.right_hand),
+            }
+            for pose in poses
+        ],
+        'canvas_height': canvas_height,
+        'canvas_width': canvas_width,
+    }, indent=4)
     
 class OpenposeDetector:
     """
@@ -196,7 +227,7 @@ class OpenposeDetector:
             
             return results
         
-    def __call__(self, input_image, detect_resolution=512, image_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", **kwargs):
+    def __call__(self, input_image, detect_resolution=512, image_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", image_and_json=False, **kwargs):
         if hand_and_face is not None:
             warnings.warn("hand_and_face is deprecated. Use include_hand and include_face instead.", DeprecationWarning)
             include_hand = hand_and_face
@@ -230,5 +261,8 @@ class OpenposeDetector:
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
+        
+        if image_and_json:
+            return (detected_map, encode_poses_as_json(poses, canvas_height=H, canvas_width=W))
 
         return detected_map
