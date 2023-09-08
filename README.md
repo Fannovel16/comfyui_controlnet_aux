@@ -85,7 +85,7 @@ For API users:
 Javascript
 ```js
 const promptId = '' //Too lazy to POST /queue
-let history = await fetch(`http://localhost:8188/history/${promptId}`).then(re => re.json())
+let history = await fetch(`http://127.0.0.1:8188/history/${promptId}`).then(re => re.json())
 history = history[promptId]
 const nodeOutputs = Object.values(history.outputs).filter(output => output.openpose_json)
 for (const nodeOutput of nodeOutputs) {
@@ -97,11 +97,14 @@ for (const nodeOutput of nodeOutputs) {
 Python
 ```py
 import json, urllib
+
+server_address = "127.0.0.1:8188"
+prompt_id = '' #Too lazy to POST /queue
+
 def get_history(prompt_id):
     with urllib.request.urlopen("http://{}/history/{}".format(server_address, prompt_id)) as response:
         return json.loads(response.read())
 
-prompt_id = '' #Too lazy to POST /queue
 history = get_history(prompt_id)[prompt_id]
 for o in history['outputs']:
     for node_id in history['outputs']:
