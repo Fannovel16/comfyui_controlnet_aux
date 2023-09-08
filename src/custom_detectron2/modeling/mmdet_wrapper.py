@@ -25,7 +25,7 @@ def _to_container(cfg):
     """
     if isinstance(cfg, DictConfig):
         cfg = OmegaConf.to_container(cfg, resolve=True)
-    from custom_mmpkg.mmcv.utils import ConfigDict
+    from custom_mmpkg.custom_mmcv.utils import ConfigDict
 
     return ConfigDict(cfg)
 

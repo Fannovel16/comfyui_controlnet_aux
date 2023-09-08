@@ -1,13 +1,14 @@
-
-import torch
-
+import matplotlib.pyplot as plt
 import custom_mmpkg.custom_mmcv as mmcv
+import torch
 from custom_mmpkg.custom_mmcv.parallel import collate, scatter
 from custom_mmpkg.custom_mmcv.runner import load_checkpoint
+
 from custom_mmpkg.custom_mmseg.datasets.pipelines import Compose
 from custom_mmpkg.custom_mmseg.models import build_segmentor
-    
-def init_segmentor(config, checkpoint=None, device='cuda:0'):
+
+
+def init_segmentor(config, checkpoint=None, device="cpu"):
     """Initialize a segmentor from config file.
 
     Args:
@@ -89,9 +90,8 @@ def inference_segmentor(model, img):
         # scatter to specified GPU
         data = scatter(data, [device])[0]
     else:
+        data['img'][0] = data['img'][0].to(device)
         data['img_metas'] = [i.data[0] for i in data['img_metas']]
-
-    data['img'] = [x.to(device) for x in data['img']]
 
     # forward the model
     with torch.no_grad():
