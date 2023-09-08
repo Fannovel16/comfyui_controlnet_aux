@@ -1,4 +1,5 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
+**Update**: `AIO Aux Preprocessor` including all loadable aux preprocessors as dropdown options. Easy to copy, paste and get the preprocessor faster.
 
 This is a rework of [comfyui_controlnet_preprocessors](https://github.com/Fannovel16/comfy_controlnet_preprocessors) based on [ControlNet auxiliary models by 🤗](https://github.com/patrickvonplaten/controlnet_aux). I think the old repo isn't good enough to maintain.
 
@@ -38,6 +39,10 @@ If you can't run **install.bat** (e.g. you are a Linux user). Open the CMD/Shell
 
 # Nodes
 Please note that this repo only supports preprocessors making hint images (e.g. stickman, canny edge, etc).
+All preprocessors except Inpaint are packed into `AIO Aux Preprocessor` node. 
+This node allow you to quickly get the preprocessor but a preprocessor's own threshold parameters won't be able to set.
+You need to use its node directly to set thresholds.
+
 ## Line Extractors
 * Binary Lines
 * Canny Edge

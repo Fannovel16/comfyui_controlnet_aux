@@ -63,7 +63,7 @@ class ScribbleXDog_Detector:
         dog = (255 - np.min(g2 - g1, axis=2)).clip(0, 255).astype(np.uint8)
         result = np.zeros_like(img, dtype=np.uint8)
         result[2 * (255 - dog) > thr_a] = 255
-        result = 255 - result
+        #result = 255 - result
 
         detected_map = cv2.resize(result, (W, H), interpolation=cv2.INTER_LINEAR)
         

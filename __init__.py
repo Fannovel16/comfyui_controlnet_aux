@@ -54,4 +54,57 @@ def load_nodes():
         )
     return node_class_mappings, node_display_name_mappings
 
-NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS = load_nodes()
+AUX_NODE_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS = load_nodes()
+
+AIO_NOT_SUPPORTED = ["InpaintPreprocessor"]
+#For nodes not mapping image to image
+
+class AIO_Preprocessor:
+    @classmethod
+    def INPUT_TYPES(s):
+        auxs = list(AUX_NODE_MAPPINGS.keys())
+        for name in AIO_NOT_SUPPORTED:
+            if name in auxs: auxs.remove(name)
+        
+        return {
+            "required": { 
+                "image": ("IMAGE",),
+                "preprocessor": (auxs, {"default": "CannyEdgePreprocessor"})
+            }
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "execute"
+
+    CATEGORY = "ControlNet Preprocessors"
+
+    def execute(self, preprocessor, image):
+        aux_class = AUX_NODE_MAPPINGS[preprocessor]
+        input_types = aux_class.INPUT_TYPES()
+        input_types = {
+            **input_types["required"], 
+            **(input_types["optional"] if "optional" in input_types else {})
+        }
+        params = {}
+        for name, input_type in input_types.items():
+            if name == "image":
+                params[name] = image
+                continue
+            
+            if len(input_type) == 2 and ("default" in input_type[1]):
+                params[name] = input_type[1]["default"]
+                continue
+
+            default_values = { "INT": 0, "FLOAT": 0.0 }
+            if input_type[0] in default_values:
+                params[name] = default_values[input_type[0]]
+
+        return (getattr(aux_class(), aux_class.FUNCTION)(**params))
+
+NODE_CLASS_MAPPINGS = {
+    **AUX_NODE_MAPPINGS,
+    "AIO_Preprocessor": AIO_Preprocessor
+}
+NODE_DISPLAY_NAME_MAPPINGS.update({
+    "AIO_Preprocessor": "AIO Aux Preprocessor"
+})
