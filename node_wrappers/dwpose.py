@@ -25,7 +25,7 @@ class DWPose_Preprocessor:
         detect_face = detect_face == "enable"
 
         self.openpose_json = None
-        model = DwposeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
+        model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
         
         def cb(image, **kwargs):
             result = model(image, **kwargs)
