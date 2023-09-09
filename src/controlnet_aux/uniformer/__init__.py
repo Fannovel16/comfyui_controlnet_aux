@@ -4,7 +4,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, resize_image
+from ..util import HWC3, common_input_validate, resize_image, resize_image_with_pad
 from huggingface_hub import hf_hub_download
 import torch
 
@@ -60,22 +60,9 @@ class UniformerSegmentor:
         res_img = show_result_pyplot(self.model, img, result, get_palette('ade'), opacity=1)
         return res_img
 
-    def __call__(self, input_image=None, detect_resolution=512, image_resolution=512, output_type=None, **kwargs):
-        if "img" in kwargs:
-            warnings.warn("img is deprecated, please use `input_image=...` instead.", DeprecationWarning)
-            input_image = kwargs.pop("img")
-        
-        if input_image is None:
-            raise ValueError("input_image must be defined.")
-
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
-            output_type = output_type or "pil"
-        else:
-            output_type = output_type or "np"
-        
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
+    def __call__(self, input_image=None, detect_resolution=512, image_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
         detected_map = self._inference(input_image)
         detected_map = HWC3(detected_map)      
@@ -84,6 +71,7 @@ class UniformerSegmentor:
         H, W, C = img.shape
 
         detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
+        detected_map = remove_pad(detected_map)
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

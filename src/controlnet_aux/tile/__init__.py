@@ -2,35 +2,18 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, resize_image
+from ..util import get_upscale_method, common_input_validate
 
 
 class TileDetector:
-    def __call__(self, input_image=None, pyrUp_iters=3, detect_resolution=512, image_resolution=512, output_type=None,
-                 **kwargs):
-        if "img" in kwargs:
-            warnings.warn("img is deprecated, please use `input_image=...` instead.", DeprecationWarning)
-            input_image = kwargs.pop("img")
-
-        if input_image is None:
-            raise ValueError("input_image must be defined.")
-
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
-            output_type = output_type or "pil"
-        else:
-            output_type = output_type or "np"
-
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
-
-        detected_map = HWC3(input_image)
-
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
+    def __call__(self, input_image=None, pyrUp_iters=3, output_type=None, upscale_method="INTER_AREA", **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        H, W, _ = input_image.shape
+        H = int(np.round(H / 64.0)) * 64
+        W = int(np.round(W / 64.0)) * 64
         detected_map = cv2.resize(detected_map, (W // (2 ** pyrUp_iters), H // (2 ** pyrUp_iters)),
-                                  interpolation=cv2.INTER_AREA)
+                                  interpolation=get_upscale_method(upscale_method))
+
         for _ in range(pyrUp_iters):
             detected_map = cv2.pyrUp(detected_map)
 
