@@ -4,7 +4,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, common_input_validate, resize_image, resize_image_with_pad
+from ..util import HWC3, common_input_validate, resize_image_with_pad
 from huggingface_hub import hf_hub_download
 import torch
 
@@ -65,13 +65,7 @@ class UniformerSegmentor:
         input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
         detected_map = self._inference(input_image)
-        detected_map = HWC3(detected_map)      
-         
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
-        detected_map = remove_pad(detected_map)
+        detected_map = remove_pad(HWC3(detected_map))
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
