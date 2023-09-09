@@ -9,7 +9,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, resize_image
+from ..util import HWC3, resize_image_with_pad, common_input_validate
 
 norm_layer = nn.InstanceNorm2d
 
@@ -123,27 +123,15 @@ class LineartDetector:
         self.model_coarse.to(device)
         return self
     
-    def __call__(self, input_image, coarse=False, detect_resolution=512, image_resolution=512, output_type="pil", **kwargs):
-        if "return_pil" in kwargs:
-            warnings.warn("return_pil is deprecated. Use output_type instead.", DeprecationWarning)
-            output_type = "pil" if kwargs["return_pil"] else "np"
-        if type(output_type) is bool:
-            warnings.warn("Passing `True` or `False` to `output_type` is deprecated and will raise an error in future versions")
-            if output_type:
-                output_type = "pil"
+    def __call__(self, input_image, coarse=False, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
         device = next(iter(self.model.parameters())).device
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
-
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
-
         model = self.model_coarse if coarse else self.model
-        assert input_image.ndim == 3
-        image = input_image
+        assert detected_map.ndim == 3
         with torch.no_grad():
-            image = torch.from_numpy(image).float().to(device)
+            image = torch.from_numpy(detected_map).float().to(device)
             image = image / 255.0
             image = rearrange(image, 'h w c -> 1 c h w')
             line = model(image)[0][0]
@@ -152,16 +140,9 @@ class LineartDetector:
             line = (line * 255.0).clip(0, 255).astype(np.uint8)
 
         detected_map = line
-
-        detected_map = HWC3(detected_map)
-
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
-        detected_map = 255 - detected_map
+        detected_map = remove_pad(255 - detected_map)
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
-
+            
         return detected_map

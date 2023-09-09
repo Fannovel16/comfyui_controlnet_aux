@@ -2,10 +2,10 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, resize_image
+from ..util import HWC3, resize_image_with_pad
 
 class BinaryDetector:
-    def __call__(self, input_image=None, bin_threshold=0, detect_resolution=512, image_resolution=512, output_type=None, **kwargs):
+    def __call__(self, input_image=None, bin_threshold=0, detect_resolution=512, image_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
         if "img" in kwargs:
             warnings.warn("img is deprecated, please use `input_image=...` instead.", DeprecationWarning)
             input_image = kwargs.pop("img")
@@ -19,10 +19,9 @@ class BinaryDetector:
         else:
             output_type = output_type or "np"
         
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
+        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
-        img_gray = cv2.cvtColor(input_image, cv2.COLOR_RGB2GRAY)
+        img_gray = cv2.cvtColor(detected_map, cv2.COLOR_RGB2GRAY)
         if bin_threshold == 0 or bin_threshold == 255:
         # Otsu's threshold
             otsu_threshold, img_bin = cv2.threshold(img_gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
@@ -31,14 +30,7 @@ class BinaryDetector:
             _, img_bin = cv2.threshold(img_gray, bin_threshold, 255, cv2.THRESH_BINARY_INV)
         
         detected_map = cv2.cvtColor(img_bin, cv2.COLOR_GRAY2RGB)
-        detected_map = 255 - detected_map
-
-        detected_map = HWC3(detected_map)      
-         
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
+        detected_map = remove_pad(255 - detected_map)
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

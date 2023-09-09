@@ -10,7 +10,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, resize_image
+from ..util import HWC3, common_input_validate, resize_image_with_pad
 from .nets.NNET import NNET
 
 
@@ -60,24 +60,11 @@ class NormalBaeDetector:
         return self
 
 
-    def __call__(self, input_image, detect_resolution=512, image_resolution=512, output_type="pil", **kwargs):
-        if "return_pil" in kwargs:
-            warnings.warn("return_pil is deprecated. Use output_type instead.", DeprecationWarning)
-            output_type = "pil" if kwargs["return_pil"] else "np"
-        if type(output_type) is bool:
-            warnings.warn("Passing `True` or `False` to `output_type` is deprecated and will raise an error in future versions")
-            if output_type:
-                output_type = "pil"
-
+    def __call__(self, input_image, detect_resolution=512, image_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
         device = next(iter(self.model.parameters())).device
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
-
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
-
-        assert input_image.ndim == 3
-        image_normal = input_image
+        image_normal = detected_map
         with torch.no_grad():
             image_normal = torch.from_numpy(image_normal).float().to(device)
             image_normal = image_normal / 255.0
@@ -94,16 +81,10 @@ class NormalBaeDetector:
             normal = rearrange(normal[0], 'c h w -> h w c').cpu().numpy()
             normal_image = (normal * 255.0).clip(0, 255).astype(np.uint8)
 
-        detected_map = normal_image
-        detected_map = HWC3(detected_map)      
-
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
-
+        detected_map = remove_pad(HWC3(normal_image))
+        
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
-
+            
         return detected_map
     

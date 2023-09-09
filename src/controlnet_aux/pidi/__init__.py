@@ -8,7 +8,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, nms, resize_image, safe_step
+from ..util import HWC3, nms, resize_image_with_pad, safe_step,common_input_validate
 from .model import pidinet
 
 
@@ -35,25 +35,15 @@ class PidiNetDetector:
         self.netNetwork.to(device)
         return self
     
-    def __call__(self, input_image, detect_resolution=512, image_resolution=512, safe=False, output_type="pil", scribble=False, apply_filter=False, **kwargs):
-        if "return_pil" in kwargs:
-            warnings.warn("return_pil is deprecated. Use output_type instead.", DeprecationWarning)
-            output_type = "pil" if kwargs["return_pil"] else "np"
-        if type(output_type) is bool:
-            warnings.warn("Passing `True` or `False` to `output_type` is deprecated and will raise an error in future versions")
-            if output_type:
-                output_type = "pil"
+    def __call__(self, input_image, detect_resolution=512, image_resolution=512, safe=False, output_type="pil", scribble=False, apply_filter=False, upscale_method="INTER_CUBIC", **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
         device = next(iter(self.netNetwork.parameters())).device
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
-
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
-        assert input_image.ndim == 3
-        input_image = input_image[:, :, ::-1].copy()
+        
+        detected_map = detected_map[:, :, ::-1].copy()
         with torch.no_grad():
-            image_pidi = torch.from_numpy(input_image).float().to(device)
+            image_pidi = torch.from_numpy(detected_map).float().to(device)
             image_pidi = image_pidi / 255.0
             image_pidi = rearrange(image_pidi, 'h w c -> 1 c h w')
             edge = self.netNetwork(image_pidi)[-1]
@@ -65,18 +55,14 @@ class PidiNetDetector:
             edge = (edge * 255.0).clip(0, 255).astype(np.uint8)
 
         detected_map = edge[0, 0]
-        detected_map = HWC3(detected_map)
 
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
-        
         if scribble:
             detected_map = nms(detected_map, 127, 3.0)
             detected_map = cv2.GaussianBlur(detected_map, (0, 0), 3.0)
             detected_map[detected_map > 4] = 255
             detected_map[detected_map < 255] = 0
+
+        detected_map = remove_pad(detected_map)
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

@@ -21,7 +21,7 @@ from .types import PoseResult, HandResult, FaceResult
 from huggingface_hub import hf_hub_download
 from .wholebody import Wholebody # DW Pose
 import warnings
-from ..util import HWC3, resize_image
+from ..util import HWC3, resize_image_with_pad, common_input_validate
 import cv2
 from PIL import Image
 
@@ -180,42 +180,26 @@ class DwposeDetector:
             keypoints_info = self.dw_pose_estimation(oriImg.copy())
             return Wholebody.format_result(keypoints_info)
     
-    def __call__(self, input_image, detect_resolution=512, image_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", image_and_json=False, **kwargs):
+    def __call__(self, input_image, detect_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", image_and_json=False, upscale_method="INTER_CUBIC", **kwargs):
         if hand_and_face is not None:
             warnings.warn("hand_and_face is deprecated. Use include_hand and include_face instead.", DeprecationWarning)
             include_hand = hand_and_face
             include_face = hand_and_face
 
-        if "return_pil" in kwargs:
-            warnings.warn("return_pil is deprecated. Use output_type instead.", DeprecationWarning)
-            output_type = "pil" if kwargs["return_pil"] else "np"
-        if type(output_type) is bool:
-            warnings.warn("Passing `True` or `False` to `output_type` is deprecated and will raise an error in future versions")
-            if output_type:
-                output_type = "pil"
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
 
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
+        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
-        H, W, C = input_image.shape
-        
-        poses = self.detect_poses(input_image)
-        canvas = draw_poses(poses, H, W, draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
+        poses = self.detect_poses(detected_map)
+        detected_map = remove_pad(detected_map)
+        canvas = draw_poses(poses, detected_map.shape[0], detected_map.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
 
         detected_map = canvas
-        detected_map = HWC3(detected_map)
-        
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
         
         if image_and_json:
-            return (detected_map, encode_poses_as_json(poses, canvas_height=H, canvas_width=W))
-
+            return (detected_map, encode_poses_as_json(poses, detected_map.shape[0], detected_map.shape[1]))
+        
         return detected_map

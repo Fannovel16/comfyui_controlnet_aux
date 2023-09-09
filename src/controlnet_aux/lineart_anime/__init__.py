@@ -10,7 +10,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, resize_image
+from ..util import HWC3, resize_image_with_pad, common_input_validate
 
 
 class UnetGenerator(nn.Module):
@@ -142,48 +142,24 @@ class LineartAnimeDetector:
         self.model.to(device)
         return self
     
-    def __call__(self, input_image, detect_resolution=512, image_resolution=512, output_type="pil", **kwargs):
-        if "return_pil" in kwargs:
-            warnings.warn("return_pil is deprecated. Use output_type instead.", DeprecationWarning)
-            output_type = "pil" if kwargs["return_pil"] else "np"
-        if type(output_type) is bool:
-            warnings.warn("Passing `True` or `False` to `output_type` is deprecated and will raise an error in future versions")
-            if output_type:
-                output_type = "pil"
+    def __call__(self, input_image, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        detected_map, remove_pad = resize_image_with_pad(input_image, 256 * int(np.ceil(float(detect_resolution) / 256.0)), upscale_method)
 
         device = next(iter(self.model.parameters())).device
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
-
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
-
-        H, W, C = input_image.shape
-        Hn = 256 * int(np.ceil(float(H) / 256.0))
-        Wn = 256 * int(np.ceil(float(W) / 256.0))
-        img = cv2.resize(input_image, (Wn, Hn), interpolation=cv2.INTER_CUBIC)
         with torch.no_grad():
-            image_feed = torch.from_numpy(img).float().to(device)
+            image_feed = torch.from_numpy(detected_map).float().to(device)
             image_feed = image_feed / 127.5 - 1.0
             image_feed = rearrange(image_feed, 'h w c -> 1 c h w')
 
             line = self.model(image_feed)[0, 0] * 127.5 + 127.5
             line = line.cpu().numpy()
-
-            line = cv2.resize(line, (W, H), interpolation=cv2.INTER_CUBIC)
             line = line.clip(0, 255).astype(np.uint8)
 
         detected_map = line
-
-        detected_map = HWC3(detected_map)
-
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
-        detected_map = 255 - detected_map
+        detected_map = remove_pad(255 - detected_map)
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
-
+            
         return detected_map

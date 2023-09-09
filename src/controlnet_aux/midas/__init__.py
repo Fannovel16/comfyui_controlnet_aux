@@ -7,7 +7,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, resize_image
+from ..util import HWC3, common_input_validate, resize_image_with_pad
 from .api import MiDaSInference
 
 
@@ -36,19 +36,11 @@ class MidasDetector:
         self.model.to(device)
         return self
     
-    def __call__(self, input_image, a=np.pi * 2.0, bg_th=0.1, depth_and_normal=False, detect_resolution=512, image_resolution=512, output_type=None):
+    def __call__(self, input_image, a=np.pi * 2.0, bg_th=0.1, depth_and_normal=False, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
         device = next(iter(self.model.parameters())).device
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
-            output_type = output_type or "pil"
-        else:
-            output_type = output_type or "np"
-        
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
-
-        assert input_image.ndim == 3
-        image_depth = input_image
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
+        image_depth = detected_map
         with torch.no_grad():
             image_depth = torch.from_numpy(image_depth).float()
             image_depth = image_depth.to(device)
@@ -77,12 +69,10 @@ class MidasDetector:
         if depth_and_normal:
             normal_image = HWC3(normal_image)
 
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
 
-        depth_image = cv2.resize(depth_image, (W, H), interpolation=cv2.INTER_LINEAR)
+        depth_image = remove_pad(depth_image)
         if depth_and_normal:
-            normal_image = cv2.resize(normal_image, (W, H), interpolation=cv2.INTER_LINEAR)
+            normal_image = remove_pad(normal_image)
         
         if output_type == "pil":
             depth_image = Image.fromarray(depth_image)

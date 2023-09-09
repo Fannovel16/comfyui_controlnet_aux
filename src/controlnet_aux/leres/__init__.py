@@ -6,7 +6,7 @@ import torch
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, resize_image
+from ..util import HWC3, common_input_validate, resize_image_with_pad
 from .leres.depthmap import estimateboost, estimateleres
 from .leres.multi_depth_model_woauxi import RelDepthModel
 from .leres.net_tools import strip_prefix_if_present
@@ -56,23 +56,15 @@ class LeresDetector:
         # self.pix2pixmodel.to(device)
         return self
 
-    def __call__(self, input_image, thr_a=0, thr_b=0, boost=False, detect_resolution=512, image_resolution=512, output_type="pil"):
-        device = next(iter(self.model.parameters())).device
-        if not isinstance(input_image, np.ndarray):
-            input_image = np.array(input_image, dtype=np.uint8)
-        
-        input_image = HWC3(input_image)
-        input_image = resize_image(input_image, detect_resolution)
-
-        assert input_image.ndim == 3
-        height, width, dim = input_image.shape
+    def __call__(self, input_image, thr_a=0, thr_b=0, boost=False, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
         with torch.no_grad():
-
             if boost:
-                depth = estimateboost(input_image, self.model, 0, self.pix2pixmodel, max(width, height))
+                depth = estimateboost(detected_map, self.model, 0, self.pix2pixmodel, max(detected_map.shape[1], detected_map.shape[0]))
             else:
-                depth = estimateleres(input_image, self.model, width, height)
+                depth = estimateleres(detected_map, self.model, detected_map.shape[1], detected_map.shape[0])
 
             numbytes=2
             depth_min = depth.min()
@@ -102,17 +94,11 @@ class LeresDetector:
             # remove bg
             if thr_b != 0:
                 thr_b = ((thr_b/100)*255)
-                depth_image = cv2.threshold(depth_image, thr_b, 255, cv2.THRESH_TOZERO)[1]
+                depth_image = cv2.threshold(depth_image, thr_b, 255, cv2.THRESH_TOZERO)[1]  
 
-        detected_map = depth_image
-        detected_map = HWC3(detected_map)      
+        detected_map = remove_pad(depth_image)
 
-        img = resize_image(input_image, image_resolution)
-        H, W, C = img.shape
-
-        detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)
-        
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
-            
+
         return detected_map
