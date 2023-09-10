@@ -29,7 +29,7 @@ class ColorDetector:
     def __call__(self, input_image=None, detect_resolution=512, output_type=None, **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         input_image = HWC3(input_image)
-        detected_map = apply_color(input_image, detect_resolution)
+        detected_map = HWC3(apply_color(input_image, detect_resolution))
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

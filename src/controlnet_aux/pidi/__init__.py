@@ -62,7 +62,7 @@ class PidiNetDetector:
             detected_map[detected_map > 4] = 255
             detected_map[detected_map < 255] = 0
 
-        detected_map = remove_pad(detected_map)
+        detected_map = HWC3(remove_pad(detected_map))
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

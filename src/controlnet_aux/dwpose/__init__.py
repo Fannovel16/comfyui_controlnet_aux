@@ -194,7 +194,7 @@ class DwposeDetector:
         detected_map = remove_pad(detected_map)
         canvas = draw_poses(poses, detected_map.shape[0], detected_map.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
 
-        detected_map = canvas
+        detected_map = HWC3(canvas)
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

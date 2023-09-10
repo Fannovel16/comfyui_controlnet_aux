@@ -70,7 +70,7 @@ class SamDetector:
         # Create map
         map = self.show_anns(masks)
 
-        detected_map = remove_pad(map)
+        detected_map = HWC3(remove_pad(map))
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

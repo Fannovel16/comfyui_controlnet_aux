@@ -2,7 +2,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, resize_image_with_pad, common_input_validate
+from ..util import HWC3, resize_image_with_pad, common_input_validate, HWC3
 
 #Not to be confused with "scribble" from HED. That is "fake scribble" which is more accurate and less picky than this.
 class ScribbleDetector:
@@ -33,7 +33,7 @@ class ScribbleXDog_Detector:
         result[2 * (255 - dog) > thr_a] = 255
         #result = 255 - result
 
-        detected_map = remove_pad(result)
+        detected_map = HWC3(remove_pad(result))
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

@@ -96,7 +96,7 @@ class LeresDetector:
                 thr_b = ((thr_b/100)*255)
                 depth_image = cv2.threshold(depth_image, thr_b, 255, cv2.THRESH_TOZERO)[1]  
 
-        detected_map = remove_pad(depth_image)
+        detected_map = HWC3(remove_pad(depth_image))
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)

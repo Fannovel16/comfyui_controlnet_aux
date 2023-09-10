@@ -114,7 +114,7 @@ def resize_image_with_pad(input_image, resolution, upscale_method = "", skip_hwc
     img_padded = np.pad(img, [[0, H_pad], [0, W_pad], [0, 0]], mode='edge')
 
     def remove_pad(x):
-        return safer_memory(x[:H_target, :W_target])
+        return safer_memory(x[:H_target, :W_target, ...])
 
     return safer_memory(img_padded), remove_pad
     

@@ -156,7 +156,7 @@ class LineartAnimeDetector:
             line = line.cpu().numpy()
             line = line.clip(0, 255).astype(np.uint8)
 
-        detected_map = line
+        detected_map = HWC3(line)
         detected_map = remove_pad(255 - detected_map)
         
         if output_type == "pil":

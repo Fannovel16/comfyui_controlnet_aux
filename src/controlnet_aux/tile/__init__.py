@@ -2,7 +2,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import get_upscale_method, common_input_validate
+from ..util import get_upscale_method, common_input_validate, HWC3
 
 
 class TileDetector:
@@ -13,6 +13,7 @@ class TileDetector:
         W = int(np.round(W / 64.0)) * 64
         detected_map = cv2.resize(input_image, (W // (2 ** pyrUp_iters), H // (2 ** pyrUp_iters)),
                                   interpolation=get_upscale_method(upscale_method))
+        detected_map = HWC3(detected_map)
 
         for _ in range(pyrUp_iters):
             detected_map = cv2.pyrUp(detected_map)

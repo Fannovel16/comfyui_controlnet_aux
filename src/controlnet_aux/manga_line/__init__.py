@@ -59,7 +59,7 @@ class LineartMangaDetector:
 
             line = line.astype(np.uint8)
         
-        detected_map = line
+        detected_map = HWC3(line)
         detected_map = remove_pad(255 - detected_map)
         
         if output_type == "pil":

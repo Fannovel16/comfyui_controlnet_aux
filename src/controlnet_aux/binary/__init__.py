@@ -30,7 +30,7 @@ class BinaryDetector:
             _, img_bin = cv2.threshold(img_gray, bin_threshold, 255, cv2.THRESH_BINARY_INV)
         
         detected_map = cv2.cvtColor(img_bin, cv2.COLOR_GRAY2RGB)
-        detected_map = remove_pad(255 - detected_map)
+        detected_map = HWC3(remove_pad(255 - detected_map))
         
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
