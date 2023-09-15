@@ -28,10 +28,5 @@ def common_annotator_call(model, tensor_image, **kwargs):
     for image in tensor_image:
         np_image = np.asarray(image * 255., dtype=np.uint8) 
         np_result = model(np_image, output_type="np", **kwargs)
-
-        #Pad 64 as ControlNet Apply need multiple-of-64 resolution
-        H_pad, W_pad = pad64(np_result.shape[0]), pad64(np_result.shape[1])
-        np_result = np.pad(np_result, [[0, H_pad], [0, W_pad], [0, 0]], mode='edge')
-
         out_list.append(torch.from_numpy(np_result.astype(np.float32) / 255.0))
     return torch.stack(out_list, dim=0)
