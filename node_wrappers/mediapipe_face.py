@@ -39,7 +39,8 @@ class Media_Pipe_Face_Mesh_Preprocessor:
         try:
             import mediapipe
         except ImportError:
-            run_script([sys.executable, '-s', '-m', 'pip', 'install', 'mediapipe==0.9.1.0'])
+            run_script([sys.executable, '-s', '-m', 'pip', 'install', 'mediapipe'])
+            run_script([sys.executable, '-s', '-m', 'pip', 'install', '--upgrade', 'protobuf'])
 
         #Ref: https://github.com/Fannovel16/comfy_controlnet_preprocessors/issues/70#issuecomment-1677967369
         from controlnet_aux.mediapipe_face import MediapipeFaceDetector
