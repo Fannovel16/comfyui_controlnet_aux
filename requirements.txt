@@ -11,7 +11,7 @@ torchvision
 timm==0.6.13
 scikit-image
 python-dateutil
-mediapipe
+mediapipe==0.9.1.0
 svglib
 fvcore
 yapf
