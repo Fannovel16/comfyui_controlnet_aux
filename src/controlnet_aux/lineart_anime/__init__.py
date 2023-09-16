@@ -144,11 +144,16 @@ class LineartAnimeDetector:
     
     def __call__(self, input_image, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
-        detected_map, remove_pad = resize_image_with_pad(input_image, 256 * int(np.ceil(float(detect_resolution) / 256.0)), upscale_method)
+        input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
+
+        H, W, C = input_image.shape
+        Hn = 256 * int(np.ceil(float(H) / 256.0))
+        Wn = 256 * int(np.ceil(float(W) / 256.0))
+        input_image = cv2.resize(input_image, (Wn, Hn), interpolation=cv2.INTER_CUBIC)
 
         device = next(iter(self.model.parameters())).device
         with torch.no_grad():
-            image_feed = torch.from_numpy(detected_map).float().to(device)
+            image_feed = torch.from_numpy(input_image).float().to(device)
             image_feed = image_feed / 127.5 - 1.0
             image_feed = rearrange(image_feed, 'h w c -> 1 c h w')
 

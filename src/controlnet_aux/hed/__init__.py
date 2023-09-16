@@ -82,13 +82,13 @@ class HEDdetector:
 
     def __call__(self, input_image, detect_resolution=512, safe=False, output_type="pil", scribble=False, upscale_method="INTER_CUBIC", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
-        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
+        input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
         assert input_image.ndim == 3
         H, W, C = input_image.shape
         with torch.no_grad():
             device = next(iter(self.netNetwork.parameters())).device
-            image_hed = torch.from_numpy(detected_map).float().to(device)
+            image_hed = torch.from_numpy(input_image).float().to(device)
             image_hed = rearrange(image_hed, 'h w c -> 1 c h w')
             edges = self.netNetwork(image_hed)
             edges = [e.detach().cpu().numpy().astype(np.float32)[0, 0] for e in edges]
