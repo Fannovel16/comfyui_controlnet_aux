@@ -4,6 +4,8 @@ import os
 import cv2
 import yaml
 from pathlib import Path
+from enum import Enum
+from .log import log
 
 here = Path(__file__).parent.resolve()
 
@@ -17,16 +19,105 @@ if os.path.exists(config_path):
 else:
     annotator_ckpts_path = str(Path(here, "./ckpts"))
 
+MAX_RESOLUTION=2048 #Who the hell feed 4k images to ControlNet?
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
 
-def pad64(x):
-    return int(np.ceil(float(x) / 64.0) * 64 - x)
 
 def common_annotator_call(model, tensor_image, **kwargs):
+    if "detect_resolution" in kwargs:
+        del kwargs["detect_resolution"] #Prevent weird case?
+
+    if "resolution" in kwargs:
+        detect_resolution = kwargs["resolution"] if type(kwargs["resolution"]) == int and kwargs["resolution"] >= 64 else 512
+        del kwargs["resolution"]
+    else:
+        detect_resolution = 512
+
     out_list = []
     for image in tensor_image:
-        np_image = np.asarray(image * 255., dtype=np.uint8) 
-        np_result = model(np_image, output_type="np", **kwargs)
+        np_image = np.asarray(image * 255., dtype=np.uint8)
+        np_result = model(np_image, output_type="np", detect_resolution=detect_resolution, **kwargs)
         out_list.append(torch.from_numpy(np_result.astype(np.float32) / 255.0))
     return torch.stack(out_list, dim=0)
+
+def create_node_input_types(**extra_kwargs):
+    return {
+        "required": {
+            "image": ("IMAGE",)
+        },
+        "optional": {
+            **extra_kwargs,
+            "resolution": ("INT", {"default": 512, "min": 64, "max": MAX_RESOLUTION, "step": 64})
+        }
+    }
+
+class ResizeMode(Enum):
+    """
+    Resize modes for ControlNet input images.
+    """
+
+    RESIZE = "Just Resize"
+    INNER_FIT = "Crop and Resize"
+    OUTER_FIT = "Resize and Fill"
+
+    def int_value(self):
+        if self == ResizeMode.RESIZE:
+            return 0
+        elif self == ResizeMode.INNER_FIT:
+            return 1
+        elif self == ResizeMode.OUTER_FIT:
+            return 2
+        assert False, "NOTREACHED"
+
+#https://github.com/Mikubill/sd-webui-controlnet/blob/e67e017731aad05796b9615dc6eadce911298ea1/internal_controlnet/external_code.py#L89
+#Replaced logger with internal log
+def pixel_perfect_resolution(
+        image: np.ndarray,
+        target_H: int,
+        target_W: int,
+        resize_mode: ResizeMode,
+) -> int:
+    """
+    Calculate the estimated resolution for resizing an image while preserving aspect ratio.
+
+    The function first calculates scaling factors for height and width of the image based on the target
+    height and width. Then, based on the chosen resize mode, it either takes the smaller or the larger
+    scaling factor to estimate the new resolution.
+
+    If the resize mode is OUTER_FIT, the function uses the smaller scaling factor, ensuring the whole image
+    fits within the target dimensions, potentially leaving some empty space.
+
+    If the resize mode is not OUTER_FIT, the function uses the larger scaling factor, ensuring the target
+    dimensions are fully filled, potentially cropping the image.
+
+    After calculating the estimated resolution, the function prints some debugging information.
+
+    Args:
+        image (np.ndarray): A 3D numpy array representing an image. The dimensions represent [height, width, channels].
+        target_H (int): The target height for the image.
+        target_W (int): The target width for the image.
+        resize_mode (ResizeMode): The mode for resizing.
+
+    Returns:
+        int: The estimated resolution after resizing.
+    """
+    raw_H, raw_W, _ = image.shape
+
+    k0 = float(target_H) / float(raw_H)
+    k1 = float(target_W) / float(raw_W)
+
+    if resize_mode == ResizeMode.OUTER_FIT:
+        estimation = min(k0, k1) * float(min(raw_H, raw_W))
+    else:
+        estimation = max(k0, k1) * float(min(raw_H, raw_W))
+
+    log.debug(f"Pixel Perfect Computation:")
+    log.debug(f"resize_mode = {resize_mode}")
+    log.debug(f"raw_H = {raw_H}")
+    log.debug(f"raw_W = {raw_W}")
+    log.debug(f"target_H = {target_H}")
+    log.debug(f"target_W = {target_W}")
+    log.debug(f"estimation = {estimation}")
+
+    return int(np.round(estimation))

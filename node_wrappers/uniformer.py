@@ -1,21 +1,21 @@
-from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
+from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, create_node_input_types
 import comfy.model_management as model_management
 
 class Uniformer_SemSegPreprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"image": ("IMAGE",)}}
+        return create_node_input_types()
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "semantic_segmentate"
 
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
-    def semantic_segmentate(self, image):
+    def semantic_segmentate(self, image, resolution):
         from controlnet_aux.uniformer import UniformerSegmentor
 
         model = UniformerSegmentor.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
-        out = common_annotator_call(model, image)
+        out = common_annotator_call(model, image, resolution=resolution)
         del model
         return (out, )
 

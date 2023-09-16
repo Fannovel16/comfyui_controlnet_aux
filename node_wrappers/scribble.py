@@ -1,42 +1,39 @@
-from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME
+from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, create_node_input_types
 import comfy.model_management as model_management
 
 class Scribble_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"image": ("IMAGE",)}}
+        return create_node_input_types()
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, **kwargs):
+    def execute(self, image, resolution, **kwargs):
         from controlnet_aux.scribble import ScribbleDetector
 
         model = ScribbleDetector()
-        return (common_annotator_call(model, image), )
+        return (common_annotator_call(model, image, resolution=resolution), )
 
 class Scribble_XDoG_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {
-                "image": ("IMAGE",),
-                "threshold": ("INT", {"default": 32, "min": 1, "max": 64, "step": 64})
-            }
-        }
+        return create_node_input_types(
+            threshold = ("INT", {"default": 32, "min": 1, "max": 64, "step": 64})
+        )
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, **kwargs):
+    def execute(self, image, resolution, **kwargs):
         from controlnet_aux.scribble import ScribbleXDog_Detector
 
         model = ScribbleXDog_Detector()
-        return (common_annotator_call(model, image), )
+        return (common_annotator_call(model, image, resolution=resolution), )
 
 NODE_CLASS_MAPPINGS = {
     "ScribblePreprocessor": Scribble_Preprocessor,

@@ -160,10 +160,11 @@ class LineartAnimeDetector:
             line = self.model(image_feed)[0, 0] * 127.5 + 127.5
             line = line.cpu().numpy()
             line = line.clip(0, 255).astype(np.uint8)
-
-        detected_map = HWC3(line)
-        detected_map = remove_pad(255 - detected_map)
         
+        #A1111 uses INTER AREA for downscaling so ig that is the best choice
+        detected_map = cv2.resize(HWC3(line), (W, H), interpolation=cv2.INTER_AREA)
+        detected_map = remove_pad(255 - detected_map)
+
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
             

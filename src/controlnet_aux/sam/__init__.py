@@ -63,7 +63,7 @@ class SamDetector:
 
     def __call__(self, input_image: Union[np.ndarray, Image.Image]=None, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs) -> Image.Image:
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
-        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
+        input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
         # Generate Masks
         masks = self.mask_generator.generate(input_image)
