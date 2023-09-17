@@ -24,12 +24,9 @@ class HED_Preprocessor:
 class Fake_Scribble_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {"image": ("IMAGE",)}, 
-            "optional": {
-                "safe": (["enable", "disable"], {"default": "enable"})
-            }
-        }
+        return create_node_input_types(
+            safe=(["enable", "disable"], {"default": "enable"})
+        )
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"

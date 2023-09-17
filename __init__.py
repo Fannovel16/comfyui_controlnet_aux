@@ -1,5 +1,5 @@
 import sys, os
-from .utils import here
+from .utils import here, create_node_input_types
 from pathlib import Path
 import threading
 import traceback
@@ -68,12 +68,9 @@ class AIO_Preprocessor:
         for name in AIO_NOT_SUPPORTED:
             if name in auxs: auxs.remove(name)
         
-        return {
-            "required": { 
-                "image": ("IMAGE",),
-                "preprocessor": (auxs, {"default": "CannyEdgePreprocessor"})
-            }
-        }
+        return create_node_input_types(
+            preprocessor=(auxs, {"default": "CannyEdgePreprocessor"})
+        )
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
