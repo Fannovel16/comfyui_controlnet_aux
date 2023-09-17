@@ -6,6 +6,8 @@ import traceback
 import warnings
 import importlib
 from .log import log, blue_text, cyan_text, get_summary, get_label
+from .hint_image_enchance import NODE_CLASS_MAPPINGS as HIE_NODE_CLASS_MAPPINGS
+from .hint_image_enchance import NODE_DISPLAY_NAME_MAPPINGS as HIE_NODE_DISPLAY_NAME_MAPPINGS
 
 #Ref: https://github.com/comfyanonymous/ComfyUI/blob/76d53c4622fc06372975ed2a43ad345935b8a551/nodes.py#L17
 sys.path.insert(0, str(Path(here, "src").resolve()))
@@ -54,7 +56,7 @@ def load_nodes():
         )
     return node_class_mappings, node_display_name_mappings
 
-AUX_NODE_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS = load_nodes()
+AUX_NODE_MAPPINGS, AUX_DISPLAY_NAME_MAPPINGS = load_nodes()
 
 AIO_NOT_SUPPORTED = ["InpaintPreprocessor"]
 #For nodes not mapping image to image
@@ -101,10 +103,15 @@ class AIO_Preprocessor:
 
         return getattr(aux_class(), aux_class.FUNCTION)(**params)
 
+
 NODE_CLASS_MAPPINGS = {
     **AUX_NODE_MAPPINGS,
-    "AIO_Preprocessor": AIO_Preprocessor
+    "AIO_Preprocessor": AIO_Preprocessor,
+    **HIE_NODE_CLASS_MAPPINGS
 }
-NODE_DISPLAY_NAME_MAPPINGS.update({
-    "AIO_Preprocessor": "AIO Aux Preprocessor"
-})
+
+NODE_DISPLAY_NAME_MAPPINGS = {
+    **AUX_DISPLAY_NAME_MAPPINGS,
+    "AIO_Preprocessor": "AIO Aux Preprocessor",
+    **HIE_NODE_DISPLAY_NAME_MAPPINGS
+}

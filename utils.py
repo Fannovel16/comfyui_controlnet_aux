@@ -22,9 +22,10 @@ else:
 MAX_RESOLUTION=2048 #Who the hell feed 4k images to ControlNet?
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
+RAFT_MODEL_NAME = "hr16/RAFT-v2"
 
 
-def common_annotator_call(model, tensor_image, **kwargs):
+def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):
     if "detect_resolution" in kwargs:
         del kwargs["detect_resolution"] #Prevent weird case?
 
@@ -33,6 +34,11 @@ def common_annotator_call(model, tensor_image, **kwargs):
         del kwargs["resolution"]
     else:
         detect_resolution = 512
+
+    if input_batch:
+        np_images = np.asarray(tensor_image * 255., dtype=np.uint8)
+        np_results = model(np_images, output_type="np", detect_resolution=detect_resolution, **kwargs)
+        return torch.from_numpy(np_results.astype(np.float32) / 255.0)
 
     out_list = []
     for image in tensor_image:
@@ -121,3 +127,24 @@ def pixel_perfect_resolution(
     log.debug(f"estimation = {estimation}")
 
     return int(np.round(estimation))
+
+#https://github.com/Mikubill/sd-webui-controlnet/blob/e67e017731aad05796b9615dc6eadce911298ea1/scripts/controlnet.py#L404
+def safe_numpy(x):
+    # A very safe method to make sure that Apple/Mac works
+    y = x
+
+    # below is very boring but do not change these. If you change these Apple or Mac may fail.
+    y = y.copy()
+    y = np.ascontiguousarray(y)
+    y = y.copy()
+    return y
+
+#https://github.com/Mikubill/sd-webui-controlnet/blob/e67e017731aad05796b9615dc6eadce911298ea1/scripts/utils.py#L140
+def get_unique_axis0(data):
+    arr = np.asanyarray(data)
+    idxs = np.lexsort(arr.T)
+    arr = arr[idxs]
+    unique_idxs = np.empty(len(arr), dtype=np.bool_)
+    unique_idxs[:1] = True
+    unique_idxs[1:] = np.any(arr[:-1, :] != arr[1:, :], axis=-1)
+    return arr[unique_idxs]
