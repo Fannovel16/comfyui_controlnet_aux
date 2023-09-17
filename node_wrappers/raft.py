@@ -11,7 +11,8 @@ class RaftOpticalFlowPreprocessor:
                 "raft_large_C_T_SKHT_V2-ff5fadd5.pth", 
                 "raft_large_C_T_V2-1bb1363a.pth", 
                 "raft_small_C_T_V2-01064c6d.pth"
-            ], {"default": "raft_large_C_T_SKHT_V2-ff5fadd5.pth"})
+            ], {"default": "raft_large_C_T_SKHT_V2-ff5fadd5.pth"}),
+            num_flow_updates=("INT", {"min": 1, "max": 100, "default": 12, "step": 1})
         )
 
     RETURN_TYPES = ("IMAGE", "IMAGE")

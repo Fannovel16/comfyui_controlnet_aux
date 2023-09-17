@@ -14,8 +14,11 @@ All credit & copyright goes to https://github.com/lllyasviel.
 
 # Updates
 * `AIO Aux Preprocessor` intergrating all loadable aux preprocessors as dropdown options. Easy to copy, paste and get the preprocessor faster.
-* Add OpenPose-format JSON output from OpenPose Preprocessor and DWPose Preprocessor. Checks [here](#faces-and-poses) .
-* Fix wrong model path when downloading DWPose.
+* Added OpenPose-format JSON output from OpenPose Preprocessor and DWPose Preprocessor. Checks [here](#faces-and-poses).
+* Fixed wrong model path when downloading DWPose.
+* Make hint images less blurry.
+* Added `resolution` option, `PixelPerfectResolution` and `HintImageEnchance` nodes (TODO: Documentation).
+* Added `RAFT Optical Flow Embedder` for TemporalNet2 (TODO: Workflow example).
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?

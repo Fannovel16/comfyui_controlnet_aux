@@ -30,7 +30,7 @@ class RaftOpticalFlowEmbedder:
         self.model.to(device)
         return self
     
-    def __call__(self, input_images, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
+    def __call__(self, input_images, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", num_flow_updates=12, **kwargs):
         input_images, output_type = common_input_validate(input_images, output_type, **kwargs)
         assert input_images.ndim == 4, f"RAFT requires multiple images so ndim should be 4 instead of {input_images.ndim}"
         assert len(input_images) >= 2, f"RAFT requires at least two images to work with, only found {len(input_images)}"
@@ -47,7 +47,7 @@ class RaftOpticalFlowEmbedder:
             images = images / 255.0
             images = rearrange(images, 'n h w c -> n c h w')
             idxes = np.arange(len(images) - 1)
-            flow_prediction = model(images[idxes], images[idxes + 1])[-1]
+            flow_prediction = model(images[idxes], images[idxes + 1], num_flow_updates=num_flow_updates)[-1]
             #https://huggingface.co/CiaraRowles/TemporalNet2/blob/main/temporalvideo.py#L237
             flow_images = flow_to_image(flow_prediction)
             six_channel_images = torch.cat((images[idxes], flow_images), dim=1) #NCHW
