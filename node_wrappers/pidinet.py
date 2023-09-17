@@ -13,7 +13,7 @@ class PIDINET_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, safe, **kwargs):
+    def execute(self, image, safe, resolution=512, **kwargs):
         from controlnet_aux.pidi import PidiNetDetector
 
         model = PidiNetDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())

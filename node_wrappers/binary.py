@@ -13,7 +13,7 @@ class Binary_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, bin_threshold, **kwargs):
+    def execute(self, image, bin_threshold, resolution=512, **kwargs):
         from controlnet_aux.binary import BinaryDetector
 
         return (common_annotator_call(BinaryDetector(), image, bin_threshold=bin_threshold, resolution=resolution), )

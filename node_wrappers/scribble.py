@@ -11,7 +11,7 @@ class Scribble_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, **kwargs):
+    def execute(self, image, resolution=512, **kwargs):
         from controlnet_aux.scribble import ScribbleDetector
 
         model = ScribbleDetector()
@@ -29,7 +29,7 @@ class Scribble_XDoG_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, **kwargs):
+    def execute(self, image, resolution=512, **kwargs):
         from controlnet_aux.scribble import ScribbleXDog_Detector
 
         model = ScribbleXDog_Detector()

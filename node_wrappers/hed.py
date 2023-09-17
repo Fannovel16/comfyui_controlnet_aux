@@ -13,7 +13,7 @@ class HED_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, **kwargs):
+    def execute(self, image, resolution=512, **kwargs):
         from controlnet_aux.hed import HEDdetector
 
         model = HEDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
@@ -36,7 +36,7 @@ class Fake_Scribble_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, **kwargs):
+    def execute(self, image, resolution=512, **kwargs):
         from controlnet_aux.hed import HEDdetector
         
         model = HEDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())

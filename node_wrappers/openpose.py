@@ -15,7 +15,7 @@ class OpenPose_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors"
 
-    def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution, **kwargs):
+    def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, **kwargs):
         from controlnet_aux.open_pose import OpenposeDetector
 
         detect_hand = detect_hand == "enable"

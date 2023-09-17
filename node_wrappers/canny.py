@@ -14,7 +14,7 @@ class Canny_Edge_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, low_threshold, high_threshold, **kwargs):
+    def execute(self, image, low_threshold, high_threshold, resolution=512, **kwargs):
         from controlnet_aux.canny import CannyDetector
 
         return (common_annotator_call(CannyDetector(), image, low_threshold=low_threshold, high_threshold=high_threshold, resolution=resolution), )

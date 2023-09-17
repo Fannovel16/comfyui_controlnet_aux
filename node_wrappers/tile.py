@@ -14,7 +14,7 @@ class Tile_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/others"
 
-    def execute(self, image, pyrUp_iters, resolution, **kwargs):
+    def execute(self, image, pyrUp_iters, resolution=512, **kwargs):
         from controlnet_aux.tile import TileDetector
 
         return (common_annotator_call(TileDetector(), image, pyrUp_iters=pyrUp_iters, resolution=resolution),)

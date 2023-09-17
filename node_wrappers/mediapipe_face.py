@@ -36,7 +36,7 @@ class Media_Pipe_Face_Mesh_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
-    def detect(self, image, max_faces, min_confidence, resolution):
+    def detect(self, image, max_faces, min_confidence, resolution=512):
         try:
             import mediapipe
         except ImportError:

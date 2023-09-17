@@ -15,7 +15,7 @@ class MIDAS_Normal_Map_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
 
-    def execute(self, image, resolution, a, bg_threshold, **kwargs):
+    def execute(self, image, a, bg_threshold, resolution=512, **kwargs):
         from controlnet_aux.midas import MidasDetector
 
         model = MidasDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
@@ -28,17 +28,17 @@ class MIDAS_Normal_Map_Preprocessor:
 class MIDAS_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"image": ("IMAGE",),
-                                "a": ("FLOAT", {"default": np.pi * 2.0, "min": 0.0, "max": np.pi * 5.0, "step": 0.01}),
-                                "bg_threshold": ("FLOAT", {"default": 0.4, "min": 0, "max": 1, "step": 0.01})
-                                }}
+        return create_node_input_types(
+            a =  ("FLOAT", {"default": np.pi * 2.0, "min": 0.0, "max": np.pi * 5.0, "step": 0.05}),
+            bg_threshold = ("FLOAT", {"default": 0.1, "min": 0, "max": 1, "step": 0.05})
+        )
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
 
-    def execute(self, image, resolution, a, bg_threshold, **kwargs):
+    def execute(self, image, a, bg_threshold, resolution=512, **kwargs):
         from controlnet_aux.midas import MidasDetector
 
         # Ref: https://github.com/lllyasviel/ControlNet/blob/main/gradio_depth2image.py

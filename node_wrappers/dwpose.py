@@ -15,7 +15,7 @@ class DWPose_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
-    def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution, **kwargs):
+    def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, **kwargs):
         from controlnet_aux.dwpose import DwposeDetector
 
         detect_hand = detect_hand == "enable"

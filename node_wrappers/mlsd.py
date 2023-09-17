@@ -15,7 +15,7 @@ class MLSD_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, score_threshold, dist_threshold, **kwargs):
+    def execute(self, image, score_threshold, dist_threshold, resolution=512, **kwargs):
         from controlnet_aux.mlsd import MLSDdetector
 
         model = MLSDdetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())

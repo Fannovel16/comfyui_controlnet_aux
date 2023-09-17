@@ -11,7 +11,7 @@ class Color_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/T2IAdapter-only"
 
-    def execute(self, image, resolution, **kwargs):
+    def execute(self, image, resolution=512, **kwargs):
         from controlnet_aux.color import ColorDetector
 
         return (common_annotator_call(ColorDetector(), image, resolution=resolution), )

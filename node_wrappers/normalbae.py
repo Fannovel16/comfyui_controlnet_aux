@@ -11,7 +11,7 @@ class BAE_Normal_Map_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
 
-    def execute(self, image, resolution, **kwargs):
+    def execute(self, image, resolution=512, **kwargs):
         from controlnet_aux.normalbae import NormalBaeDetector
 
         model = NormalBaeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())

@@ -20,7 +20,7 @@ class RaftOpticalFlowPreprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution, model_filename, **kwargs):
+    def execute(self, image, model_filename, resolution=512, **kwargs):
         from controlnet_aux.raft import RaftOpticalFlowEmbedder
 
         model = RaftOpticalFlowEmbedder.from_pretrained(RAFT_MODEL_NAME, model_filename, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
