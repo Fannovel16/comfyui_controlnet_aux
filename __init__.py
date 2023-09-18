@@ -77,7 +77,7 @@ class AIO_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors"
 
-    def execute(self, preprocessor, image):
+    def execute(self, preprocessor, image, resolution=512):
         aux_class = AUX_NODE_MAPPINGS[preprocessor]
         input_types = aux_class.INPUT_TYPES()
         input_types = {
@@ -88,6 +88,10 @@ class AIO_Preprocessor:
         for name, input_type in input_types.items():
             if name == "image":
                 params[name] = image
+                continue
+            
+            if name == "resolution":
+                params[name] = resolution
                 continue
             
             if len(input_type) == 2 and ("default" in input_type[1]):

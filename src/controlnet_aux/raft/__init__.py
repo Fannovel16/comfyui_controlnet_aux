@@ -4,13 +4,14 @@ import numpy as np
 from PIL import Image
 from huggingface_hub import hf_hub_download
 from ..util import resize_image_with_pad, common_input_validate, HWC3
-from torchvision.models.optical_flow import raft_small, raft_large
+from torchvision.models.optical_flow import raft_small, raft_large, Raft_Large_Weights
 from einops import rearrange
 from torchvision.utils import flow_to_image
 
 class RaftOpticalFlowEmbedder:
-    def __init__(self, model):
+    def __init__(self, model, transforms):
         self.model = model
+        self.transforms = transforms
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=None):
@@ -24,7 +25,7 @@ class RaftOpticalFlowEmbedder:
         model = raft_large() if "large" in filename else raft_small()
         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
         model.eval()
-        return cls(model)
+        return cls(model, Raft_Large_Weights.DEFAULT.transforms())
     
     def to(self, device):
         self.model.to(device)
@@ -47,10 +48,12 @@ class RaftOpticalFlowEmbedder:
             images = images / 255.0
             images = rearrange(images, 'n h w c -> n c h w')
             idxes = np.arange(len(images) - 1)
-            flow_prediction = model(images[idxes], images[idxes + 1], num_flow_updates=num_flow_updates)[-1]
+            img1_batch, img2_batch = images[idxes], images[idxes + 1]
+            transformed = self.transforms(img1_batch, img2_batch) 
+            flow_prediction = model(transformed[0], transformed[1], num_flow_updates=num_flow_updates)[-1]
             #https://huggingface.co/CiaraRowles/TemporalNet2/blob/main/temporalvideo.py#L237
             flow_images = flow_to_image(flow_prediction)
-            six_channel_images = torch.cat((images[idxes], flow_images), dim=1) #NCHW
+            six_channel_images = torch.cat((img1_batch, flow_images), dim=1) #NCHW
             #https://huggingface.co/CiaraRowles/TemporalNet2/blob/main/temporalvideo.py#L124
             six_channel_images = rearrange(six_channel_images, "n c h w -> n h w c").cpu().numpy()
             six_channel_images = (six_channel_images * 255.0).clip(0, 255).astype(np.uint8)
@@ -58,6 +61,6 @@ class RaftOpticalFlowEmbedder:
         detected_maps = np.stack([remove_pad(image) for image in six_channel_images], axis=0)
 
         if output_type == "pil":
-            detected_maps = [Image.fromarray(detected_map[:, :, :, :3]) for detected_map in detected_maps]
+            detected_maps = [Image.fromarray(detected_map[:, :, :, 3:]) for detected_map in detected_maps]
             
         return detected_maps
