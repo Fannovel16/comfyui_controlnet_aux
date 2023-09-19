@@ -47,16 +47,20 @@ class RaftOpticalFlowEmbedder:
             images = torch.from_numpy(input_images).float().to(device)
             images = images / 255.0
             images = rearrange(images, 'n h w c -> n c h w')
+            
             idxes = np.arange(len(images) - 1)
             img1_batch, img2_batch = images[idxes], images[idxes + 1]
             transformed = self.transforms(img1_batch, img2_batch) 
+            
             flow_prediction = model(transformed[0], transformed[1], num_flow_updates=num_flow_updates)[-1]
             #https://huggingface.co/CiaraRowles/TemporalNet2/blob/main/temporalvideo.py#L237
             flow_images = flow_to_image(flow_prediction)
+            
             six_channel_images = torch.cat((img1_batch, flow_images), dim=1) #NCHW
             #https://huggingface.co/CiaraRowles/TemporalNet2/blob/main/temporalvideo.py#L124
             six_channel_images = rearrange(six_channel_images, "n c h w -> n h w c").cpu().numpy()
-            six_channel_images = (six_channel_images * 255.0).clip(0, 255).astype(np.uint8)
+            #flow_to_image will automatically normalize [0, 1] float32 to [0, 255] uint8
+            #so we don't need to put normalization here.
         
         detected_maps = np.stack([remove_pad(image) for image in six_channel_images], axis=0)
 

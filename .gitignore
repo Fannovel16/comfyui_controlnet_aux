@@ -177,3 +177,5 @@ tags
 wandb
 
 ckpts/
+
+test.ipynb

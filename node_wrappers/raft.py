@@ -19,7 +19,7 @@ class RaftOpticalFlowPreprocessor:
     RETURN_NAMES = ("SIX_CHANNEL_IMAGE", "OPTICAL_FLOW_PREVIEW")
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors/Line Extractors"
+    CATEGORY = "ControlNet Preprocessors/Optical Flow (TemporalNet2)"
 
     def execute(self, image, model_filename, resolution=512, **kwargs):
         from controlnet_aux.raft import RaftOpticalFlowEmbedder
