@@ -19,6 +19,7 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Make hint images less blurry.
 * Added `resolution` option, `PixelPerfectResolution` and `HintImageEnchance` nodes (TODO: Documentation).
 * Added `RAFT Optical Flow Embedder` for TemporalNet2 (TODO: Workflow example).
+* Fixed opencv's conflicts between this extension, [ReActor](https://github.com/Gourieff/comfyui-reactor-node) and Roop. Thanks `Gourieff` for [the solution](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/7#issuecomment-1734319075)!
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
