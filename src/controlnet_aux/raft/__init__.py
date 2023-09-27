@@ -52,15 +52,16 @@ class RaftOpticalFlowEmbedder:
             img1_batch, img2_batch = images[idxes], images[idxes + 1]
             transformed = self.transforms(img1_batch, img2_batch) 
             
-            flow_prediction = model(transformed[0], transformed[1], num_flow_updates=num_flow_updates)[-1]
             #https://huggingface.co/CiaraRowles/TemporalNet2/blob/main/temporalvideo.py#L237
+            #flow_to_image will automatically normalize [0, 1] float32 to [0, 255] uint8
+            #But our images are still in [0, 1] float32
+            flow_prediction = model(transformed[0], transformed[1], num_flow_updates=num_flow_updates)[-1]
             flow_images = flow_to_image(flow_prediction)
-            
-            six_channel_images = torch.cat((img1_batch, flow_images), dim=1) #NCHW
+            normalized_img1 = (img1_batch * 255.0).clip(0, 255)
+            six_channel_images = torch.cat((normalized_img1, flow_images), dim=1) #NCHW
             #https://huggingface.co/CiaraRowles/TemporalNet2/blob/main/temporalvideo.py#L124
             six_channel_images = rearrange(six_channel_images, "n c h w -> n h w c").cpu().numpy()
-            #flow_to_image will automatically normalize [0, 1] float32 to [0, 255] uint8
-            #so we don't need to put normalization here.
+            
         
         detected_maps = np.stack([remove_pad(image) for image in six_channel_images], axis=0)
 
