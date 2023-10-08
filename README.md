@@ -20,6 +20,8 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Added `resolution` option, `PixelPerfectResolution` and `HintImageEnchance` nodes (TODO: Documentation).
 * Added `RAFT Optical Flow Embedder` for TemporalNet2 (TODO: Workflow example).
 * Fixed opencv's conflicts between this extension, [ReActor](https://github.com/Gourieff/comfyui-reactor-node) and Roop. Thanks `Gourieff` for [the solution](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/7#issuecomment-1734319075)!
+* RAFT is removed as the code behind it doesn't match what what the original code does
+* Change `lineart`'s display name from `Normal Lineart` to `Realistic Lineart`. This change won't affect old workflows 
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
@@ -55,7 +57,7 @@ You need to use its node directly to set thresholds.
 * Binary Lines
 * Canny Edge
 * HED Lines
-* Normal Lineart
+* Realistic Lineart (formerly Normal Lineart)
 * Anime Lineart
 * Manga Lineart
 * M-LSD Lines
@@ -139,7 +141,7 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same k
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_canny.png)
 ### HED Lines
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_hed.png)
-### Normal Lineart
+### Realistic Lineart
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_lineart.png)
 ### Scribble/Fake Scribble
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_scribble.png)
