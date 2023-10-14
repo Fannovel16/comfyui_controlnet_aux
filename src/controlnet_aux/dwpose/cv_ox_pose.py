@@ -65,9 +65,13 @@ def inference(sess, img):
         input = img[i].transpose(2, 0, 1)
         input = input[None, :, :, :]
 
-        outNames = sess.getUnconnectedOutLayersNames()
-        sess.setInput(input)
-        outputs = sess.forward(outNames)
+        if "InferenceSession" in type(sess).__name__:
+            input_name = sess.get_inputs()[0].name
+            outputs = sess.run(None, {input_name: input.astype(np.float32)})
+        else:
+            outNames = sess.getUnconnectedOutLayersNames()
+            sess.setInput(input)
+            outputs = sess.forward(outNames)
         all_out.append(outputs)
 
     return all_out

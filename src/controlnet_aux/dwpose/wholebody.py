@@ -8,9 +8,32 @@ from .cv_ox_pose import inference_pose
 from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
 
+ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+def check_ort_gpu():
+    try:
+        import onnxruntime as ort
+        for provider in ONNX_PROVIDERS:
+            if provider in ort.get_available_providers():
+                return True
+        return False
+    except:
+        return False
+
+#Global caching as the startup of onnxruntime is a bit slow
+ort_session_det, ort_session_pose = None, None
 
 class Wholebody:
     def __init__(self, onnx_det: str, onnx_pose: str):
+        global ort_session_det, ort_session_pose
+        if check_ort_gpu():
+            import onnxruntime as ort
+            if ort_session_det is None:
+                ort_session_det = ort.InferenceSession(onnx_det, providers=ort.get_available_providers())
+                ort_session_pose = ort.InferenceSession(onnx_pose, providers=ort.get_available_providers())
+            self.session_det = ort_session_det
+            self.session_pose = ort_session_pose
+            return
+            
         # Always loads to CPU to avoid building OpenCV.
         device = 'cpu'
         backend = cv2.dnn.DNN_BACKEND_OPENCV if device == 'cpu' else cv2.dnn.DNN_BACKEND_CUDA

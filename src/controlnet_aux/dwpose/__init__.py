@@ -170,10 +170,6 @@ class DwposeDetector:
             pose_model_path = hf_hub_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
 
         return cls(Wholebody(det_model_path, pose_model_path))
-    
-    def to(self, device):
-        warnings.warn("Currently DWPose doesn't support CUDA out-of-the-box.")
-        return self
 
     def detect_poses(self, oriImg) -> List[PoseResult]:
         with torch.no_grad():
