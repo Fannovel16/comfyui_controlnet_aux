@@ -98,9 +98,13 @@ def inference_detector(session, oriImg):
     img, ratio = preprocess(oriImg, input_shape)
 
     input = img[None, :, :, :]
-    outNames = session.getUnconnectedOutLayersNames()
-    session.setInput(input)
-    output = session.forward(outNames)
+    if "InferenceSession" in type(session).__name__:
+        input_name = session.get_inputs()[0].name
+        output = session.run(None, {input_name: input})
+    else:
+        outNames = session.getUnconnectedOutLayersNames()
+        session.setInput(input)
+        output = session.forward(outNames)
 
     predictions = demo_postprocess(output[0], input_shape)[0]
 

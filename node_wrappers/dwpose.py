@@ -1,5 +1,29 @@
 from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, DWPOSE_MODEL_NAME, create_node_input_types
 import comfy.model_management as model_management
+import numpy as np
+import warnings
+from controlnet_aux.dwpose import DwposeDetector
+
+#Trigger startup caching for onnxruntime
+ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+def check_ort_gpu():
+    try:
+        import onnxruntime as ort
+        for provider in ONNX_PROVIDERS:
+            if provider in ort.get_available_providers():
+                return True
+        return False
+    except:
+        return False
+
+if check_ort_gpu():
+    print("Onnxruntime with acceleration providers detected. Caching sessions (might take around half a minute)...")
+    model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path)
+    model(np.zeros((256, 256, 3), dtype=np.uint8))
+    del model
+    print("Sessions cached")
+else:
+    warnings.warn("Onnxruntime not found or doesn't come with acceleration providers, switch to OpenCV with CPU device (super slow)")
 
 class DWPose_Preprocessor:
     @classmethod
@@ -16,14 +40,13 @@ class DWPose_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
     def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, **kwargs):
-        from controlnet_aux.dwpose import DwposeDetector
 
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"
 
         self.openpose_json = None
-        model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
+        model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path)
         
         def cb(image, **kwargs):
             result = model(image, **kwargs)

@@ -21,12 +21,26 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Added `RAFT Optical Flow Embedder` for TemporalNet2 (TODO: Workflow example).
 * Fixed opencv's conflicts between this extension, [ReActor](https://github.com/Gourieff/comfyui-reactor-node) and Roop. Thanks `Gourieff` for [the solution](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/7#issuecomment-1734319075)!
 * RAFT is removed as the code behind it doesn't match what what the original code does
-* Change `lineart`'s display name from `Normal Lineart` to `Realistic Lineart`. This change won't affect old workflows 
+* Change `lineart`'s display name from `Normal Lineart` to `Realistic Lineart`. This change won't affect old workflows
+* Add support for `onnxruntime` to speed-up DWPose (see the Q&A)
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
 
 This repo has a new mechanism which will skip any custom node can't be imported. If you meet this case, please create a issue on [Issues tab](https://github.com/Fannovel16/comfyui_controlnet_aux/issues) with the log from the command line.
+
+* DWPose only uses CPU so it's so slow. How can I make it use GPU?
+
+1. Know your onnxruntime build:
+* * NVidia/AMD GPU: `onnxruntime-gpu`
+* * DirectML: `onnxruntime-directml`
+* * OpenVINO: `onnxruntime-openvino`
+
+Note that if this is your first time using ComfyUI, please test if it can run on your device before doing next steps.
+
+2. Add it into `requirements.txt`
+
+3. Run `install.bat` or pip command mentioned in Installation
 
 # Installation:
 ## Using ComfyUI Manager (recommended):
