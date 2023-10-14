@@ -2,6 +2,7 @@ from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, 
 import comfy.model_management as model_management
 import numpy as np
 import warnings
+from controlnet_aux.dwpose import DwposeDetector
 
 #Trigger startup caching for onnxruntime
 ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
@@ -17,7 +18,6 @@ def check_ort_gpu():
 
 if check_ort_gpu():
     print("Onnxruntime with acceleration providers detected. Caching sessions (might take around half a minute)...")
-    from controlnet_aux.dwpose import DwposeDetector
     model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path)
     model(np.zeros((256, 256, 3), dtype=np.uint8))
     del model
