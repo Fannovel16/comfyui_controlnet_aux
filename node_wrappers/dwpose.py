@@ -23,7 +23,7 @@ if check_ort_gpu():
     del model
     print("DWPose: Sessions cached")
 else:
-    warnings.warn("DWPose: Onnxruntime not found or doesn't come with acceleration providers, switch to OpenCV with CPU device. DWPose might run very slow")
+    warnings.warn("DWPose: Onnxruntime not found or doesn't come with acceleration providers, switch to OpenCV with CPU device. DWPose might run very slowly")
 
 class DWPose_Preprocessor:
     @classmethod
