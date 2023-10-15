@@ -216,7 +216,7 @@ class ImageGenResolutionFromImage:
     CATEGORY = "ControlNet Preprocessors"
 
     def execute(self, image):
-        _, _, H, W = image.shape
+        _, H, W, _ = image.shape
         return (W, H)
     
 NODE_CLASS_MAPPINGS = {
