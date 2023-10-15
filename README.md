@@ -21,8 +21,10 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Added `RAFT Optical Flow Embedder` for TemporalNet2 (TODO: Workflow example).
 * Fixed opencv's conflicts between this extension, [ReActor](https://github.com/Gourieff/comfyui-reactor-node) and Roop. Thanks `Gourieff` for [the solution](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/7#issuecomment-1734319075)!
 * RAFT is removed as the code behind it doesn't match what what the original code does
-* Change `lineart`'s display name from `Normal Lineart` to `Realistic Lineart`. This change won't affect old workflows
-* Add support for `onnxruntime` to speed-up DWPose (see the Q&A)
+* Changed `lineart`'s display name from `Normal Lineart` to `Realistic Lineart`. This change won't affect old workflows
+* Added support for `onnxruntime` to speed-up DWPose (see the Q&A)
+* Fixed TypeError: expected size to be one of int or Tuple[int] or Tuple[int, int] or Tuple[int, int, int], but got size with types [<class 'numpy.int64'>, <class 'numpy.int64'>] (https://github.com/Fannovel16/comfyui_controlnet_aux/issues/2) (PR: https://github.com/Fannovel16/comfyui_controlnet_aux/pull/71)
+* Fixed ImageGenResolutionFromImage mishape (https://github.com/Fannovel16/comfyui_controlnet_aux/pull/74)
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
