@@ -17,11 +17,11 @@ def check_ort_gpu():
         return False
 
 if check_ort_gpu():
-    print("Onnxruntime with acceleration providers detected. Caching sessions (might take around half a minute)...")
+    print("DWPose: Onnxruntime with acceleration providers detected. Caching sessions (might take around half a minute)...")
     model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path)
     model(np.zeros((256, 256, 3), dtype=np.uint8))
     del model
-    print("Sessions cached")
+    print("DWPose: Sessions cached")
 else:
     warnings.warn("Onnxruntime not found or doesn't come with acceleration providers, switch to OpenCV with CPU device (super slow)")
 
