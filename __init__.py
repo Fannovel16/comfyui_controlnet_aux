@@ -18,7 +18,7 @@ print(f"Registered sys.path: {sys.path}")
 #Enable CPU fallback for ops not being supported by MPS like upsample_bicubic2d.out
 #https://github.com/pytorch/pytorch/issues/77764
 #https://github.com/Fannovel16/comfyui_controlnet_aux/issues/2#issuecomment-1763579485
-os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = 1 
+os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = '1' 
 
 
 def load_nodes():
