@@ -9,11 +9,13 @@ from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
 
 ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+SUPPORT_PROVIDERS = []
 def check_ort_gpu():
     try:
         import onnxruntime as ort
         for provider in ONNX_PROVIDERS:
             if provider in ort.get_available_providers():
+                SUPPORT_PROVIDERS.append(provider)
                 return True
         return False
     except:
@@ -28,8 +30,9 @@ class Wholebody:
         if check_ort_gpu():
             import onnxruntime as ort
             if ort_session_det is None:
-                ort_session_det = ort.InferenceSession(onnx_det, providers=ort.get_available_providers())
-                ort_session_pose = ort.InferenceSession(onnx_pose, providers=ort.get_available_providers())
+                SUPPORT_PROVIDERS.append('CPUExecutionProvider')
+                ort_session_det = ort.InferenceSession(onnx_det, providers=SUPPORT_PROVIDERS)
+                ort_session_pose = ort.InferenceSession(onnx_pose, providers=SUPPORT_PROVIDERS)
             self.session_det = ort_session_det
             self.session_pose = ort_session_pose
             return
