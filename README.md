@@ -26,6 +26,7 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Fixed TypeError: expected size to be one of int or Tuple[int] or Tuple[int, int] or Tuple[int, int, int], but got size with types [<class 'numpy.int64'>, <class 'numpy.int64'>] (https://github.com/Fannovel16/comfyui_controlnet_aux/issues/2) (PR: https://github.com/Fannovel16/comfyui_controlnet_aux/pull/71)
 * Fixed ImageGenResolutionFromImage mishape (https://github.com/Fannovel16/comfyui_controlnet_aux/pull/74)
 * Fixed LeRes and MiDaS's incomatipility with MPS device
+* Fixed checking DWPose onnxruntime session multiple times (https://github.com/Fannovel16/comfyui_controlnet_aux/issues/89)
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
@@ -33,6 +34,8 @@ All credit & copyright goes to https://github.com/lllyasviel.
 This repo has a new mechanism which will skip any custom node can't be imported. If you meet this case, please create a issue on [Issues tab](https://github.com/Fannovel16/comfyui_controlnet_aux/issues) with the log from the command line.
 
 * DWPose only uses CPU so it's so slow. How can I make it use GPU?
+
+You can install onnxruntime-gpu. If successful, it will replace default cv2 backend to take advantage of GPU. Note that if you are using NVidia card, this method currently can only works on CUDA 11.8 (ComfyUI_windows_portable_nvidia_cu118_or_cpu.7z) unless you compile onnxruntime yourself
 
 1. Know your onnxruntime build:
 * * NVidia/AMD GPU: `onnxruntime-gpu`

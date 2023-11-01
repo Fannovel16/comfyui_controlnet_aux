@@ -3,6 +3,7 @@ import comfy.model_management as model_management
 import numpy as np
 import warnings
 from controlnet_aux.dwpose import DwposeDetector
+import os
 
 #Trigger startup caching for onnxruntime
 ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
@@ -16,12 +17,13 @@ def check_ort_gpu():
     except:
         return False
 
-if check_ort_gpu():
+if (os.environ.get("AUX_DWPOSE_SESSION_CREATED", None) is None) and check_ort_gpu():
     print("DWPose: Onnxruntime with acceleration providers detected. Caching sessions (might take around half a minute)...")
     model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path)
     model(np.zeros((256, 256, 3), dtype=np.uint8))
     del model
     print("DWPose: Sessions cached")
+    os.environ["AUX_DWPOSE_SESSION_CREATED"] = '1'
 else:
     warnings.warn("DWPose: Onnxruntime not found or doesn't come with acceleration providers, switch to OpenCV with CPU device. DWPose might run very slowly")
 
