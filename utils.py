@@ -22,7 +22,7 @@ else:
 MAX_RESOLUTION=2048 #Who the hell feed 4k images to ControlNet?
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
-RAFT_MODEL_NAME = "hr16/RAFT-v2"
+ANIFACESEG_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite" 
 
 
 def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):

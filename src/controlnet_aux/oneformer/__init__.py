@@ -41,7 +41,7 @@ class OneformerSegmentor:
 
         return cls(model, metadata)
     
-    def __call__(self, input_image=None, detect_resolution=512, image_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
+    def __call__(self, input_image=None, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 

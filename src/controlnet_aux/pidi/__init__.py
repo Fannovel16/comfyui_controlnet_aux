@@ -35,7 +35,7 @@ class PidiNetDetector:
         self.netNetwork.to(device)
         return self
     
-    def __call__(self, input_image, detect_resolution=512, image_resolution=512, safe=False, output_type="pil", scribble=False, apply_filter=False, upscale_method="INTER_CUBIC", **kwargs):
+    def __call__(self, input_image, detect_resolution=512, safe=False, output_type="pil", scribble=False, apply_filter=False, upscale_method="INTER_CUBIC", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 

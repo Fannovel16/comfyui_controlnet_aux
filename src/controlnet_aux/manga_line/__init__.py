@@ -42,7 +42,7 @@ class LineartMangaDetector:
         self.model.to(device)
         return self
 
-    def __call__(self, input_image, detect_resolution=512, image_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
+    def __call__(self, input_image, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         detected_map, remove_pad = resize_image_with_pad(input_image, 256 * int(np.ceil(float(detect_resolution) / 256.0)), upscale_method)
         device = next(iter(self.model.parameters())).device

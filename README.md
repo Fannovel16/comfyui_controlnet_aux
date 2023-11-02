@@ -27,6 +27,7 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Fixed ImageGenResolutionFromImage mishape (https://github.com/Fannovel16/comfyui_controlnet_aux/pull/74)
 * Fixed LeRes and MiDaS's incomatipility with MPS device
 * Fixed checking DWPose onnxruntime session multiple times (https://github.com/Fannovel16/comfyui_controlnet_aux/issues/89)
+* Added `Anime Face Segmentor` (in `ControlNet Preprocessors/Semantic Segmentation`) for [ControlNet AnimeFaceSegmentV2](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite#animefacesegmentv2). Checks [here](#anime-face-segmentor)
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
@@ -182,6 +183,9 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same k
 ## Semantic Segmantation
 ### OneFormer ADE20K Segmentor
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_ade20k.png)
+
+### Anime Face Segmentor
+![](./example_anime_face_segmentor.png)
 
 ## T2IAdapter-only
 ### Color Pallete for T2I-Adapter
