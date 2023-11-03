@@ -19,7 +19,7 @@ class AnimeFace_SemSegPreprocessor:
         }
 
     RETURN_TYPES = ("IMAGE", "MASK")
-    RETURN_NAMES = ("IMAGE", "CHARACTER_MASK (MASK)")
+    RETURN_NAMES = ("IMAGE", "ABG_CHARACTER_MASK (MASK)")
     FUNCTION = "execute"
 
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
