@@ -28,7 +28,7 @@ class OneformerSegmentor:
         return self
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=None, config_path = annotator_ckpts_path):
+    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path, config_path = None):
         filename = filename or "250_16_swin_l_oneformer_ade20k_160k.pth"
         config_path = config_path or DEFAULT_CONFIGS["ade20k" if "ade20k" in filename else "coco"]["config"]
         local_dir = os.path.join(cache_dir, pretrained_model_or_path)
