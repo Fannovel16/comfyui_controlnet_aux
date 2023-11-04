@@ -21,7 +21,7 @@ from .types import PoseResult, HandResult, FaceResult
 from huggingface_hub import hf_hub_download
 from .wholebody import Wholebody # DW Pose
 import warnings
-from ..util import HWC3, resize_image_with_pad, common_input_validate
+from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path
 import cv2
 from PIL import Image
 
@@ -158,16 +158,37 @@ class DwposeDetector:
         self.dw_pose_estimation = dw_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, det_filename=None, pose_filename=None, cache_dir=None):
+    def from_pretrained(cls, pretrained_model_or_path, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
         det_filename = det_filename or "yolox_l.onnx"
         pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
+        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
 
-        if os.path.isdir(pretrained_model_or_path):
-            det_model_path = os.path.join(pretrained_model_or_path, det_filename)
-            pose_model_path = os.path.join(pretrained_model_or_path, pose_filename)
+        if os.path.isdir(local_dir):
+            det_model_path = os.path.join(local_dir, det_filename)
+            pose_model_path = os.path.join(local_dir, pose_filename)
         else:
-            det_model_path = hf_hub_download(pretrained_model_or_path, det_filename, cache_dir=cache_dir)
-            pose_model_path = hf_hub_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
+            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+            det_model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=det_filename,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            pose_model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=pose_filename,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            try:
+                import shutil
+                shutil.rmtree(cache_dir_d)
+            except Exception as e :
+                print(e)
 
         return cls(Wholebody(det_model_path, pose_model_path))
 

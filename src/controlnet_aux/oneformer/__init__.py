@@ -3,7 +3,7 @@ from .api import make_detectron2_model, semantic_run
 from pathlib import Path
 from huggingface_hub import hf_hub_download
 import warnings
-from ..util import HWC3, common_input_validate, resize_image_with_pad
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path
 import numpy as np
 import cv2
 from PIL import Image
@@ -28,14 +28,28 @@ class OneformerSegmentor:
         return self
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=None, config_path = None):
+    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=None, config_path = annotator_ckpts_path):
         filename = filename or "250_16_swin_l_oneformer_ade20k_160k.pth"
         config_path = config_path or DEFAULT_CONFIGS["ade20k" if "ade20k" in filename else "coco"]["config"]
+        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
 
-        if os.path.isdir(pretrained_model_or_path):
-            model_path = os.path.join(pretrained_model_or_path, filename)
+        if os.path.isdir(local_dir):
+            model_path = os.path.join(local_dir, filename)
         else:
-            model_path = hf_hub_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=filename,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            try:
+                import shutil
+                shutil.rmtree(cache_dir_d)
+            except Exception as e :
+                print(e)
 
         model, metadata = make_detectron2_model(config_path, model_path)
 

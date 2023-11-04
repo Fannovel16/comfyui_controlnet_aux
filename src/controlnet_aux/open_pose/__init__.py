@@ -21,7 +21,7 @@ import torch
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, common_input_validate, resize_image_with_pad
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path
 from . import util
 from .body import Body, BodyResult, Keypoint
 from .face import Face
@@ -111,29 +111,69 @@ class OpenposeDetector:
         self.face_estimation = face_estimation
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, hand_filename=None, face_filename=None, cache_dir=None):
+    def from_pretrained(cls, pretrained_model_or_path, filename=None, hand_filename=None, face_filename=None, cache_dir=annotator_ckpts_path):
+
+        filename = filename or "body_pose_model.pth"
+        hand_filename = hand_filename or "hand_pose_model.pth"
+        face_filename = face_filename or "facenet.pth"
 
         if pretrained_model_or_path == "lllyasviel/ControlNet":
-            filename = filename or "annotator/ckpts/body_pose_model.pth"
-            hand_filename = hand_filename or "annotator/ckpts/hand_pose_model.pth"
-            face_filename = face_filename or "facenet.pth"
-
+            local_dir = os.path.join(cache_dir, pretrained_model_or_path, "annotator", "ckpts")
+            subfolder = "annotator/ckpts"
             face_pretrained_model_or_path = "lllyasviel/Annotators"
+            face_local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+            
         else:
-            filename = filename or "body_pose_model.pth"
-            hand_filename = hand_filename or "hand_pose_model.pth"
-            face_filename = face_filename or "facenet.pth"
-
+            local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+            subfolder = None
             face_pretrained_model_or_path = pretrained_model_or_path
+            face_local_dir = os.path.join(cache_dir, pretrained_model_or_path)
 
-        if os.path.isdir(pretrained_model_or_path):
-            body_model_path = os.path.join(pretrained_model_or_path, filename)
-            hand_model_path = os.path.join(pretrained_model_or_path, hand_filename)
-            face_model_path = os.path.join(face_pretrained_model_or_path, face_filename)
+        if os.path.isdir(local_dir):
+            body_model_path = os.path.join(local_dir, filename)
+            hand_model_path = os.path.join(local_dir, hand_filename)
+            face_model_path = os.path.join(face_local_dir, face_filename)
         else:
-            body_model_path = hf_hub_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
-            hand_model_path = hf_hub_download(pretrained_model_or_path, hand_filename, cache_dir=cache_dir)
-            face_model_path = hf_hub_download(face_pretrained_model_or_path, face_filename, cache_dir=cache_dir)
+            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+            body_model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=filename,
+            subfolder=subfolder,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            hand_model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=hand_filename,
+            subfolder=subfolder,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            try:
+                import shutil
+                shutil.rmtree(cache_dir_d)
+            except Exception as e :
+                print(e)
+            
+            cache_dir_d = os.path.join(cache_dir, face_pretrained_model_or_path, "cache")
+            face_model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=face_local_dir,
+            filename=face_filename,
+            subfolder=subfolder,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            try:
+                import shutil
+                shutil.rmtree(cache_dir_d)
+            except Exception as e :
+                print(e)
 
         body_estimation = Body(body_model_path)
         hand_estimation = Hand(hand_model_path)

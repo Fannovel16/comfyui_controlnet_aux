@@ -7,7 +7,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, common_input_validate, resize_image_with_pad
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path
 from .api import MiDaSInference
 
 
@@ -16,16 +16,34 @@ class MidasDetector:
         self.model = model
         
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, model_type="dpt_hybrid", filename=None, cache_dir=None):
-        if pretrained_model_or_path == "lllyasviel/ControlNet":
-            filename = filename or "annotator/ckpts/dpt_hybrid-midas-501f0c75.pt"
-        else:
-            filename = filename or "dpt_hybrid-midas-501f0c75.pt"
+    def from_pretrained(cls, pretrained_model_or_path, model_type="dpt_hybrid", filename=None, cache_dir=annotator_ckpts_path):
 
-        if os.path.isdir(pretrained_model_or_path):
-            model_path = os.path.join(pretrained_model_or_path, filename)
+        filename = filename or "dpt_hybrid-midas-501f0c75.pt"
+        if pretrained_model_or_path == "lllyasviel/ControlNet":
+            local_dir = os.path.join(cache_dir, pretrained_model_or_path, "annotator", "ckpts")
+            subfolder = "annotator/ckpts"
         else:
-            model_path = hf_hub_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+            local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+            subfolder = None
+
+        if os.path.isdir(local_dir):
+            model_path = os.path.join(local_dir, filename)
+        else:
+            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=filename,
+            subfolder=subfolder,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            try:
+                import shutil
+                shutil.rmtree(cache_dir_d)
+            except Exception as e :
+                print(e)
 
         model = MiDaSInference(model_type=model_type, model_path=model_path)
 
