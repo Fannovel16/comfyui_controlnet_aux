@@ -11,11 +11,11 @@ from PIL import Image
 DEFAULT_CONFIGS = {
     "coco": {
         "name": "150_16_swin_l_oneformer_coco_100ep.pth",
-        "config": Path(os.path.dirname(__file__), 'configs/coco/oneformer_swin_large_IN21k_384_bs16_100ep.yaml')
+        "config": os.path.jion(os.path.dirname(__file__), 'configs/coco/oneformer_swin_large_IN21k_384_bs16_100ep.yaml')
     },
     "ade20k": {
         "name": "250_16_swin_l_oneformer_ade20k_160k.pth",
-        "config": Path(os.path.dirname(__file__), 'configs/ade20k/oneformer_swin_large_IN21k_384_bs16_160k.yaml')
+        "config": os.path.jion(os.path.dirname(__file__), 'configs/ade20k/oneformer_swin_large_IN21k_384_bs16_160k.yaml')
     }
 }
 class OneformerSegmentor:
