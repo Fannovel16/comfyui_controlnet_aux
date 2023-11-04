@@ -14,7 +14,7 @@ import torch
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, common_input_validate, resize_image_with_pad
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path
 from .automatic_mask_generator import SamAutomaticMaskGenerator
 from .build_sam import sam_model_registry
 
@@ -24,15 +24,30 @@ class SamDetector:
         self.mask_generator = mask_generator
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, model_type="vit_h", filename="sam_vit_h_4b8939.pth", subfolder=None, cache_dir=None):
+    def from_pretrained(cls, pretrained_model_or_path, model_type="vit_h", filename="sam_vit_h_4b8939.pth", subfolder=None, cache_dir=annotator_ckpts_path):
         """
         Possible model_type : vit_h, vit_l, vit_b, vit_t
         download weights from https://github.com/facebookresearch/segment-anything
         """
-        if os.path.isdir(pretrained_model_or_path):
-            model_path = os.path.join(pretrained_model_or_path, filename)
-        else:
-            model_path = hf_hub_download(pretrained_model_or_path, filename, subfolder=subfolder, cache_dir=cache_dir)  
+        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+
+        model_path = os.path.join(local_dir, filename)
+        if not os.path.exists(model_path):
+            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=filename,
+            subfolder=subfolder,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            try:
+                import shutil
+                shutil.rmtree(cache_dir_d)
+            except Exception as e :
+                print(e) 
         
         sam = sam_model_registry[model_type](checkpoint=model_path)
         mask_generator = SamAutomaticMaskGenerator(sam)

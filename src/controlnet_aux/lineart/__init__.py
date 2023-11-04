@@ -9,7 +9,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, resize_image_with_pad, common_input_validate
+from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path
 
 norm_layer = nn.InstanceNorm2d
 
@@ -97,16 +97,36 @@ class LineartDetector:
         self.model_coarse = coarse_model
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, coarse_filename=None, cache_dir=None):
+    def from_pretrained(cls, pretrained_model_or_path, filename=None, coarse_filename=None, cache_dir=annotator_ckpts_path):
         filename = filename or "sk_model.pth"
         coarse_filename = coarse_filename or "sk_model2.pth"
+        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
 
-        if os.path.isdir(pretrained_model_or_path):
-            model_path = os.path.join(pretrained_model_or_path, filename)
-            coarse_model_path = os.path.join(pretrained_model_or_path, coarse_filename)
-        else:
-            model_path = hf_hub_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
-            coarse_model_path = hf_hub_download(pretrained_model_or_path, coarse_filename, cache_dir=cache_dir)
+        model_path = os.path.join(local_dir, filename)
+        coarse_model_path = os.path.join(local_dir, coarse_filename)
+        if not os.path.exists(model_path) or not os.path.exists(coarse_model_path):
+            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=filename,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            coarse_model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            filename=coarse_filename,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+            )
+            try:
+                import shutil
+                shutil.rmtree(cache_dir_d)
+            except Exception as e :
+                print(e)
 
         model = Generator(3, 1, 3)
         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
