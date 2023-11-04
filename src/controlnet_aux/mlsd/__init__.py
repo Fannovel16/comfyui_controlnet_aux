@@ -20,7 +20,12 @@ class MLSDdetector:
     def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):
 
         filename = filename or "mlsd_large_512_fp32.pth"
-        local_dir = os.path.join(cache_dir, pretrained_model_or_path, "annotator", "ckpts")
+        if pretrained_model_or_path == "lllyasviel/ControlNet":
+            local_dir = os.path.join(cache_dir, pretrained_model_or_path, "annotator", "ckpts")
+            subfolder = "annotator/ckpts"
+        else:
+            local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+            subfolder = None
 
         if os.path.isdir(local_dir):
             model_path = os.path.join(local_dir, filename)
@@ -30,7 +35,7 @@ class MLSDdetector:
             cache_dir=cache_dir_d,
             local_dir=local_dir,
             filename=filename,
-            subfolder="annotator/ckpts",
+            subfolder=subfolder,
             local_dir_use_symlinks=False,
             resume_download=True,
             etag_timeout=100
