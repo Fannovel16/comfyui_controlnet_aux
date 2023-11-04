@@ -162,11 +162,10 @@ class DwposeDetector:
         det_filename = det_filename or "yolox_l.onnx"
         pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
         local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+        det_model_path = os.path.join(local_dir, det_filename)
+        pose_model_path = os.path.join(local_dir, pose_filename)
 
-        if os.path.isdir(local_dir):
-            det_model_path = os.path.join(local_dir, det_filename)
-            pose_model_path = os.path.join(local_dir, pose_filename)
-        else:
+        if not os.path.exists(det_model_path) or not os.path.exists(pose_model_path):
             cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
             det_model_path = hf_hub_download(repo_id=pretrained_model_or_path,
             cache_dir=cache_dir_d,

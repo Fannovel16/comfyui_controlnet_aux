@@ -20,10 +20,9 @@ class AnimeFaceSegmentor:
         filename = filename or "UNet.pth"
         seg_filename = seg_filename or "isnetis.ckpt"
         local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+        model_path = os.path.join(local_dir, "Annotators", filename)
 
-        if os.path.isdir(local_dir):
-            model_path = os.path.join(local_dir, "Annotators", filename)
-        else:
+        if not os.path.exists(model_path):
             cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
             model_path = hf_hub_download(repo_id=pretrained_model_or_path,
             cache_dir=cache_dir_d,
@@ -42,9 +41,9 @@ class AnimeFaceSegmentor:
         
         pretrained_model_or_path = "skytnt/anime-seg/"
         local_dir = os.path.join(cache_dir, pretrained_model_or_path)
-        if os.path.isdir(local_dir):
-            seg_model_path = os.path.join(local_dir, seg_filename)
-        else:
+        seg_model_path = os.path.join(local_dir, seg_filename)
+        
+        if not os.path.exists(seg_model_path):
             cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
             seg_model_path = hf_hub_download(
                 repo_id=pretrained_model_or_path,

@@ -21,9 +21,8 @@ class ZoeDetector:
         filename = filename or "ZoeD_M12_N.pt"
         local_dir = os.path.join(cache_dir, pretrained_model_or_path)
 
-        if os.path.isdir(local_dir):
-            model_path = os.path.join(local_dir, filename)
-        else:
+        model_path = os.path.join(local_dir, filename)
+        if not os.path.exists(model_path):
             cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
             model_path = hf_hub_download(repo_id=pretrained_model_or_path,
             cache_dir=cache_dir_d,

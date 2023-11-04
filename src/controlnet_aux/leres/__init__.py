@@ -24,10 +24,9 @@ class LeresDetector:
         filename = filename or "res101.pth"
         pix2pix_filename = pix2pix_filename or "latest_net_G.pth"
         local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+        model_path = os.path.join(local_dir, filename)
 
-        if os.path.isdir(local_dir):
-            model_path = os.path.join(local_dir, filename)
-        else:
+        if not os.path.exists(model_path):
             cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
             model_path = hf_hub_download(repo_id=pretrained_model_or_path,
             cache_dir=cache_dir_d,
@@ -49,9 +48,8 @@ class LeresDetector:
         model.load_state_dict(strip_prefix_if_present(checkpoint['depth_model'], "module."), strict=True)
         del checkpoint
 
-        if os.path.isdir(local_dir):
-            model_path = os.path.join(local_dir, pix2pix_filename)
-        else:
+        model_path = os.path.join(local_dir, pix2pix_filename)
+        if not os.path.exists(model_path):
             cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
             model_path = hf_hub_download(repo_id=pretrained_model_or_path,
             cache_dir=cache_dir_d,

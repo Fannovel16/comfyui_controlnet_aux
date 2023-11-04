@@ -102,10 +102,9 @@ class LineartDetector:
         coarse_filename = coarse_filename or "sk_model2.pth"
         local_dir = os.path.join(cache_dir, pretrained_model_or_path)
 
-        if os.path.isdir(local_dir):
-            model_path = os.path.join(local_dir, filename)
-            coarse_model_path = os.path.join(local_dir, coarse_filename)
-        else:
+        model_path = os.path.join(local_dir, filename)
+        coarse_model_path = os.path.join(local_dir, coarse_filename)
+        if not os.path.exists(model_path) or not os.path.exists(coarse_model_path):
             cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
             model_path = hf_hub_download(repo_id=pretrained_model_or_path,
             cache_dir=cache_dir_d,
