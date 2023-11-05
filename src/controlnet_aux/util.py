@@ -8,7 +8,7 @@ from pathlib import Path
 import warnings
 from huggingface_hub import hf_hub_download
 
-annotator_ckpts_path = os.path.join(os.path.dirname(__file__), 'ckpts')
+annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
 
 here = Path(__file__).parent.resolve()
 
