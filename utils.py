@@ -16,6 +16,12 @@ if os.path.exists(config_path):
 
     #annotator_ckpts_path = os.path.join(os.path.dirname(__file__), "ckpts")
     annotator_ckpts_path = str(Path(here, config["annotator_ckpts_path"]))
+    if not os.path.isdir(annotator_ckpts_path):
+        try:
+            os.makedirs(annotator_ckpts_path)
+        except:
+            log.error("Failed to create config ckpts directory")
+            annotator_ckpts_path = str(Path(here, "./ckpts"))
 else:
     annotator_ckpts_path = str(Path(here, "./ckpts"))
 
