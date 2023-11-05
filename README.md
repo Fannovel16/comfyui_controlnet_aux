@@ -23,11 +23,12 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * RAFT is removed as the code behind it doesn't match what what the original code does
 * Changed `lineart`'s display name from `Normal Lineart` to `Realistic Lineart`. This change won't affect old workflows
 * Added support for `onnxruntime` to speed-up DWPose (see the Q&A)
-* Fixed TypeError: expected size to be one of int or Tuple[int] or Tuple[int, int] or Tuple[int, int, int], but got size with types [<class 'numpy.int64'>, <class 'numpy.int64'>] (https://github.com/Fannovel16/comfyui_controlnet_aux/issues/2) (PR: https://github.com/Fannovel16/comfyui_controlnet_aux/pull/71)
+* Fixed TypeError: expected size to be one of int or Tuple[int] or Tuple[int, int] or Tuple[int, int, int], but got size with types [<class 'numpy.int64'>, <class 'numpy.int64'>]: [Issue](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/2), [PR](https://github.com/Fannovel16/comfyui_controlnet_aux/pull/71))
 * Fixed ImageGenResolutionFromImage mishape (https://github.com/Fannovel16/comfyui_controlnet_aux/pull/74)
 * Fixed LeRes and MiDaS's incomatipility with MPS device
-* Fixed checking DWPose onnxruntime session multiple times (https://github.com/Fannovel16/comfyui_controlnet_aux/issues/89)
+* Fixed checking DWPose onnxruntime session multiple times: https://github.com/Fannovel16/comfyui_controlnet_aux/issues/89)
 * Added `Anime Face Segmentor` (in `ControlNet Preprocessors/Semantic Segmentation`) for [ControlNet AnimeFaceSegmentV2](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite#animefacesegmentv2). Checks [here](#anime-face-segmentor)
+* Change download functions and fix [download error](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/39): [PR](https://github.com/Fannovel16/comfyui_controlnet_aux/pull/96)
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
