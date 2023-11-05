@@ -20,7 +20,7 @@ class AnimeFaceSegmentor:
         filename = filename or "UNet.pth"
         seg_filename = seg_filename or "isnetis.ckpt"
         model_path = custom_hf_download(pretrained_model_or_path, filename, subfolder="Annotators", cache_dir=cache_dir)
-        seg_model_path = custom_hf_download("skytnt/anime-seg/", seg_filename)
+        seg_model_path = custom_hf_download("skytnt/anime-seg", seg_filename)
 
         model = UNet()
         ckpt = torch.load(model_path)
