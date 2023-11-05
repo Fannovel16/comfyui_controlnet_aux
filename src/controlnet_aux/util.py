@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from pathlib import Path
 import warnings
+from huggingface_hub import hf_hub_download
 
 annotator_ckpts_path = os.path.join(os.path.dirname(__file__), 'ckpts')
 
@@ -190,3 +191,23 @@ def ade_palette():
             [184, 255, 0], [0, 133, 255], [255, 214, 0], [25, 194, 194],
             [102, 255, 0], [92, 0, 255]]
 
+def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_ckpts_path, subfolder=''):
+    local_dir = os.path.join(cache_dir, pretrained_model_or_path)
+    model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
+    if not os.path.exists(model_path):
+        cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+        model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
+            local_dir=local_dir,
+            subfolder=subfolder,
+            filename=filename,
+            local_dir_use_symlinks=False,
+            resume_download=True,
+            etag_timeout=100
+        )
+        try:
+            import shutil
+            shutil.rmtree(cache_dir_d)
+        except Exception as e :
+            print(e)
+    return model_path

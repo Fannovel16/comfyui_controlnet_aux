@@ -4,8 +4,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, common_input_validate, resize_image_with_pad
-from huggingface_hub import hf_hub_download
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
 import torch
 
 from custom_mmpkg.custom_mmseg.core.evaluation import get_palette
@@ -19,13 +18,9 @@ class UniformerSegmentor:
         self.model = netNetwork
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=None):
+    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):
         filename = filename or "upernet_global_small.pth"
-
-        if os.path.isdir(pretrained_model_or_path):
-            model_path = os.path.join(pretrained_model_or_path, filename)
-        else:
-            model_path = hf_hub_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         netNetwork = init_segmentor(config_file, model_path, device="cpu")
         netNetwork.load_state_dict({k.replace('module.', ''): v for k, v in torch.load(model_path)['state_dict'].items()})

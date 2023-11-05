@@ -12,10 +12,9 @@ import cv2
 import numpy as np
 import torch
 from einops import rearrange
-from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, nms, resize_image_with_pad, safe_step, common_input_validate
+from ..util import HWC3, nms, resize_image_with_pad, safe_step, common_input_validate, annotator_ckpts_path, custom_hf_download
 
 
 class DoubleConvBlock(torch.nn.Module):
@@ -61,13 +60,9 @@ class HEDdetector:
         self.netNetwork = netNetwork
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=None):
+    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):
         filename = filename or "ControlNetHED.pth"
-
-        if os.path.isdir(pretrained_model_or_path):
-            model_path = os.path.join(pretrained_model_or_path, filename)
-        else:
-            model_path = hf_hub_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         netNetwork = ControlNetHED_Apache2()
         netNetwork.load_state_dict(torch.load(model_path, map_location='cpu'))

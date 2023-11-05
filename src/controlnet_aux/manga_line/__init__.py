@@ -12,21 +12,16 @@ from .model_torch import res_skip
 from PIL import Image
 import warnings
 
-from ..util import HWC3, resize_image_with_pad, common_input_validate
-from huggingface_hub import hf_hub_download
+from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 
 class LineartMangaDetector:
     def __init__(self, model):
         self.model = model
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=None, filename=None, cache_dir=None):
+    def from_pretrained(cls, pretrained_model_or_path=None, filename=None, cache_dir=annotator_ckpts_path):
         filename = filename or "erika.pth"
-
-        if os.path.isdir(pretrained_model_or_path):
-            model_path = os.path.join(pretrained_model_or_path, filename)
-        else:
-            model_path = hf_hub_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         net = res_skip()
         ckpt = torch.load(model_path)

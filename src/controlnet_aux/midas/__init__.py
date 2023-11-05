@@ -4,10 +4,9 @@ import cv2
 import numpy as np
 import torch
 from einops import rearrange
-from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, common_input_validate, resize_image_with_pad
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
 from .api import MiDaSInference
 
 
@@ -16,19 +15,11 @@ class MidasDetector:
         self.model = model
         
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, model_type="dpt_hybrid", filename=None, cache_dir=None):
-        if pretrained_model_or_path == "lllyasviel/ControlNet":
-            filename = filename or "annotator/ckpts/dpt_hybrid-midas-501f0c75.pt"
-        else:
-            filename = filename or "dpt_hybrid-midas-501f0c75.pt"
-
-        if os.path.isdir(pretrained_model_or_path):
-            model_path = os.path.join(pretrained_model_or_path, filename)
-        else:
-            model_path = hf_hub_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
-
+    def from_pretrained(cls, pretrained_model_or_path, model_type="dpt_hybrid", filename=None, cache_dir=annotator_ckpts_path):
+        filename = filename or "dpt_hybrid-midas-501f0c75.pt"
+        subfolder = "annotator/ckpts" if pretrained_model_or_path == "lllyasviel/ControlNet" else ''
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir, subfolder=subfolder)
         model = MiDaSInference(model_type=model_type, model_path=model_path)
-
         return cls(model)
         
 
