@@ -1,4 +1,4 @@
-# ComfyUI's ControlNet Auxiliary Preprocessorss
+# ComfyUI's ControlNet Auxiliary Preprocessors
 
 This is a rework of [comfyui_controlnet_preprocessors](https://github.com/Fannovel16/comfy_controlnet_preprocessors) based on [ControlNet auxiliary models by 🤗](https://github.com/patrickvonplaten/controlnet_aux). I think the old repo isn't good enough to maintain.
 
