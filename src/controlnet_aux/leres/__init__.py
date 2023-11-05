@@ -3,10 +3,9 @@ import os
 import cv2
 import numpy as np
 import torch
-from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
 from .leres.depthmap import estimateboost, estimateleres
 from .leres.multi_depth_model_woauxi import RelDepthModel
 from .leres.net_tools import strip_prefix_if_present
@@ -23,53 +22,20 @@ class LeresDetector:
     def from_pretrained(cls, pretrained_model_or_path, filename=None, pix2pix_filename=None, cache_dir=annotator_ckpts_path):
         filename = filename or "res101.pth"
         pix2pix_filename = pix2pix_filename or "latest_net_G.pth"
-        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
-        model_path = os.path.join(local_dir, filename)
-
-        if not os.path.exists(model_path):
-            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
-            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
-            cache_dir=cache_dir_d,
-            local_dir=local_dir,
-            filename=filename,
-            local_dir_use_symlinks=False,
-            resume_download=True,
-            etag_timeout=100
-            )
-            try:
-                import shutil
-                shutil.rmtree(cache_dir_d)
-            except Exception as e :
-                print(e)
-
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
         checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
 
         model = RelDepthModel(backbone='resnext101')
         model.load_state_dict(strip_prefix_if_present(checkpoint['depth_model'], "module."), strict=True)
         del checkpoint
 
-        model_path = os.path.join(local_dir, pix2pix_filename)
-        if not os.path.exists(model_path):
-            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
-            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
-            cache_dir=cache_dir_d,
-            local_dir=local_dir,
-            filename=pix2pix_filename,
-            local_dir_use_symlinks=False,
-            resume_download=True,
-            etag_timeout=100
-            )
-            try:
-                import shutil
-                shutil.rmtree(cache_dir_d)
-            except Exception as e :
-                print(e)
+        pix2pix_model_path = custom_hf_download(pretrained_model_or_path, pix2pix_filename, cache_dir=cache_dir)
 
         opt = TestOptions().parse()
         if not torch.cuda.is_available():
             opt.gpu_ids = []  # cpu mode
         pix2pixmodel = Pix2Pix4DepthModel(opt)
-        pix2pixmodel.save_dir = os.path.dirname(model_path)
+        pix2pixmodel.save_dir = os.path.dirname(pix2pix_model_path)
         pix2pixmodel.load_networks('latest')
         pix2pixmodel.eval()
 

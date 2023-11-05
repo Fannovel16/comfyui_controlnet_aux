@@ -7,10 +7,9 @@ import numpy as np
 import torch
 import torchvision.transforms as transforms
 from einops import rearrange
-from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
 from .nets.NNET import NNET
 
 
@@ -37,24 +36,7 @@ class NormalBaeDetector:
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):        
         filename = filename or "scannet.pt"
-        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
-
-        model_path = os.path.join(local_dir, filename)
-        if not os.path.exists(model_path):
-            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
-            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
-            cache_dir=cache_dir_d,
-            local_dir=local_dir,
-            filename=filename,
-            local_dir_use_symlinks=False,
-            resume_download=True,
-            etag_timeout=100
-            )
-            try:
-                import shutil
-                shutil.rmtree(cache_dir_d)
-            except Exception as e :
-                print(e)
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         args = types.SimpleNamespace()
         args.mode = 'client'

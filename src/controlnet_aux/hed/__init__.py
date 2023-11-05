@@ -12,10 +12,9 @@ import cv2
 import numpy as np
 import torch
 from einops import rearrange
-from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, nms, resize_image_with_pad, safe_step, common_input_validate, annotator_ckpts_path
+from ..util import HWC3, nms, resize_image_with_pad, safe_step, common_input_validate, annotator_ckpts_path, custom_hf_download
 
 
 class DoubleConvBlock(torch.nn.Module):
@@ -63,24 +62,7 @@ class HEDdetector:
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):
         filename = filename or "ControlNetHED.pth"
-        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
-
-        model_path = os.path.join(local_dir, filename)
-        if not os.path.exists(model_path):
-            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
-            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
-            cache_dir=cache_dir_d,
-            local_dir=local_dir,
-            filename=filename,
-            local_dir_use_symlinks=False,
-            resume_download=True,
-            etag_timeout=100
-            )
-            try:
-                import shutil
-                shutil.rmtree(cache_dir_d)
-            except Exception as e :
-                print(e)
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         netNetwork = ControlNetHED_Apache2()
         netNetwork.load_state_dict(torch.load(model_path, map_location='cpu'))

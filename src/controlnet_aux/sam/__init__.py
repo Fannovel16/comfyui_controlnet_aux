@@ -11,10 +11,9 @@ from typing import Union
 import cv2
 import numpy as np
 import torch
-from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path
+from ..util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
 from .automatic_mask_generator import SamAutomaticMaskGenerator
 from .build_sam import sam_model_registry
 
@@ -29,25 +28,7 @@ class SamDetector:
         Possible model_type : vit_h, vit_l, vit_b, vit_t
         download weights from https://github.com/facebookresearch/segment-anything
         """
-        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
-
-        model_path = os.path.join(local_dir, filename)
-        if not os.path.exists(model_path):
-            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
-            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
-            cache_dir=cache_dir_d,
-            local_dir=local_dir,
-            filename=filename,
-            subfolder=subfolder,
-            local_dir_use_symlinks=False,
-            resume_download=True,
-            etag_timeout=100
-            )
-            try:
-                import shutil
-                shutil.rmtree(cache_dir_d)
-            except Exception as e :
-                print(e) 
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
         
         sam = sam_model_registry[model_type](checkpoint=model_path)
         mask_generator = SamAutomaticMaskGenerator(sam)

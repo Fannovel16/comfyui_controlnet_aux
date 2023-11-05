@@ -12,8 +12,7 @@ from .model_torch import res_skip
 from PIL import Image
 import warnings
 
-from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path
-from huggingface_hub import hf_hub_download
+from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 
 class LineartMangaDetector:
     def __init__(self, model):
@@ -22,25 +21,7 @@ class LineartMangaDetector:
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=None, filename=None, cache_dir=annotator_ckpts_path):
         filename = filename or "erika.pth"
-        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
-
-        model_path = os.path.join(local_dir, filename)
-        if not os.path.exists(model_path):
-            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
-            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
-            cache_dir=cache_dir_d,
-            local_dir=local_dir,
-            filename=filename,
-            subfolder="annotator/ckpts",
-            local_dir_use_symlinks=False,
-            resume_download=True,
-            etag_timeout=100
-            )
-            try:
-                import shutil
-                shutil.rmtree(cache_dir_d)
-            except Exception as e :
-                print(e)
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         net = res_skip()
         ckpt = torch.load(model_path)

@@ -10,7 +10,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path
+from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 
 
 class UnetGenerator(nn.Module):
@@ -120,24 +120,7 @@ class LineartAnimeDetector:
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):
         filename = filename or "netG.pth"
-        local_dir = os.path.join(cache_dir, pretrained_model_or_path)
-
-        model_path = os.path.join(local_dir, filename)
-        if not os.path.exists(model_path):
-            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
-            model_path = hf_hub_download(repo_id=pretrained_model_or_path,
-            cache_dir=cache_dir_d,
-            local_dir=local_dir,
-            filename=filename,
-            local_dir_use_symlinks=False,
-            resume_download=True,
-            etag_timeout=100
-            )
-            try:
-                import shutil
-                shutil.rmtree(cache_dir_d)
-            except Exception as e :
-                print(e)
+        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         norm_layer = functools.partial(nn.InstanceNorm2d, affine=False, track_running_stats=False)
         net = UnetGenerator(3, 1, 8, 64, norm_layer=norm_layer, use_dropout=False)
