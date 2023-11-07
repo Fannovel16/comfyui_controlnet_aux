@@ -1,4 +1,4 @@
-import timm
+import custom_timm as timm
 
 from .swin_common import _make_swin_backbone
 

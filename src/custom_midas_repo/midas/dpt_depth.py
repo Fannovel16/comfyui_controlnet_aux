@@ -12,7 +12,7 @@ from .blocks import (
     forward_vit,
 )
 from .backbones.levit import stem_b4_transpose
-from timm.models.layers import get_act_layer
+from custom_timm.models.layers import get_act_layer
 
 
 def _make_fusion_block(features, use_bn, size = None):

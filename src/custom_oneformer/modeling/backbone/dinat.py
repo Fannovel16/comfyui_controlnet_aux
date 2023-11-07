@@ -8,7 +8,7 @@
 
 import torch
 import torch.nn as nn
-from timm.models.layers import DropPath
+from custom_timm.models.layers import DropPath
 from custom_detectron2.modeling import BACKBONE_REGISTRY, Backbone, ShapeSpec
 
 class NeighborhoodAttention(nn.Module):

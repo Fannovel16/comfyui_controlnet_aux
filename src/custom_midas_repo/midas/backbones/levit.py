@@ -1,4 +1,4 @@
-import timm
+import custom_timm as timm
 import torch
 import torch.nn as nn
 import numpy as np

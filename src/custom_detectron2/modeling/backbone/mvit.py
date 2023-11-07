@@ -234,7 +234,7 @@ class MultiScaleBlock(nn.Module):
             input_size=input_size,
         )
 
-        from timm.models.layers import DropPath, Mlp
+        from custom_timm.models.layers import DropPath, Mlp
 
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         self.norm2 = norm_layer(dim_out)

@@ -1,4 +1,4 @@
-import timm
+import custom_timm as timm
 import torch
 import types
 
@@ -6,7 +6,7 @@ import numpy as np
 import torch.nn.functional as F
 
 from .utils import forward_adapted_unflatten, make_backbone_default
-from timm.models.beit import gen_relative_position_index
+from custom_timm.models.beit import gen_relative_position_index
 from torch.utils.checkpoint import checkpoint
 from typing import Optional
 
