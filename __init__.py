@@ -13,7 +13,6 @@ from .hint_image_enchance import NODE_DISPLAY_NAME_MAPPINGS as HIE_NODE_DISPLAY_
 sys.path.insert(0, str(Path(here, "src").resolve()))
 for pkg_name in os.listdir(str(Path(here, "src"))):
     sys.path.insert(0, str(Path(here, "src", pkg_name).resolve()))
-print(f"Registered sys.path: {sys.path}")
 
 #Enable CPU fallback for ops not being supported by MPS like upsample_bicubic2d.out
 #https://github.com/pytorch/pytorch/issues/77764
