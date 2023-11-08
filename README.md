@@ -29,6 +29,7 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Fixed checking DWPose onnxruntime session multiple times: https://github.com/Fannovel16/comfyui_controlnet_aux/issues/89)
 * Added `Anime Face Segmentor` (in `ControlNet Preprocessors/Semantic Segmentation`) for [ControlNet AnimeFaceSegmentV2](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite#animefacesegmentv2). Checks [here](#anime-face-segmentor)
 * Change download functions and fix [download error](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/39): [PR](https://github.com/Fannovel16/comfyui_controlnet_aux/pull/96)
+* Caching DWPose Onnxruntime during the first use of DWPose node instead of ComfyUI startup
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?

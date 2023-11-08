@@ -28,6 +28,7 @@ class Wholebody:
     def __init__(self, onnx_det: str, onnx_pose: str):
         global ort_session_det, ort_session_pose
         if check_ort_gpu():
+            print("DWPose: Caching onnxruntime sessions (might take around half a minute)...")
             import onnxruntime as ort
             if ort_session_det is None:
                 SUPPORT_PROVIDERS.append('CPUExecutionProvider')
