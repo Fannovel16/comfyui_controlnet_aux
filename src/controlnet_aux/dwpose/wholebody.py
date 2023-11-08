@@ -31,7 +31,7 @@ class Wholebody:
         if check_ort_gpu():
             import onnxruntime as ort
             if ort_session_det is None:
-                print("DWPose: Caching onnxruntime sessions (might take around half a minute)...")
+                print("DWPose: Caching onnxruntime sessions...")
                 SUPPORT_PROVIDERS.append('CPUExecutionProvider')
                 ort_session_det = ort.InferenceSession(onnx_det, providers=SUPPORT_PROVIDERS)
                 ort_session_pose = ort.InferenceSession(onnx_pose, providers=SUPPORT_PROVIDERS)

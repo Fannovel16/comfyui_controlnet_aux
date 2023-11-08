@@ -163,7 +163,6 @@ class DwposeDetector:
         pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
         det_model_path = custom_hf_download(pretrained_model_or_path, det_filename, cache_dir=cache_dir)
         pose_model_path = custom_hf_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
-        #pose_model_path = "E:\\end2end.onnx"
 
         return cls(Wholebody(det_model_path, pose_model_path))
 
