@@ -53,7 +53,7 @@ class DWPose_Preprocessor:
             self.openpose_json = result[1]
             return result[0]
         
-        print(f"DWPose: Using {bbox_detector} for bbox detection and dw-ll_ucoco_384.onnx for pose estimation")
+        print(f"\nDWPose: Using {bbox_detector} for bbox detection and dw-ll_ucoco_384.onnx for pose estimation")
         out = common_annotator_call(cb, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, resolution=resolution)
         del model
         return {
