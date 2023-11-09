@@ -27,12 +27,12 @@ if not os.environ.get("DWPOSE_ONNXRT_CHECKED"):
 class DWPose_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
+        input_types = create_node_input_types(
             detect_hand=(["enable", "disable"], {"default": "enable"}),
             detect_body=(["enable", "disable"], {"default": "enable"}),
-            detect_face=(["enable", "disable"], {"default": "enable"}),
-            bbox_detector=(["yolox_s.onnx", "yolox_m.onnx", "yolox_l.onnx"], {"default": "yolox_l.onnx"})
+            detect_face=(["enable", "disable"], {"default": "enable"})
         )
+        input_types["optional"] = {**input_types["optional"], "bbox_detector": (["yolox_s.onnx", "yolox_m.onnx", "yolox_l.onnx"], {"default": "yolox_l.onnx"})}
         
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "estimate_pose"
