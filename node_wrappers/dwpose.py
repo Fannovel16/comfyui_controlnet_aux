@@ -33,6 +33,7 @@ class DWPose_Preprocessor:
             detect_face=(["enable", "disable"], {"default": "enable"})
         )
         input_types["optional"] = {**input_types["optional"], "bbox_detector": (["yolox_s.onnx", "yolox_m.onnx", "yolox_l.onnx"], {"default": "yolox_l.onnx"})}
+        return input_types
         
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "estimate_pose"
