@@ -8,6 +8,7 @@ from .cv_ox_pose import inference_pose
 from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
 from timeit import default_timer
+import os
 
 ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
 SUPPORT_PROVIDERS = []
@@ -24,21 +25,29 @@ def check_ort_gpu():
 
 #Global caching as the startup of onnxruntime is a bit slow
 ort_session_det, ort_session_pose = None, None
+cached_onnx_det_name = ''
 
 class Wholebody:
     def __init__(self, onnx_det: str, onnx_pose: str):
-        global ort_session_det, ort_session_pose
+        global ort_session_det, ort_session_pose, cached_onnx_det_name
         if check_ort_gpu():
             import onnxruntime as ort
-            if ort_session_det is None:
-                print("DWPose: Caching onnxruntime sessions...")
+            if ort_session_pose is None:
+                print("DWPose: Caching pose session...")
                 SUPPORT_PROVIDERS.append('CPUExecutionProvider')
-                ort_session_det = ort.InferenceSession(onnx_det, providers=SUPPORT_PROVIDERS)
                 ort_session_pose = ort.InferenceSession(onnx_pose, providers=SUPPORT_PROVIDERS)
+            
+            det_filename = os.path.basename(onnx_det)
+            if det_filename != cached_onnx_det_name or ort_session_det is None:
+                print(f"DWPose: Caching bbox detection session {det_filename}...")
+                ort_session_det = ort.InferenceSession(onnx_det, providers=SUPPORT_PROVIDERS)
+                cached_onnx_det_name = det_filename
+
             self.session_det = ort_session_det
             self.session_pose = ort_session_pose
             return
-            
+        
+        cached_onnx_det_name = os.path.basename(onnx_det)
         # Always loads to CPU to avoid building OpenCV.
         device = 'cpu'
         backend = cv2.dnn.DNN_BACKEND_OPENCV if device == 'cpu' else cv2.dnn.DNN_BACKEND_CUDA
@@ -56,13 +65,13 @@ class Wholebody:
     def __call__(self, oriImg) -> Optional[np.ndarray]:
         det_start = default_timer()
         det_result = inference_detector(self.session_det, oriImg)
-        print(f"DWPose: Bbox detection costs {((default_timer() - det_start) * 1000):.2f}ms")
+        print(f"DWPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
         if det_result is None:
             return None
 
         pose_start = default_timer()
         keypoints, scores = inference_pose(self.session_pose, det_result, oriImg)
-        print(f"DWPose: Pose estimation costs {((default_timer() - pose_start) * 1000):.2f}ms")
+        print(f"DWPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms")
 
         keypoints_info = np.concatenate(
             (keypoints, scores[..., None]), axis=-1)

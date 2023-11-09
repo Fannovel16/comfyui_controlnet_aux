@@ -161,7 +161,8 @@ class DwposeDetector:
     def from_pretrained(cls, pretrained_model_or_path, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
         det_filename = det_filename or "yolox_l.onnx"
         pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
-        det_model_path = custom_hf_download(pretrained_model_or_path, det_filename, cache_dir=cache_dir)
+        det_model_repo = pretrained_model_or_path if det_filename == "yolox_l.onnx" else "hr16/yolox-onnx"
+        det_model_path = custom_hf_download(det_model_repo, det_filename, cache_dir=cache_dir)
         pose_model_path = custom_hf_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
 
         return cls(Wholebody(det_model_path, pose_model_path))
