@@ -93,11 +93,12 @@ def preprocess(img, input_size, swap=(2, 0, 1)):
     padded_img = np.ascontiguousarray(padded_img, dtype=np.float32)
     return padded_img, r
 
-def inference_detector(session, oriImg):
+def inference_detector(session, oriImg, dtype=np.float32):
     input_shape = (640,640)
     img, ratio = preprocess(oriImg, input_shape)
 
     input = img[None, :, :, :]
+    input = input.astype(dtype)
     if "InferenceSession" in type(session).__name__:
         input_name = session.get_inputs()[0].name
         output = session.run(None, {input_name: input})

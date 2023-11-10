@@ -64,7 +64,12 @@ class Wholebody:
     
     def __call__(self, oriImg) -> Optional[np.ndarray]:
         det_start = default_timer()
-        det_result = inference_detector(self.session_det, oriImg)
+        det_dtype = np.float32
+        if "fp16" in cached_onnx_det_name:
+            det_dtype = np.float16
+        elif "int8" in cached_onnx_det_name:
+            det_dtype = np.uint8
+        det_result = inference_detector(self.session_det, oriImg, det_dtype)
         print(f"DWPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
         if det_result is None:
             return None
