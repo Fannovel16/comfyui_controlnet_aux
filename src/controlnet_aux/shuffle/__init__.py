@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 import random
 
-from ..util import HWC3, common_input_validate, img2mask, make_noise_disk, resize_image_with_pad
+from controlnet_aux.util import HWC3, common_input_validate, img2mask, make_noise_disk, resize_image_with_pad
 
 
 class ContentShuffleDetector:

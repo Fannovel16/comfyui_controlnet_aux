@@ -2,7 +2,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, resize_image_with_pad
+from controlnet_aux.util import HWC3, resize_image_with_pad
 
 class BinaryDetector:
     def __call__(self, input_image=None, bin_threshold=0, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):

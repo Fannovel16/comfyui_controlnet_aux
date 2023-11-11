@@ -3,7 +3,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, safer_memory, common_input_validate
+from controlnet_aux.util import HWC3, safer_memory, common_input_validate
 
 def cv2_resize_shortest_edge(image, size):
     h, w = image.shape[:2]

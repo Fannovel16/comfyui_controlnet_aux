@@ -8,7 +8,7 @@ import torch.nn as nn
 from einops import rearrange
 from PIL import Image
 
-from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 
 norm_layer = nn.InstanceNorm2d
 

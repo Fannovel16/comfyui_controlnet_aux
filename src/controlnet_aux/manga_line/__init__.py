@@ -12,7 +12,7 @@ from .model_torch import res_skip
 from PIL import Image
 import warnings
 
-from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 
 class LineartMangaDetector:
     def __init__(self, model):

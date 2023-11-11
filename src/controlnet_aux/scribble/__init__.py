@@ -2,7 +2,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, resize_image_with_pad, common_input_validate, HWC3
+from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, HWC3
 
 #Not to be confused with "scribble" from HED. That is "fake scribble" which is more accurate and less picky than this.
 class ScribbleDetector:

@@ -21,7 +21,7 @@ from .types import PoseResult, HandResult, FaceResult
 from huggingface_hub import hf_hub_download
 from .wholebody import Wholebody # DW Pose
 import warnings
-from ..util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 import cv2
 from PIL import Image
 

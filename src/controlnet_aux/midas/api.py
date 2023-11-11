@@ -10,7 +10,7 @@ from custom_midas_repo.midas.dpt_depth import DPTDepthModel
 from custom_midas_repo.midas.midas_net import MidasNet
 from custom_midas_repo.midas.midas_net_custom import MidasNet_small
 from custom_midas_repo.midas.transforms import Resize, NormalizeImage, PrepareForNet
-from ..util import annotator_ckpts_path
+from controlnet_aux.util import annotator_ckpts_path
 
 
 ISL_PATHS = {

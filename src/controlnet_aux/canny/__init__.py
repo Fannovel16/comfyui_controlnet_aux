@@ -2,7 +2,7 @@ import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import resize_image_with_pad, common_input_validate, HWC3
+from controlnet_aux.util import resize_image_with_pad, common_input_validate, HWC3
 
 class CannyDetector:
     def __call__(self, input_image=None, low_threshold=100, high_threshold=200, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
