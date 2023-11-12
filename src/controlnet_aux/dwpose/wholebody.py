@@ -25,17 +25,19 @@ def check_ort_gpu():
 
 #Global caching as the startup of onnxruntime is a bit slow
 ort_session_det, ort_session_pose = None, None
-cached_onnx_det_name = ''
+cached_onnx_det_name, cached_onnx_pose_name = '', ''
 
 class Wholebody:
     def __init__(self, onnx_det: str, onnx_pose: str):
-        global ort_session_det, ort_session_pose, cached_onnx_det_name
+        global ort_session_det, ort_session_pose, cached_onnx_det_name, cached_onnx_pose_name
         if check_ort_gpu():
             import onnxruntime as ort
-            if ort_session_pose is None:
-                print("DWPose: Caching pose session...")
+            pose_filename = os.path.basename(onnx_pose)
+            if pose_filename != cached_onnx_pose_name and ort_session_pose is None:
+                print(f"DWPose: Caching pose session {pose_filename}...")
                 SUPPORT_PROVIDERS.append('CPUExecutionProvider')
                 ort_session_pose = ort.InferenceSession(onnx_pose, providers=SUPPORT_PROVIDERS)
+                cached_onnx_pose_name = pose_filename
             
             det_filename = os.path.basename(onnx_det)
             if det_filename != cached_onnx_det_name or ort_session_det is None:
@@ -63,19 +65,26 @@ class Wholebody:
         self.session_pose.setPreferableTarget(providers)
     
     def __call__(self, oriImg) -> Optional[np.ndarray]:
-        det_start = default_timer()
         det_dtype = np.float32
         if "fp16" in cached_onnx_det_name:
             det_dtype = np.float16
         elif "int8" in cached_onnx_det_name:
             det_dtype = np.uint8
+        pose_dtype = np.float32
+        if "fp16" in cached_onnx_pose_name:
+            pose_dtype = np.float16
+        elif "int8" in cached_onnx_pose_name:
+            pose_dtype = np.uint8
+        pose_input_size = (288, 384) if "384" in cached_onnx_pose_name else (192, 256)
+        
+        det_start = default_timer()
         det_result = inference_detector(self.session_det, oriImg, det_dtype)
         print(f"DWPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
         if det_result is None:
             return None
 
         pose_start = default_timer()
-        keypoints, scores = inference_pose(self.session_pose, det_result, oriImg)
+        keypoints, scores = inference_pose(self.session_pose, det_result, oriImg, pose_input_size, pose_dtype)
         print(f"DWPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms")
 
         keypoints_info = np.concatenate(

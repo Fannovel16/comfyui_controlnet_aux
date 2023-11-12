@@ -48,7 +48,7 @@ def preprocess(
     return out_img, out_center, out_scale
 
 
-def inference(sess, img):
+def inference(sess, img, dtype=np.float32):
     """Inference DWPose model.
 
     Args:
@@ -64,14 +64,16 @@ def inference(sess, img):
 
         input = img[i].transpose(2, 0, 1)
         input = input[None, :, :, :]
+        input = input.astype(dtype)
 
         if "InferenceSession" in type(sess).__name__:
             input_name = sess.get_inputs()[0].name
-            outputs = sess.run(None, {input_name: input.astype(np.float32)})
+            outputs = sess.run(None, {input_name: input})
         else:
             outNames = sess.getUnconnectedOutLayersNames()
             sess.setInput(input)
             outputs = sess.forward(outNames)
+        outputs = [output.astype(np.float32) for output in outputs]
         all_out.append(outputs)
 
     return all_out
@@ -350,10 +352,9 @@ def decode(simcc_x: np.ndarray, simcc_y: np.ndarray,
     return keypoints, scores
 
 
-def inference_pose(session, out_bbox, oriImg):
-    model_input_size = (288, 384)
+def inference_pose(session, out_bbox, oriImg, model_input_size=(288, 384), dtype=np.float32):
     resized_img, center, scale = preprocess(oriImg, out_bbox, model_input_size)
-    outputs = inference(session, resized_img)
+    outputs = inference(session, resized_img, dtype)
     keypoints, scores = postprocess(outputs, model_input_size, center, scale)
 
     return keypoints, scores

@@ -32,7 +32,11 @@ class DWPose_Preprocessor:
             detect_body=(["enable", "disable"], {"default": "enable"}),
             detect_face=(["enable", "disable"], {"default": "enable"})
         )
-        input_types["optional"] = {**input_types["optional"], "bbox_detector": (["yolox_s.onnx", "yolox_m.onnx", "yolox_l.onnx"], {"default": "yolox_l.onnx"})}
+        input_types["optional"] = {
+            **input_types["optional"],
+            "bbox_detector": (["yolox_s.onnx", "yolox_m.onnx", "yolox_l.onnx"], {"default": "yolox_l.onnx"}),
+            "pose_detector": (["dw-ll_ucoco_384.onnx", "dw-ll_ucoco.onnx", "dw-mm_ucoco.onnx", "dw-ss_ucoco.onnx"], {"default": "dw-ll_ucoco_384.onnx"})
+        }
         return input_types
         
     RETURN_TYPES = ("IMAGE",)
@@ -40,21 +44,21 @@ class DWPose_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
-    def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, bbox_detector="yolox_l.onnx", **kwargs):
+    def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, bbox_detector="yolox_l.onnx", pose_detector="dw-ll_ucoco_384.onnx", **kwargs):
 
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"
 
         self.openpose_json = None
-        model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path, det_filename=bbox_detector)
+        model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_detector)
         
         def cb(image, **kwargs):
             result = model(image, **kwargs)
             self.openpose_json = result[1]
             return result[0]
         
-        print(f"\nDWPose: Using {bbox_detector} for bbox detection and dw-ll_ucoco_384.onnx for pose estimation")
+        print(f"\nDWPose: Using {bbox_detector} for bbox detection and {pose_detector} for pose estimation")
         out = common_annotator_call(cb, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, resolution=resolution)
         del model
         return {
