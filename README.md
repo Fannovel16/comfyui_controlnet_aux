@@ -31,6 +31,7 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Change download functions and fix [download error](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/39): [PR](https://github.com/Fannovel16/comfyui_controlnet_aux/pull/96)
 * Caching DWPose Onnxruntime during the first use of DWPose node instead of ComfyUI startup
 * Added alternative YOLOX models for faster speed when using DWPose
+* Added alternative DWPose models
 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
