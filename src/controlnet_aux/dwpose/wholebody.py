@@ -49,6 +49,7 @@ class Wholebody:
             self.session_pose = ort_session_pose
             return
         
+        cached_onnx_pose_name = os.path.basename(onnx_pose)
         cached_onnx_det_name = os.path.basename(onnx_det)
         # Always loads to CPU to avoid building OpenCV.
         device = 'cpu'
