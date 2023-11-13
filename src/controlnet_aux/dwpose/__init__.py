@@ -24,6 +24,7 @@ import warnings
 from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 import cv2
 from PIL import Image
+from .animalpose import AnimalPoseImage
 
 from typing import Tuple, List, Callable, Union, Optional
 
@@ -179,11 +180,10 @@ class DwposeDetector:
             include_face = hand_and_face
 
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
-        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
-
-        poses = self.detect_poses(detected_map)
-        detected_map = remove_pad(detected_map)
+        poses = self.detect_poses(input_image)
+        detected_map = remove_pad(input_image)
         canvas = draw_poses(poses, detected_map.shape[0], detected_map.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
 
         detected_map = HWC3(canvas)
@@ -194,4 +194,38 @@ class DwposeDetector:
         if image_and_json:
             return (detected_map, encode_poses_as_json(poses, detected_map.shape[0], detected_map.shape[1]))
         
+        return detected_map
+
+class AnimalposeDetector:
+    """
+    A class for detecting animal poses in images using the RTMPose AP10k model.
+
+    Attributes:
+        model_dir (str): Path to the directory where the pose models are stored.
+    """
+    def __init__(self, animal_pose_estimation):
+        self.animal_pose_estimation = animal_pose_estimation
+    
+    @classmethod
+    def from_pretrained(cls, pretrained_model_or_path, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+        det_filename = det_filename or "yolox_l.onnx"
+        pose_filename = pose_filename or "rtmpose-m_ap10k_256"
+        det_model_repo = pretrained_model_or_path if det_filename == "yolox_l.onnx" else "hr16/yolox-onnx"
+        pose_model_repo = pretrained_model_or_path if pose_filename == "dw-ll_ucoco_384.onnx" else "hr16/UnJIT-DWPose"
+        det_model_path = custom_hf_download(det_model_repo, det_filename, cache_dir=cache_dir)
+        pose_model_path = custom_hf_download(pose_model_repo, pose_filename, cache_dir=cache_dir)
+        return cls(AnimalPoseImage(det_model_path, pose_model_path))
+    
+    def __call__(self, input_image, detect_resolution=512, output_type="pil", image_and_json=False, upscale_method="INTER_CUBIC", **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
+        detected_map, json_str = self.animal_pose_estimation(input_image)
+        detected_map = remove_pad(detected_map)
+
+        if output_type == "pil":
+            detected_map = Image.fromarray(detected_map)
+        
+        if image_and_json:
+            return (detected_map, json_str)
+
         return detected_map

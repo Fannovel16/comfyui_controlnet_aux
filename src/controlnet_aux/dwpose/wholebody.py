@@ -9,6 +9,7 @@ from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
 from timeit import default_timer
 import os
+from controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype
 
 ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
 SUPPORT_PROVIDERS = []
@@ -66,20 +67,11 @@ class Wholebody:
         self.session_pose.setPreferableTarget(providers)
     
     def __call__(self, oriImg) -> Optional[np.ndarray]:
-        det_dtype = np.float32
-        if "fp16" in cached_onnx_det_name:
-            det_dtype = np.float16
-        elif "int8" in cached_onnx_det_name:
-            det_dtype = np.uint8
-        pose_dtype = np.float32
-        if "fp16" in cached_onnx_pose_name:
-            pose_dtype = np.float16
-        elif "int8" in cached_onnx_pose_name:
-            pose_dtype = np.uint8
-        pose_input_size = (288, 384) if "384" in cached_onnx_pose_name else (192, 256)
+        _, det_dtype = guess_onnx_input_shape_dtype(cached_onnx_det_name)
+        pose_input_size, pose_dtype = guess_onnx_input_shape_dtype(cached_onnx_pose_name)
         
         det_start = default_timer()
-        det_result = inference_detector(self.session_det, oriImg, det_dtype)
+        det_result = inference_detector(self.session_det, oriImg, detect_classes=[0], dtype=det_dtype)
         print(f"DWPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
         if det_result is None:
             return None

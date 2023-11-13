@@ -2,7 +2,7 @@ from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, 
 import comfy.model_management as model_management
 import numpy as np
 import warnings
-from controlnet_aux.dwpose import DwposeDetector
+from controlnet_aux.dwpose import DwposeDetector, AnimalposeDetector
 import os
 
 #Trigger startup caching for onnxruntime
@@ -53,13 +53,42 @@ class DWPose_Preprocessor:
         self.openpose_json = None
         model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator)
         
-        def cb(image, **kwargs):
+        def func(image, **kwargs):
             result = model(image, **kwargs)
             self.openpose_json = result[1]
             return result[0]
         
         print(f"\nDWPose: Using {bbox_detector} for bbox detection and {pose_estimator} for pose estimation")
-        out = common_annotator_call(cb, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, resolution=resolution)
+        out = common_annotator_call(func, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, resolution=resolution)
+        del model
+        return {
+            'ui': { "openpose_json": [self.openpose_json] },
+            "result": (out, )
+        }
+
+class AnimalPose_Preprocessor:
+    @classmethod
+    def INPUT_TYPES(s):
+        return create_node_input_types(
+            bbox_detector = (["yolox_s.onnx", "yolox_m.onnx", "yolox_l.onnx"], {"default": "yolox_l.onnx"}),
+            pose_estimator = (["rtmpose-m_ap10k_256.onnx"], {"default": "rtmpose-m_ap10k_256.onnx"})
+        )
+        
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "estimate_pose"
+
+    CATEGORY = "ControlNet Preprocessors/Faces and Poses"
+
+    def estimate_pose(self, image, resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="rtmpose-m_ap10k_256.onnx", **kwargs):
+        model = AnimalposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator)
+        print(f"\nAnimalPose: Using {bbox_detector} for bbox detection and {pose_estimator} for pose estimation")
+
+        def func(image, **kwargs):
+            result = model(image, **kwargs)
+            self.openpose_json = result[1]
+            return result[0]
+
+        out = common_annotator_call(func, image, image_and_json=True, resolution=resolution)
         del model
         return {
             'ui': { "openpose_json": [self.openpose_json] },
@@ -67,8 +96,10 @@ class DWPose_Preprocessor:
         }
 
 NODE_CLASS_MAPPINGS = {
-    "DWPreprocessor": DWPose_Preprocessor
+    "DWPreprocessor": DWPose_Preprocessor,
+    "AnimalPosePreprocessor": AnimalPose_Preprocessor
 }
-NODE_DISPLAY_CLASS_MAPPINGS = {
-    "DWPreprocessor": "DWPose Pose Recognition"
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "DWPreprocessor": "DWPose Estimation",
+    "AnimalPosePreprocessor": "Animal Pose Estimation (AP10K)"
 }

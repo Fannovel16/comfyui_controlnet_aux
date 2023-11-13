@@ -19,6 +19,6 @@ class InpaintPreprocessor:
 NODE_CLASS_MAPPINGS = {
     "InpaintPreprocessor": InpaintPreprocessor
 }
-NODE_CLASS_DISPLAY_MAPPINGS = {
+NODE_DISPLAY_NAME_MAPPINGS = {
     "InpaintPreprocessor": "Inpaint Preprocessor"
 }

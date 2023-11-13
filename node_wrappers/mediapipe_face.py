@@ -52,6 +52,6 @@ NODE_CLASS_MAPPINGS = {
     "MediaPipe-FaceMeshPreprocessor": Media_Pipe_Face_Mesh_Preprocessor
 }
 
-NODE_CLASS_NAME_MAPPINGS = {
+NODE_DISPLAY_NAME_MAPPINGS = {
     "MediaPipe-FaceMeshPreprocessor": "MediaPipe Face Mesh"
 }

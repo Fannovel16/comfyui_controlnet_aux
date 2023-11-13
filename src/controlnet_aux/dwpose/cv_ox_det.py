@@ -93,7 +93,7 @@ def preprocess(img, input_size, swap=(2, 0, 1)):
     padded_img = np.ascontiguousarray(padded_img, dtype=np.float32)
     return padded_img, r
 
-def inference_detector(session, oriImg, dtype=np.float32):
+def inference_detector(session, oriImg, detect_classes=[0], dtype=np.float32):
     input_shape = (640,640)
     img, ratio = preprocess(oriImg, input_shape)
 
@@ -123,7 +123,7 @@ def inference_detector(session, oriImg, dtype=np.float32):
         return None
     final_boxes, final_scores, final_cls_inds = dets[:, :4], dets[:, 4], dets[:, 5]
     isscore = final_scores>0.3
-    iscat = final_cls_inds == 0
+    iscat = np.isin(final_cls_inds, detect_classes)
     isbbox = [ i and j for (i, j) in zip(isscore, iscat)]
     final_boxes = final_boxes[isbbox]
     return final_boxes

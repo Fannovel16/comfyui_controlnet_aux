@@ -19,6 +19,6 @@ NODE_CLASS_MAPPINGS = {
     "ShufflePreprocessor": Shuffle_Preprocessor
 }
 
-NODE_DISPLAY_CLASS_MAPPINGS = {
+NODE_DISPLAY_NAME_MAPPINGS = {
     "ShufflePreprocessor": "Content Shuffle"
 }

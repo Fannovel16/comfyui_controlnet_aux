@@ -32,7 +32,7 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Caching DWPose Onnxruntime during the first use of DWPose node instead of ComfyUI startup
 * Added alternative YOLOX models for faster speed when using DWPose
 * Added alternative DWPose models
-
+* Implemented the preprocessor for [AnimalPose ControlNet](https://github.com/abehonest/ControlNet_AnimalPose/tree/main). Check [Animal Pose AP-10K](#animal-pose-ap-10k) 
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
 
@@ -98,9 +98,10 @@ You need to use its node directly to set thresholds.
 * Zoe - Depth Map
 
 ## Faces and Poses
-* DWPose Pose Recognition
-* OpenPose Pose Recognition
+* DWPose Pose Estimation
+* OpenPose Pose Estimation
 * MediaPipe Face Mesh
+* Animal Pose Estimation
 
 You can get [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) from DWPose and OpenPose through two ways
 
@@ -183,6 +184,9 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same k
 ### OpenPose
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openpose.png)
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openposev2.png)
+
+### Animal Pose (AP-10K)
+![](./example_animal_pose.png)
 
 ## Semantic Segmantation
 ### OneFormer ADE20K Segmentor
