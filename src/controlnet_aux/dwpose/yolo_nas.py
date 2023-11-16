@@ -22,7 +22,23 @@ def preprocess(img, input_size, swap=(2, 0, 1)):
     padded_img = np.ascontiguousarray(padded_img, dtype=np.float32)
     return padded_img, r
 
-def inference_detector(session, oriImg, detect_classes=[0], dtype=np.float32):
+def inference_detector(session, oriImg, detect_classes=[0], dtype=np.uint8):
+    """
+    This function is only compatible with onnx models exported from the new API with built-in NMS
+    ```py
+    from super_gradients.conversion.conversion_enums import ExportQuantizationMode
+    from super_gradients.common.object_names import Models
+    from super_gradients.training import models
+
+    model = models.get(Models.YOLO_NAS_L, pretrained_weights="coco")
+
+    export_result = model.export(
+        "yolo_nas/yolo_nas_l_fp16.onnx",
+        quantization_mode=ExportQuantizationMode.FP16,
+        device="cuda"
+    )
+    ```
+    """
     input_shape = (640,640)
     img, ratio = preprocess(oriImg, input_shape)
     input = img[None, :, :, :]
