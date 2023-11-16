@@ -49,7 +49,7 @@ def preprocess(
 
 
 def inference(sess, img, dtype=np.float32):
-    """Inference DWPose model. Processing all image segments at once to take advantage of GPU's parallelism ability
+    """Inference DWPose model. Processing all image segments at once to take advantage of GPU's parallelism ability if onnxruntime is installed
 
     Args:
         sess : ONNXRuntime session.
@@ -65,15 +65,22 @@ def inference(sess, img, dtype=np.float32):
     if "InferenceSession" in type(sess).__name__:
         input_name = sess.get_inputs()[0].name
         all_outputs = sess.run(None, {input_name: input})
-    else:
+        for batch_idx in range(len(all_outputs[0])):
+            outputs = [all_outputs[i][batch_idx:batch_idx+1,...] for i in range(len(all_outputs))]
+        all_out.append(outputs)
+        return all_out
+
+    #OpenCV doesn't support batch processing sadly
+    for i in range(len(img)):
+        input = img[i].transpose(2, 0, 1)
+        input = input[None, :, :, :]
+
         outNames = sess.getUnconnectedOutLayersNames()
         sess.setInput(input)
-        all_outputs = sess.forward(outNames)
-    for batch_idx in range(len(all_outputs[0])):
-        outputs = [all_outputs[i][batch_idx:batch_idx+1,...] for i in range(len(all_outputs))]
+        outputs = sess.forward(outNames)
         all_out.append(outputs)
-    return all_out
 
+    return all_out
 
 def postprocess(outputs: List[np.ndarray],
                 model_input_size: Tuple[int, int],
