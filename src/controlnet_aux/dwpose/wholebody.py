@@ -80,7 +80,7 @@ class Wholebody:
 
         pose_start = default_timer()
         keypoints, scores = inference_pose(self.session_pose, det_result, oriImg, pose_input_size, pose_dtype)
-        print(f"DWPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms")
+        print(f"DWPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} objects\n")
 
         keypoints_info = np.concatenate(
             (keypoints, scores[..., None]), axis=-1)

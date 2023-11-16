@@ -203,7 +203,7 @@ class AnimalPoseImage:
         
         pose_start = default_timer()
         keypoint_sets, scores = inference_pose(self.session_pose, det_result, oriImg, pose_input_size, pose_dtype)
-        print(f"AnimalPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms")
+        print(f"AnimalPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} objects\n")
 
         animal_kps_scores = []
         pose_img = np.zeros((oriImg.shape[0], oriImg.shape[1], 3), dtype = np.uint8)
