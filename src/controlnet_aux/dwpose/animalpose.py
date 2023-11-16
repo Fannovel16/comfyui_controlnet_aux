@@ -2,7 +2,8 @@ import numpy as np
 import cv2
 import os
 import cv2
-from .cv_ox_det import inference_detector
+from .cv_ox_det import inference_detector as inference_yolox
+from .yolo_nas import inference_detector as inference_yolo_nas
 from .cv_ox_pose import inference_pose
 from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
@@ -183,16 +184,22 @@ class AnimalPoseImage:
         self.session_pose.setPreferableTarget(providers)
     
     def __call__(self, oriImg) -> Optional[np.ndarray]:
-        _, det_dtype = guess_onnx_input_shape_dtype(cached_onnx_det_name)
         pose_input_size, pose_dtype = guess_onnx_input_shape_dtype(cached_onnx_pose_name)
+        inference_detector = inference_yolox if "yolox" in cached_onnx_det_name else inference_yolo_nas
         detect_classes = list(range(14, 23 + 1)) #https://github.com/ultralytics/ultralytics/blob/main/ultralytics/cfg/datasets/coco.yaml
 
         det_start = default_timer()
-
-        det_result = inference_detector(self.session_det, oriImg, detect_classes=detect_classes, dtype=det_dtype)
+        #FP16 and INT8 YOLO NAS accept uint8 input
+        det_result = inference_detector(self.session_det, oriImg, detect_classes=detect_classes, dtype=np.float32 if "yolox" in cached_onnx_det_name else np.uint8)
         print(f"AnimalPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
         if det_result is None:
-            return None
+            json_output = json.dumps({
+                'version': 'ap10k',
+                'animals': [],
+                'canvas_height': oriImg.shape[0],
+                'canvas_width': oriImg.shape[1]
+            }, indent=4)
+            return np.zeros_like(oriImg), json_output
         
         pose_start = default_timer()
         keypoint_sets, scores = inference_pose(self.session_pose, det_result, oriImg, pose_input_size, pose_dtype)

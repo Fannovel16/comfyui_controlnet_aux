@@ -159,13 +159,12 @@ class DwposeDetector:
         self.dw_pose_estimation = dw_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+        pretrained_det_model_or_path = pretrained_det_model_or_path or pretrained_model_or_path
         det_filename = det_filename or "yolox_l.onnx"
         pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
-        det_model_repo = pretrained_model_or_path if det_filename == "yolox_l.onnx" else "hr16/yolox-onnx"
-        pose_model_repo = pretrained_model_or_path if pose_filename == "dw-ll_ucoco_384.onnx" else "hr16/UnJIT-DWPose"
-        det_model_path = custom_hf_download(det_model_repo, det_filename, cache_dir=cache_dir)
-        pose_model_path = custom_hf_download(pose_model_repo, pose_filename, cache_dir=cache_dir)
+        det_model_path = custom_hf_download(pretrained_det_model_or_path, det_filename, cache_dir=cache_dir)
+        pose_model_path = custom_hf_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
         return cls(Wholebody(det_model_path, pose_model_path))
 
     def detect_poses(self, oriImg) -> List[PoseResult]:
@@ -207,13 +206,12 @@ class AnimalposeDetector:
         self.animal_pose_estimation = animal_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+        pretrained_det_model_or_path = pretrained_det_model_or_path or pretrained_model_or_path
         det_filename = det_filename or "yolox_l.onnx"
-        pose_filename = pose_filename or "rtmpose-m_ap10k_256"
-        det_model_repo = pretrained_model_or_path if det_filename == "yolox_l.onnx" else "hr16/yolox-onnx"
-        pose_model_repo = pretrained_model_or_path if pose_filename == "dw-ll_ucoco_384.onnx" else "hr16/UnJIT-DWPose"
-        det_model_path = custom_hf_download(det_model_repo, det_filename, cache_dir=cache_dir)
-        pose_model_path = custom_hf_download(pose_model_repo, pose_filename, cache_dir=cache_dir)
+        pose_filename = pose_filename or "rtmpose-m_ap10k_256.onnx"
+        det_model_path = custom_hf_download(pretrained_det_model_or_path, det_filename, cache_dir=cache_dir)
+        pose_model_path = custom_hf_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
         return cls(AnimalPoseImage(det_model_path, pose_model_path))
     
     def __call__(self, input_image, detect_resolution=512, output_type="pil", image_and_json=False, upscale_method="INTER_CUBIC", **kwargs):

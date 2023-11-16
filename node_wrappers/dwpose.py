@@ -34,7 +34,10 @@ class DWPose_Preprocessor:
         )
         input_types["optional"] = {
             **input_types["optional"],
-            "bbox_detector": (["yolox_s.onnx", "yolox_m.onnx", "yolox_l.onnx"], {"default": "yolox_l.onnx"}),
+            "bbox_detector": (
+                ["yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx", "yolox_l.onnx", "yolo_nas_m.onnx", "yolox_s.onnx"], 
+                {"default": "yolox_l.onnx"}
+            ),
             "pose_estimator": (["dw-ll_ucoco_384.onnx", "dw-ll_ucoco.onnx", "dw-mm_ucoco.onnx", "dw-ss_ucoco.onnx"], {"default": "dw-ll_ucoco_384.onnx"})
         }
         return input_types
@@ -45,13 +48,21 @@ class DWPose_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
     def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="dw-ll_ucoco_384.onnx", **kwargs):
-
+        yolo_repo = DWPOSE_MODEL_NAME
+        if (bbox_detector != "yolox_l.onnx") and ("yolox" in bbox_detector):
+            yolo_repo = "hr16/yolox-onnx"
+        elif "yolo_nas" in bbox_detector:
+            yolo_repo = "hr16/yolo-nas-fp16"
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"
-
         self.openpose_json = None
-        model = DwposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator)
+        
+        model = DwposeDetector.from_pretrained(
+            DWPOSE_MODEL_NAME if pose_estimator == "dw-ll_ucoco_384.onnx" else "hr16/UnJIT-DWPose",
+            yolo_repo,
+            cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator
+        )
         
         def func(image, **kwargs):
             result = model(image, **kwargs)
@@ -70,7 +81,10 @@ class AnimalPose_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return create_node_input_types(
-            bbox_detector = (["yolox_s.onnx", "yolox_m.onnx", "yolox_l.onnx"], {"default": "yolox_l.onnx"}),
+            bbox_detector = (
+                ["yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx", "yolox_l.onnx", "yolo_nas_m.onnx", "yolox_s.onnx"], 
+                {"default": "yolox_l.onnx"}
+            ),
             pose_estimator = (["rtmpose-m_ap10k_256.onnx"], {"default": "rtmpose-m_ap10k_256.onnx"})
         )
         
@@ -80,7 +94,16 @@ class AnimalPose_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
     def estimate_pose(self, image, resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="rtmpose-m_ap10k_256.onnx", **kwargs):
-        model = AnimalposeDetector.from_pretrained(DWPOSE_MODEL_NAME, cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator)
+        yolo_repo = DWPOSE_MODEL_NAME
+        if (bbox_detector != "yolox_l.onnx") and ("yolox" in bbox_detector):
+            yolo_repo = "hr16/yolox-onnx"
+        elif "yolo_nas" in bbox_detector:
+            yolo_repo = "hr16/yolo-nas-fp16"
+        model = AnimalposeDetector.from_pretrained(
+            DWPOSE_MODEL_NAME if pose_estimator == "dw-ll_ucoco_384.onnx" else "hr16/UnJIT-DWPose",
+            yolo_repo,
+            cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator
+        )
         print(f"\nAnimalPose: Using {bbox_detector} for bbox detection and {pose_estimator} for pose estimation")
 
         def func(image, **kwargs):

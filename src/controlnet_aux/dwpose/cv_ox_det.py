@@ -126,4 +126,5 @@ def inference_detector(session, oriImg, detect_classes=[0], dtype=np.float32):
     iscat = np.isin(final_cls_inds, detect_classes)
     isbbox = [ i and j for (i, j) in zip(isscore, iscat)]
     final_boxes = final_boxes[isbbox]
+    print(final_boxes.shape)
     return final_boxes

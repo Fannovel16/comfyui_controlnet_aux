@@ -49,7 +49,7 @@ def preprocess(
 
 
 def inference(sess, img, dtype=np.float32):
-    """Inference DWPose model.
+    """Inference DWPose model. Processing all image segments at once to take advantage of GPU's parallelism ability
 
     Args:
         sess : ONNXRuntime session.
@@ -60,22 +60,18 @@ def inference(sess, img, dtype=np.float32):
     """
     all_out = []
     # build input
-    for i in range(len(img)):
-
-        input = img[i].transpose(2, 0, 1)
-        input = input[None, :, :, :]
-        input = input.astype(dtype)
-
-        if "InferenceSession" in type(sess).__name__:
-            input_name = sess.get_inputs()[0].name
-            outputs = sess.run(None, {input_name: input})
-        else:
-            outNames = sess.getUnconnectedOutLayersNames()
-            sess.setInput(input)
-            outputs = sess.forward(outNames)
-        outputs = [output.astype(np.float32) for output in outputs]
+    input = np.stack(img, axis=0).transpose(0, 3, 1, 2)
+    input = input.astype(dtype)
+    if "InferenceSession" in type(sess).__name__:
+        input_name = sess.get_inputs()[0].name
+        all_outputs = sess.run(None, {input_name: input})
+    else:
+        outNames = sess.getUnconnectedOutLayersNames()
+        sess.setInput(input)
+        all_outputs = sess.forward(outNames)
+    for batch_idx in range(len(all_outputs[0])):
+        outputs = [all_outputs[i][batch_idx:batch_idx+1,...] for i in range(len(all_outputs))]
         all_out.append(outputs)
-
     return all_out
 
 

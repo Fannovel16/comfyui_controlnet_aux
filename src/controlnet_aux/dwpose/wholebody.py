@@ -2,7 +2,8 @@
 import cv2
 import numpy as np
 
-from .cv_ox_det import inference_detector
+from .cv_ox_det import inference_detector as inference_yolox
+from .yolo_nas import inference_detector as inference_yolo_nas
 from .cv_ox_pose import inference_pose
 
 from typing import List, Optional
@@ -31,16 +32,16 @@ cached_onnx_det_name, cached_onnx_pose_name = '', ''
 class Wholebody:
     def __init__(self, onnx_det: str, onnx_pose: str):
         global ort_session_det, ort_session_pose, cached_onnx_det_name, cached_onnx_pose_name
+        pose_filename = os.path.basename(onnx_pose)
+        det_filename = os.path.basename(onnx_det)
         if check_ort_gpu():
             import onnxruntime as ort
-            pose_filename = os.path.basename(onnx_pose)
             if pose_filename != cached_onnx_pose_name and ort_session_pose is None:
                 print(f"DWPose: Caching pose session {pose_filename}...")
                 SUPPORT_PROVIDERS.append('CPUExecutionProvider')
                 ort_session_pose = ort.InferenceSession(onnx_pose, providers=SUPPORT_PROVIDERS)
                 cached_onnx_pose_name = pose_filename
             
-            det_filename = os.path.basename(onnx_det)
             if det_filename != cached_onnx_det_name or ort_session_det is None:
                 print(f"DWPose: Caching bbox detection session {det_filename}...")
                 ort_session_det = ort.InferenceSession(onnx_det, providers=SUPPORT_PROVIDERS)
@@ -50,8 +51,6 @@ class Wholebody:
             self.session_pose = ort_session_pose
             return
         
-        cached_onnx_pose_name = os.path.basename(onnx_pose)
-        cached_onnx_det_name = os.path.basename(onnx_det)
         # Always loads to CPU to avoid building OpenCV.
         device = 'cpu'
         backend = cv2.dnn.DNN_BACKEND_OPENCV if device == 'cpu' else cv2.dnn.DNN_BACKEND_CUDA
@@ -65,13 +64,16 @@ class Wholebody:
         self.session_pose = cv2.dnn.readNetFromONNX(onnx_pose)
         self.session_pose.setPreferableBackend(backend)
         self.session_pose.setPreferableTarget(providers)
+        cached_onnx_pose_name = pose_filename
+        cached_onnx_det_name = det_filename
     
     def __call__(self, oriImg) -> Optional[np.ndarray]:
-        _, det_dtype = guess_onnx_input_shape_dtype(cached_onnx_det_name)
         pose_input_size, pose_dtype = guess_onnx_input_shape_dtype(cached_onnx_pose_name)
+        inference_detector = inference_yolox if "yolox" in cached_onnx_det_name else inference_yolo_nas
         
         det_start = default_timer()
-        det_result = inference_detector(self.session_det, oriImg, detect_classes=[0], dtype=det_dtype)
+        #FP16 and INT8 YOLO NAS accept uint8 input
+        det_result = inference_detector(self.session_det, oriImg, detect_classes=[0], dtype=np.float32 if "yolox" in cached_onnx_det_name else np.uint8)
         print(f"DWPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
         if det_result is None:
             return None

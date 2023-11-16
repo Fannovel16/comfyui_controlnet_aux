@@ -33,6 +33,7 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Added alternative YOLOX models for faster speed when using DWPose
 * Added alternative DWPose models
 * Implemented the preprocessor for [AnimalPose ControlNet](https://github.com/abehonest/ControlNet_AnimalPose/tree/main). Check [Animal Pose AP-10K](#animal-pose-ap-10k) 
+* Added YOLO-NAS models which are drop-in replacements of YOLOX
 # Q&A:
 * Why some nodes doesn't appear after I installed this repo?
 
