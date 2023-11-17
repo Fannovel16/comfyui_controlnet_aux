@@ -67,7 +67,7 @@ def inference(sess, img, dtype=np.float32):
         all_outputs = sess.run(None, {input_name: input})
         for batch_idx in range(len(all_outputs[0])):
             outputs = [all_outputs[i][batch_idx:batch_idx+1,...] for i in range(len(all_outputs))]
-        all_out.append(outputs)
+            all_out.append(outputs)
         return all_out
 
     #OpenCV doesn't support batch processing sadly
