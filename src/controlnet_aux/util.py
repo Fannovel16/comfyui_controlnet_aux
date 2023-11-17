@@ -7,16 +7,22 @@ import torch
 from pathlib import Path
 import warnings
 from huggingface_hub import hf_hub_download
-from ..utils import USE_SYMLINKS
-
-if USE_SYMLINKS:
-    warnings.warn("Using symlinks to download models.\n \
-                  Make sure you have enough space on your cache folder. \n \
-                  And do not purge the cache folder after downloading.\n \
-                  Otherwise, you will have to re-download the models every time you run the script.\n \
-                  You can use USE_SYMLINKS: False in config.yaml to avoid this behavior.")
 
 annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
+USE_SYMLINKS = False
+
+try:
+    USE_SYMLINKS = eval(os.environ['AUX_USE_SYMLINKS'])
+except:
+    warnings.warn("USE_SYMLINKS not set successfully. Using default value: False to download models.")
+    pass
+
+if USE_SYMLINKS:
+    log.warn("Using symlinks to download models.\n \
+              Make sure you have enough space on your cache folder. \n \
+              And do not purge the cache folder after downloading.\n \
+              Otherwise, you will have to re-download the models every time you run the script.\n \
+              You can use USE_SYMLINKS: False in config.yaml to avoid this behavior.")
 
 here = Path(__file__).parent.resolve()
 
