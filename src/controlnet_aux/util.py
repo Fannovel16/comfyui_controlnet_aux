@@ -18,11 +18,11 @@ except:
     pass
 
 if USE_SYMLINKS:
-    warnings.warn("Using symlinks to download models.\n \
-                   Make sure you have enough space on your cache folder. \n \
-                   And do not purge the cache folder after downloading.\n \
-                   Otherwise, you will have to re-download the models every time you run the script.\n \
-                   You can use USE_SYMLINKS: False in config.yaml to avoid this behavior.")    
+    print("Using symlinks to download models.\n \
+           Make sure you have enough space on your cache folder. \n \
+           And do not purge the cache folder after downloading.\n \
+           Otherwise, you will have to re-download the models every time you run the script.\n \
+           You can use USE_SYMLINKS: False in config.yaml to avoid this behavior.")    
 
 # fix SSL: CERTIFICATE_VERIFY_FAILED issue with pytorch download https://github.com/pytorch/pytorch/issues/33288
 try:
@@ -232,11 +232,11 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_c
                 if not os.path.exists(cache_dir_d):
                     os.makedirs(cache_dir_d)
                 open(os.path.join(cache_dir_d, f"linktest_{filename}.txt"), "w")
-                os.link(os.path.join(cache_dir_d, f"linktest_{filename}.txt"), os.path.join(local_dir, f"linktest_{filename}.txt"))
-                os.remove(os.path.join(local_dir, f"linktest_{filename}.txt"))
+                os.link(os.path.join(cache_dir_d, f"linktest_{filename}.txt"), os.path.join(cache_dir, f"linktest_{filename}.txt"))
+                os.remove(os.path.join(cache_dir, f"linktest_{filename}.txt"))
                 os.remove(os.path.join(cache_dir_d, f"linktest_{filename}.txt"))
             except:
-                warnings.warn("Failed to create symlink. Disable using symlinks.")
+                print("Maybe not able to create symlink. Disable using symlinks.")
                 use_symlinks = False
                 cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
         else:
