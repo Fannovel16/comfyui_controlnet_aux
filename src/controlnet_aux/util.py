@@ -18,11 +18,20 @@ except:
     pass
 
 if USE_SYMLINKS:
-    log.warn("Using symlinks to download models.\n \
-              Make sure you have enough space on your cache folder. \n \
-              And do not purge the cache folder after downloading.\n \
-              Otherwise, you will have to re-download the models every time you run the script.\n \
-              You can use USE_SYMLINKS: False in config.yaml to avoid this behavior.")
+    warnings.warn("Using symlinks to download models.\n \
+                   Make sure you have enough space on your cache folder. \n \
+                   And do not purge the cache folder after downloading.\n \
+                   Otherwise, you will have to re-download the models every time you run the script.\n \
+                   You can use USE_SYMLINKS: False in config.yaml to avoid this behavior.")    
+
+# fix SSL: CERTIFICATE_VERIFY_FAILED issue with pytorch download https://github.com/pytorch/pytorch/issues/33288
+try:
+    from torch.hub import load_state_dict_from_url
+    test_url = "https://download.pytorch.org/models/mobilenet_v2-b0353104.pth"
+    load_state_dict_from_url(test_url, progress=False)
+except:
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 here = Path(__file__).parent.resolve()
 
