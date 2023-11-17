@@ -195,12 +195,19 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_c
     local_dir = os.path.join(cache_dir, pretrained_model_or_path)
     model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
     if not os.path.exists(model_path):
+        cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
         model_path = hf_hub_download(repo_id=pretrained_model_or_path,
+            cache_dir=cache_dir_d,
             local_dir=local_dir,
             subfolder=subfolder,
             filename=filename,
-            local_dir_use_symlinks=True,
+            local_dir_use_symlinks=False,
             resume_download=True,
             etag_timeout=100
         )
+        try:
+            import shutil
+            shutil.rmtree(cache_dir_d)
+        except Exception as e :
+            print(e)
     return model_path
