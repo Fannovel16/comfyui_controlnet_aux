@@ -14,16 +14,24 @@ config_path = Path(here, "config.yaml")
 if os.path.exists(config_path):
     config = yaml.load(open(config_path, "r"), Loader=yaml.FullLoader)
 
-    #annotator_ckpts_path = os.path.join(os.path.dirname(__file__), "ckpts")
     annotator_ckpts_path = str(Path(here, config["annotator_ckpts_path"]))
+    USE_SYMLINKS = config["USE_SYMLINKS"]
+
+    if USE_SYMLINKS is None or type(USE_SYMLINKS) != bool:
+        log.error("USE_SYMLINKS must be a boolean. Using False by default.")
+        USE_SYMLINKS = False
+
     if not os.path.isdir(annotator_ckpts_path):
         try:
             os.makedirs(annotator_ckpts_path)
         except:
-            log.error("Failed to create config ckpts directory")
+            log.error("Failed to create config ckpts directory. Using default.")
             annotator_ckpts_path = str(Path(here, "./ckpts"))
 else:
     annotator_ckpts_path = str(Path(here, "./ckpts"))
+    USE_SYMLINKS = False
+
+log.info(f"Using ckpts path: {annotator_ckpts_path}")
 
 MAX_RESOLUTION=2048 #Who the hell feed 4k images to ControlNet?
 HF_MODEL_NAME = "lllyasviel/Annotators"

@@ -7,6 +7,14 @@ import torch
 from pathlib import Path
 import warnings
 from huggingface_hub import hf_hub_download
+from ..utils import USE_SYMLINKS
+
+if USE_SYMLINKS:
+    warnings.warn("Using symlinks to download models.\n \
+                  Make sure you have enough space on your cache folder. \n \
+                  And do not purge the cache folder after downloading.\n \
+                  Otherwise, you will have to re-download the models every time you run the script.\n \
+                  You can use USE_SYMLINKS: False in config.yaml to avoid this behavior.")
 
 annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
 
@@ -191,23 +199,47 @@ def ade_palette():
             [184, 255, 0], [0, 133, 255], [255, 214, 0], [25, 194, 194],
             [102, 255, 0], [92, 0, 255]]
 
-def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_ckpts_path, subfolder=''):
+def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS):
     local_dir = os.path.join(cache_dir, pretrained_model_or_path)
     model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
+    
     if not os.path.exists(model_path):
-        cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+        if use_symlinks:
+            cache_dir_d = os.getenv("HUGGINGFACE_HUB_CACHE")
+            if cache_dir_d is None:
+                import platform
+                if platform.system() == "Windows":
+                    cache_dir_d = os.path.join(os.getenv("USERPROFILE"), ".cache", "huggingface", "hub")
+                else:
+                    cache_dir_d = os.path.join(os.getenv("HOME"), ".cache", "huggingface", "hub")
+            try:
+                # test_link
+                if not os.path.exists(cache_dir_d):
+                    os.makedirs(cache_dir_d)
+                open(os.path.join(cache_dir_d, f"linktest_{filename}.txt"), "w")
+                os.link(os.path.join(cache_dir_d, f"linktest_{filename}.txt"), os.path.join(local_dir, f"linktest_{filename}.txt"))
+                os.remove(os.path.join(local_dir, f"linktest_{filename}.txt"))
+                os.remove(os.path.join(cache_dir_d, f"linktest_{filename}.txt"))
+            except:
+                warnings.warn("Failed to create symlink. Disable using symlinks.")
+                use_symlinks = False
+                cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+        else:
+            cache_dir_d = os.path.join(cache_dir, pretrained_model_or_path, "cache")
+
         model_path = hf_hub_download(repo_id=pretrained_model_or_path,
             cache_dir=cache_dir_d,
             local_dir=local_dir,
             subfolder=subfolder,
             filename=filename,
-            local_dir_use_symlinks=False,
+            local_dir_use_symlinks=use_symlinks,
             resume_download=True,
             etag_timeout=100
         )
-        try:
-            import shutil
-            shutil.rmtree(cache_dir_d)
-        except Exception as e :
-            print(e)
+        if not use_symlinks:
+            try:
+                import shutil
+                shutil.rmtree(cache_dir_d)
+            except Exception as e :
+                print(e)
     return model_path
