@@ -35,7 +35,7 @@ class DWPose_Preprocessor:
         input_types["optional"] = {
             **input_types["optional"],
             "bbox_detector": (
-                ["yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx", "yolox_l.onnx", "yolo_nas_m.onnx", "yolox_s.onnx"], 
+                ["yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx", "yolox_l.onnx", "yolox_m.onnx", "yolox_s.onnx"], 
                 {"default": "yolox_l.onnx"}
             ),
             "pose_estimator": (["dw-ll_ucoco_384.onnx", "dw-ll_ucoco.onnx", "dw-mm_ucoco.onnx", "dw-ss_ucoco.onnx"], {"default": "dw-ll_ucoco_384.onnx"})
