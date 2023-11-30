@@ -162,7 +162,7 @@ class DwposeDetector:
         self.dw_pose_estimation = dw_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path, torchscript_device="cuda"):
         global global_cached_dwpose
         pretrained_det_model_or_path = pretrained_det_model_or_path or pretrained_model_or_path
         det_filename = det_filename or "yolox_l.onnx"
@@ -172,13 +172,13 @@ class DwposeDetector:
         
         print(f"\nDWPose: Using {det_filename} for bbox detection and {pose_filename} for pose estimation")
         if global_cached_dwpose.det is None or global_cached_dwpose.det_filename != det_filename:
-            t = Wholebody(det_model_path, None)
+            t = Wholebody(det_model_path, None, torchscript_device=torchscript_device)
             t.pose = global_cached_dwpose.pose
             t.pose_filename = global_cached_dwpose.pose
             global_cached_dwpose = t
         
         if global_cached_dwpose.pose is None or global_cached_dwpose.pose_filename != pose_filename:
-            t = Wholebody(None, pose_model_path)
+            t = Wholebody(None, pose_model_path, torchscript_device=torchscript_device)
             t.det = global_cached_dwpose.det
             t.det_filename = global_cached_dwpose.det_filename
             global_cached_dwpose = t
@@ -224,7 +224,7 @@ class AnimalposeDetector:
         self.animal_pose_estimation = animal_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path, torchscript_device="cuda"):
         global global_cached_animalpose
         pretrained_det_model_or_path = pretrained_det_model_or_path or pretrained_model_or_path
         det_filename = det_filename or "yolox_l.onnx"
@@ -234,13 +234,13 @@ class AnimalposeDetector:
         
         print(f"\nAnimalPose: Using {det_filename} for bbox detection and {pose_filename} for pose estimation")
         if global_cached_animalpose.det is None or global_cached_animalpose.det_filename != det_filename:
-            t = AnimalPoseImage(det_model_path, None)
+            t = AnimalPoseImage(det_model_path, None, torchscript_device=torchscript_device)
             t.pose = global_cached_animalpose.pose
             t.pose_filename = global_cached_animalpose.pose
             global_cached_animalpose = t
         
         if global_cached_animalpose.pose is None or global_cached_animalpose.pose_filename != pose_filename:
-            t = AnimalPoseImage(None, pose_model_path)
+            t = AnimalPoseImage(None, pose_model_path, torchscript_device=torchscript_device)
             t.det = global_cached_animalpose.det
             t.det_filename = global_cached_animalpose.det_filename
             global_cached_animalpose = t

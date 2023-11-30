@@ -69,7 +69,8 @@ class DWPose_Preprocessor:
         model = DwposeDetector.from_pretrained(
             pose_repo,
             yolo_repo,
-            cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator
+            cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator,
+            torchscript_device=model_management.get_torch_device()
         )
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
@@ -125,7 +126,8 @@ class AnimalPose_Preprocessor:
         model = AnimalposeDetector.from_pretrained(
             pose_repo,
             yolo_repo,
-            cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator
+            cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator,
+            torchscript_device=model_management.get_torch_device()
         )
 
         def func(image, **kwargs):
