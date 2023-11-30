@@ -42,7 +42,9 @@ All credit & copyright goes to https://github.com/lllyasviel.
 This repo has a new mechanism which will skip any custom node can't be imported. If you meet this case, please create a issue on [Issues tab](https://github.com/Fannovel16/comfyui_controlnet_aux/issues) with the log from the command line.
 
 ## DWPose/AnimalPose only uses CPU so it's so slow. How can I make it use GPU?
-There are two ways to speed-up DWPose: using TorchScript checkpoints (.torchscript.pt) checkpoints or ONNXRuntime (.onnx). TorchScript way is little bit slower than ONNXRuntime but doesn't require any additional library and still way way faster than CPU.  
+There are two ways to speed-up DWPose: using TorchScript checkpoints (.torchscript.pt) checkpoints or ONNXRuntime (.onnx). TorchScript way is little bit slower than ONNXRuntime but doesn't require any additional library and still way way faster than CPU. 
+
+An torchscript bbox detector is compatiable with onnx pose estimator and vice versa.
 ### TorchScript
 Set `bbox_detector` and `pose_estimator` according to this picture. You can try other bbox detector endings with `.torchscript.pt` to reduce bbox detection time if input images are ideal.
 ![](./example_torchscript.png)
