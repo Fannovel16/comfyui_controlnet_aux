@@ -35,14 +35,19 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Implemented the preprocessor for [AnimalPose ControlNet](https://github.com/abehonest/ControlNet_AnimalPose/tree/main). Check [Animal Pose AP-10K](#animal-pose-ap-10k) 
 * Added YOLO-NAS models which are drop-in replacements of YOLOX
 * Fixed Openpose Face/Hands no longer detecting: https://github.com/Fannovel16/comfyui_controlnet_aux/issues/54
+* Added TorchScript implementation of DWPose and AnimalPose
 # Q&A:
-* Why some nodes doesn't appear after I installed this repo?
+## Why some nodes doesn't appear after I installed this repo?
 
 This repo has a new mechanism which will skip any custom node can't be imported. If you meet this case, please create a issue on [Issues tab](https://github.com/Fannovel16/comfyui_controlnet_aux/issues) with the log from the command line.
 
-* DWPose only uses CPU so it's so slow. How can I make it use GPU?
-
-You can install onnxruntime-gpu. If successful, it will replace default cv2 backend to take advantage of GPU. Note that if you are using NVidia card, this method currently can only works on CUDA 11.8 (ComfyUI_windows_portable_nvidia_cu118_or_cpu.7z) unless you compile onnxruntime yourself
+## DWPose/AnimalPose only uses CPU so it's so slow. How can I make it use GPU?
+There are two ways to speed-up DWPose: using TorchScript checkpoints (.torchscript.pt) checkpoints or ONNXRuntime (.onnx). TorchScript way is little bit slower than ONNXRuntime but doesn't require any additional library  
+### TorchScript
+Set `bbox_detector` and `pose_estimator` according to this picture. You can try other bbox detector endings with `.torchscript.pt` to reduce bbox detection time if input images are ideal.
+![](./example_torchscript.png)
+### ONNXRuntime
+If onnxruntime is installed successfully and the checkpoint used endings with `.onnx`, it will replace default cv2 backend to take advantage of GPU. Note that if you are using NVidia card, this method currently can only works on CUDA 11.8 (ComfyUI_windows_portable_nvidia_cu118_or_cpu.7z) unless you compile onnxruntime yourself.
 
 1. Know your onnxruntime build:
 * * NVidia/AMD GPU: `onnxruntime-gpu`
@@ -55,6 +60,7 @@ Note that if this is your first time using ComfyUI, please test if it can run on
 
 3. Run `install.bat` or pip command mentioned in Installation
 
+![](./example_onnx.png)
 # Installation:
 ## Using ComfyUI Manager (recommended):
 Install [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager) and do steps introduced there to install this repo.

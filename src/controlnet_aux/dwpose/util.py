@@ -422,3 +422,22 @@ def guess_onnx_input_shape_dtype(filename):
     elif "256" in filename:
         input_size = (256, 256)
     return input_size, dtype
+
+ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+def get_ort_providers():
+    providers = []
+    try:
+        import onnxruntime as ort
+        for provider in ONNX_PROVIDERS:
+            if provider in ort.get_available_providers():
+                providers.append(provider)
+        return providers
+    except:
+        return None
+
+def get_model_type(model):
+    if "InferenceSession" in type(model).__name__:
+        return "ort"
+    if type(model).__name__ == "RecursiveScriptModule":
+        return "torchscript"
+    return "cv2"
