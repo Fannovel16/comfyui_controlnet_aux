@@ -22,6 +22,7 @@ if not os.environ.get("DWPOSE_ONNXRT_CHECKED"):
         print("DWPose: Onnxruntime with acceleration providers detected")
     else:
         warnings.warn("DWPose: Onnxruntime not found or doesn't come with acceleration providers, switch to OpenCV with CPU device. DWPose might run very slowly")
+        os.environ['AUX_ORT_PROVIDERS'] = ''
     os.environ["DWPOSE_ONNXRT_CHECKED"] = '1'
 
 class DWPose_Preprocessor:
