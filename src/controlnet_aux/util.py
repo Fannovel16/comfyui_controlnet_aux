@@ -212,6 +212,7 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_c
     model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
     
     if not os.path.exists(model_path):
+        print(f"Dose not find {model_path}\n, Downloading from huggingface.co")
         if use_symlinks:
             cache_dir_d = os.getenv("HUGGINGFACE_HUB_CACHE")
             if cache_dir_d is None:
