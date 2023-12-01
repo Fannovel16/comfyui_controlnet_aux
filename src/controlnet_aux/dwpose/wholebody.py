@@ -13,7 +13,7 @@ from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
 from timeit import default_timer
 import os
-from controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype, get_model_type, get_ort_providers
+from controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype, get_model_type, get_ort_providers, is_model_torchscript
 import torch
 import torch.utils.benchmark.utils.timer as torch_timer
 
@@ -23,8 +23,6 @@ class Wholebody:
         self.pose_filename = pose_model_path and os.path.basename(pose_model_path)
         self.det, self.pose = None, None
         # return type: None ort cv2 torchscript
-        if self.det_model_type or self.pose_model_type:
-            self.cache_type = self.det_model_type or self.pose_model_type
         self.det_model_type = get_model_type("DWPose",self.det_filename)
         self.pose_model_type = get_model_type("DWPose",self.pose_filename)
         # Always loads to CPU to avoid building OpenCV.
@@ -36,7 +34,6 @@ class Wholebody:
 
         match self.det_model_type:
             case None:
-                self.det_model_type = self.cache_type
                 pass
             case "ort":
                 try:
@@ -55,7 +52,6 @@ class Wholebody:
 
         match self.pose_model_type:
             case None:
-                self.pose_model_type = self.cache_type
                 pass
             case "ort":
                 try:
@@ -77,7 +73,7 @@ class Wholebody:
 
     def __call__(self, oriImg) -> Optional[np.ndarray]:
         
-        if self.det_model_type == "torchscript":
+        if is_model_torchscript(self.det):
             det_start = torch_timer.timer()
             det_result = inference_jit_yolox(self.det, oriImg, detect_classes=[0])
             print(f"DWPose: Bbox {((torch_timer.timer() - det_start) * 1000):.2f}ms")
@@ -92,7 +88,7 @@ class Wholebody:
         if (det_result is None) or (det_result.shape[0] == 0):
             return None
 
-        if self.pose_model_type == "torchscript":
+        if is_model_torchscript(self.pose):
             pose_start = torch_timer.timer()
             keypoints, scores = inference_jit_pose(self.pose, det_result, oriImg, self.pose_input_size)
             print(f"DWPose: Pose {((torch_timer.timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} people\n")

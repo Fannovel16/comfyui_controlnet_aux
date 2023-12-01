@@ -439,6 +439,9 @@ def get_ort_providers() -> List[str]:
     except:
         return None
 
+def is_model_torchscript(model) -> bool:
+    return bool(type(model).__name__ == "RecursiveScriptModule")
+
 def get_model_type(Nodesname, filename) -> str:
     ort_providers = list(filter(lambda x : x != "CPUExecutionProvider", get_ort_providers()))
     if filename is None:
