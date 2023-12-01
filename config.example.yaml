@@ -9,8 +9,7 @@ USE_SYMLINKS: False
 # EP_list is a list of execution providers for onnxruntime, if one of them is not available or not working well, you can delete that provider from here(config.yaml)
 # you can find all available providers here: https://onnxruntime.ai/docs/execution-providers
 # for example, if you have CUDA installed, you can set it to: ["CUDAExecutionProvider", "CPUExecutionProvider"]
-# empty list means you use cv2.dnn.readNetFromONNX to load onnx models
-# it is not recommended to only keep ["CPUExecutionProvider"], unless all providers do not work and cv2.dnn.readNetFromONNX reports an error. 
+# empty list or only keep ["CPUExecutionProvider"] means you use cv2.dnn.readNetFromONNX to load onnx models
 # if your onnx models can only run on the CPU or have other issues, we recommend using pt model instead.
-# default value is ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
-EP_list: ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+# default value is ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider"]
+EP_list: ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider"]

@@ -427,8 +427,8 @@ def guess_onnx_input_shape_dtype(filename):
 if os.getenv('AUX_ORT_PROVIDERS'):
     ONNX_PROVIDERS = os.getenv('AUX_ORT_PROVIDERS').split(',')
 else:
-    ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
-def get_ort_providers():
+    ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider"]
+def get_ort_providers() -> List[str]:
     providers = []
     try:
         import onnxruntime as ort
@@ -440,7 +440,7 @@ def get_ort_providers():
         return None
 
 def get_model_type(Nodesname, filename) -> str:
-    ort_providers = get_ort_providers()
+    ort_providers = list(filter(lambda x : x != "CPUExecutionProvider", get_ort_providers()))
     if filename is None:
         return None
     elif ("onnx" in filename) and ort_providers:

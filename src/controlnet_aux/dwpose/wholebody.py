@@ -24,7 +24,7 @@ class Wholebody:
         self.det, self.pose = None, None
         # return type: None ort cv2 torchscript
         self.det_model_type = get_model_type("DWPose",self.det_filename)
-        self.pose_model_type = get_model_type("DWPose",self.det_filename)
+        self.pose_model_type = get_model_type("DWPose",self.pose_filename)
         # Always loads to CPU to avoid building OpenCV.
         cv2_device = 'cpu'
         cv2_backend = cv2.dnn.DNN_BACKEND_OPENCV if cv2_device == 'cpu' else cv2.dnn.DNN_BACKEND_CUDA
@@ -40,7 +40,7 @@ class Wholebody:
                     import onnxruntime as ort
                     self.det = ort.InferenceSession(det_model_path, providers=ort_providers)
                 except:
-                    print(f"Failed to load onnxruntime with {self.det.get_providers()}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
+                    print(f"Failed to load onnxruntime with {ort_providers}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
                     self.det = ort.InferenceSession(det_model_path, providers=["CPUExecutionProvider"])
             case "cv2":
                 self.det = cv2.dnn.readNetFromONNX(det_model_path)
@@ -73,7 +73,7 @@ class Wholebody:
 
     def __call__(self, oriImg) -> Optional[np.ndarray]:
         
-        if self.det_model_type == "torchscript":
+        if type(self.det).__name__ == "RecursiveScriptModule":
             det_start = torch_timer.timer()
             det_result = inference_jit_yolox(self.det, oriImg, detect_classes=[0])
             print(f"DWPose: Bbox {((torch_timer.timer() - det_start) * 1000):.2f}ms")
@@ -88,7 +88,7 @@ class Wholebody:
         if (det_result is None) or (det_result.shape[0] == 0):
             return None
 
-        if self.pose_model_type == "torchscript":
+        if type(self.pose).__name__ == "RecursiveScriptModule":
             pose_start = torch_timer.timer()
             keypoints, scores = inference_jit_pose(self.pose, det_result, oriImg, self.pose_input_size)
             print(f"DWPose: Pose {((torch_timer.timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} people\n")

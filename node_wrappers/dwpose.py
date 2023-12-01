@@ -6,11 +6,11 @@ from controlnet_aux.dwpose import DwposeDetector, AnimalposeDetector
 import os
 
 #Trigger startup caching for onnxruntime
-ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+GPU_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
 def check_ort_gpu():
     try:
         import onnxruntime as ort
-        for provider in ONNX_PROVIDERS:
+        for provider in GPU_PROVIDERS:
             if provider in ort.get_available_providers():
                 return True
         return False

@@ -140,7 +140,7 @@ class AnimalPoseImage:
         self.det, self.pose = None, None
         # return type: None ort cv2 torchscript
         self.det_model_type = get_model_type("AnimalPose",self.det_filename)
-        self.pose_model_type = get_model_type("AnimalPose",self.det_filename)
+        self.pose_model_type = get_model_type("AnimalPose",self.pose_filename)
         # Always loads to CPU to avoid building OpenCV.
         cv2_device = 'cpu'
         cv2_backend = cv2.dnn.DNN_BACKEND_OPENCV if cv2_device == 'cpu' else cv2.dnn.DNN_BACKEND_CUDA

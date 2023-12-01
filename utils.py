@@ -31,7 +31,7 @@ if os.path.exists(config_path):
 else:
     annotator_ckpts_path = str(Path(here, "./ckpts"))
     USE_SYMLINKS = False
-    ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+    ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider"]
 
 os.environ['AUX_USE_SYMLINKS'] = str(USE_SYMLINKS)
 os.environ['AUX_ANNOTATOR_CKPTS_PATH'] = annotator_ckpts_path
