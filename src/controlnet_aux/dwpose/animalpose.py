@@ -159,9 +159,17 @@ class AnimalPoseImage:
                     print(f"Failed to load onnxruntime with {self.det.get_providers()}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
                     self.det = ort.InferenceSession(det_model_path, providers=["CPUExecutionProvider"])
             case "cv2":
-                self.det = cv2.dnn.readNetFromONNX(det_model_path)
-                self.det.setPreferableBackend(cv2_backend)
-                self.det.setPreferableTarget(cv2_providers)
+                try:
+                    self.det = cv2.dnn.readNetFromONNX(det_model_path)
+                    self.det.setPreferableBackend(cv2_backend)
+                    self.det.setPreferableTarget(cv2_providers)
+                except:
+                    print("TopK operators may not work on your OpenCV, try use onnxruntime with CPUExecutionProvider")
+                    try:
+                        import onnxruntime as ort
+                        self.det = ort.InferenceSession(det_model_path, providers=["CPUExecutionProvider"])
+                    except:
+                        print(f"Failed to load {det_model_path}, you can use other models instead")
             case "torchscript":
                 self.det = torch.jit.load(det_model_path)
                 self.det.to(torchscript_device)
