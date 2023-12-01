@@ -2,6 +2,7 @@ import math
 import numpy as np
 import matplotlib
 import cv2
+import os
 from typing import List, Tuple, Union, Optional
 
 from .body import BodyResult, Keypoint
