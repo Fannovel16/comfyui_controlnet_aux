@@ -139,6 +139,8 @@ class AnimalPoseImage:
         self.pose_filename = pose_model_path and os.path.basename(pose_model_path)
         self.det, self.pose = None, None
         # return type: None ort cv2 torchscript
+        if self.det_model_type or self.pose_model_type:
+            self.cache_type = self.det_model_type or self.pose_model_type
         self.det_model_type = get_model_type("AnimalPose",self.det_filename)
         self.pose_model_type = get_model_type("AnimalPose",self.pose_filename)
         # Always loads to CPU to avoid building OpenCV.
@@ -150,6 +152,7 @@ class AnimalPoseImage:
 
         match self.det_model_type:
             case None:
+                self.det_model_type = self.cache_type
                 pass
             case "ort":
                 try:
@@ -168,6 +171,7 @@ class AnimalPoseImage:
 
         match self.pose_model_type:
             case None:
+                self.pose_model_type = self.cache_type
                 pass
             case "ort":
                 try:
