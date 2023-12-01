@@ -5,7 +5,8 @@
 # 4th Edited by ControlNet (added face and correct hands)
 # 5th Edited by ControlNet (Improved JSON serialization/deserialization, and lots of bug fixs)
 # This preprocessor is licensed by CMU for non-commercial use only.
-
+import torch.utils.benchmark as benchmark
+benchmark.timer()
 
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
@@ -19,7 +20,7 @@ from .hand import Hand
 from .face import Face
 from .types import PoseResult, HandResult, FaceResult
 from huggingface_hub import hf_hub_download
-from .wholebody import Wholebody # DW Pose
+from .wholebody import Wholebody
 import warnings
 from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 import cv2
@@ -148,6 +149,8 @@ def encode_poses_as_json(poses: List[PoseResult], canvas_height: int, canvas_wid
         'canvas_width': canvas_width,
     }, indent=4)
 
+global_cached_dwpose = Wholebody()
+
 class DwposeDetector:
     """
     A class for detecting human poses in images using the Dwpose model.
@@ -159,13 +162,27 @@ class DwposeDetector:
         self.dw_pose_estimation = dw_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path, torchscript_device="cuda"):
+        global global_cached_dwpose
         pretrained_det_model_or_path = pretrained_det_model_or_path or pretrained_model_or_path
         det_filename = det_filename or "yolox_l.onnx"
         pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
         det_model_path = custom_hf_download(pretrained_det_model_or_path, det_filename, cache_dir=cache_dir)
         pose_model_path = custom_hf_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
-        return cls(Wholebody(det_model_path, pose_model_path))
+        
+        print(f"\nDWPose: Using {det_filename} for bbox detection and {pose_filename} for pose estimation")
+        if global_cached_dwpose.det is None or global_cached_dwpose.det_filename != det_filename:
+            t = Wholebody(det_model_path, None, torchscript_device=torchscript_device)
+            t.pose = global_cached_dwpose.pose
+            t.pose_filename = global_cached_dwpose.pose
+            global_cached_dwpose = t
+        
+        if global_cached_dwpose.pose is None or global_cached_dwpose.pose_filename != pose_filename:
+            t = Wholebody(None, pose_model_path, torchscript_device=torchscript_device)
+            t.det = global_cached_dwpose.det
+            t.det_filename = global_cached_dwpose.det_filename
+            global_cached_dwpose = t
+        return cls(global_cached_dwpose)
 
     def detect_poses(self, oriImg) -> List[PoseResult]:
         with torch.no_grad():
@@ -195,6 +212,7 @@ class DwposeDetector:
         
         return detected_map
 
+global_cached_animalpose = AnimalPoseImage()
 class AnimalposeDetector:
     """
     A class for detecting animal poses in images using the RTMPose AP10k model.
@@ -206,13 +224,27 @@ class AnimalposeDetector:
         self.animal_pose_estimation = animal_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path):
+    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path, torchscript_device="cuda"):
+        global global_cached_animalpose
         pretrained_det_model_or_path = pretrained_det_model_or_path or pretrained_model_or_path
         det_filename = det_filename or "yolox_l.onnx"
-        pose_filename = pose_filename or "rtmpose-m_ap10k_256.onnx"
+        pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
         det_model_path = custom_hf_download(pretrained_det_model_or_path, det_filename, cache_dir=cache_dir)
         pose_model_path = custom_hf_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
-        return cls(AnimalPoseImage(det_model_path, pose_model_path))
+        
+        print(f"\nAnimalPose: Using {det_filename} for bbox detection and {pose_filename} for pose estimation")
+        if global_cached_animalpose.det is None or global_cached_animalpose.det_filename != det_filename:
+            t = AnimalPoseImage(det_model_path, None, torchscript_device=torchscript_device)
+            t.pose = global_cached_animalpose.pose
+            t.pose_filename = global_cached_animalpose.pose
+            global_cached_animalpose = t
+        
+        if global_cached_animalpose.pose is None or global_cached_animalpose.pose_filename != pose_filename:
+            t = AnimalPoseImage(None, pose_model_path, torchscript_device=torchscript_device)
+            t.det = global_cached_animalpose.det
+            t.det_filename = global_cached_animalpose.det_filename
+            global_cached_animalpose = t
+        return cls(global_cached_animalpose)
     
     def __call__(self, input_image, detect_resolution=512, output_type="pil", image_and_json=False, upscale_method="INTER_CUBIC", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)

@@ -8,7 +8,6 @@ import importlib
 from .log import log, blue_text, cyan_text, get_summary, get_label
 from .hint_image_enchance import NODE_CLASS_MAPPINGS as HIE_NODE_CLASS_MAPPINGS
 from .hint_image_enchance import NODE_DISPLAY_NAME_MAPPINGS as HIE_NODE_DISPLAY_NAME_MAPPINGS
-
 #Ref: https://github.com/comfyanonymous/ComfyUI/blob/76d53c4622fc06372975ed2a43ad345935b8a551/nodes.py#L17
 sys.path.insert(0, str(Path(here, "src").resolve()))
 for pkg_name in ["controlnet_aux", "custom_mmpkg"]:
