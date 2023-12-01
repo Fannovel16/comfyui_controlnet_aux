@@ -438,16 +438,16 @@ def get_ort_providers():
     except:
         return None
 
-def get_model_type(filename) -> str:
+def get_model_type(Nodesname, filename) -> str:
     ort_providers = get_ort_providers()
     if filename is None:
         return None
     elif ("onnx" in filename) and ort_providers:
-        print(f"DWPose: Caching ONNXRuntime session {filename}...")
+        print(f"{Nodesname}: Caching ONNXRuntime session {filename}...")
         return "ort"
     elif ("onnx" in filename):
-        print(f"DWPose: Caching OpenCV DNN module {filename} on cv2.DNN...")
+        print(f"{Nodesname}: Caching OpenCV DNN module {filename} on cv2.DNN...")
         return "cv2"
     else:
-        print(f"DWPose: Caching TorchScript module {filename} on ...")
+        print(f"{Nodesname}: Caching TorchScript module {filename} on ...")
         return  "torchscript"
