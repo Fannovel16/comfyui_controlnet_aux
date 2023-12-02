@@ -32,49 +32,47 @@ class Wholebody:
         cv2_providers = cv2.dnn.DNN_TARGET_CPU if cv2_device == 'cpu' else cv2.dnn.DNN_TARGET_CUDA
         ort_providers = get_ort_providers()
 
-        match self.det_model_type:
-            case None:
-                pass
-            case "ort":
+        if self.det_model_type is None:
+            pass
+        elif self.det_model_type == "ort":
+            try:
+                import onnxruntime as ort
+                self.det = ort.InferenceSession(det_model_path, providers=ort_providers)
+            except:
+                print(f"Failed to load onnxruntime with {self.det.get_providers()}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
+                self.det = ort.InferenceSession(det_model_path, providers=["CPUExecutionProvider"])
+        elif self.det_model_type == "cv2":
+            try:
+                self.det = cv2.dnn.readNetFromONNX(det_model_path)
+                self.det.setPreferableBackend(cv2_backend)
+                self.det.setPreferableTarget(cv2_providers)
+            except:
+                print("TopK operators may not work on your OpenCV, try use onnxruntime with CPUExecutionProvider")
                 try:
                     import onnxruntime as ort
-                    self.det = ort.InferenceSession(det_model_path, providers=ort_providers)
-                except:
-                    print(f"Failed to load onnxruntime with {ort_providers}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
                     self.det = ort.InferenceSession(det_model_path, providers=["CPUExecutionProvider"])
-            case "cv2":
-                try:
-                    self.det = cv2.dnn.readNetFromONNX(det_model_path)
-                    self.det.setPreferableBackend(cv2_backend)
-                    self.det.setPreferableTarget(cv2_providers)
                 except:
-                    print("TopK operators may not work on your OpenCV, try use onnxruntime with CPUExecutionProvider")
-                    try:
-                        import onnxruntime as ort
-                        self.det = ort.InferenceSession(det_model_path, providers=["CPUExecutionProvider"])
-                    except:
-                        print(f"Failed to load {det_model_path}, you can use other models instead")
-            case "torchscript":
-                self.det = torch.jit.load(det_model_path)
-                self.det.to(torchscript_device)
+                    print(f"Failed to load {det_model_path}, you can use other models instead")
+        else:
+            self.det = torch.jit.load(det_model_path)
+            self.det.to(torchscript_device)
 
-        match self.pose_model_type:
-            case None:
-                pass
-            case "ort":
-                try:
-                    import onnxruntime as ort
-                    self.pose = ort.InferenceSession(pose_model_path, providers=ort_providers)
-                except:
-                    print(f"Failed to load onnxruntime with {self.pose.get_providers()}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
-                    self.pose = ort.InferenceSession(pose_model_path, providers=["CPUExecutionProvider"])
-            case "cv2":
-                self.pose = cv2.dnn.readNetFromONNX(pose_model_path)
-                self.pose.setPreferableBackend(cv2_backend)
-                self.pose.setPreferableTarget(cv2_providers)
-            case "torchscript":
-                self.pose = torch.jit.load(pose_model_path)
-                self.pose.to(torchscript_device)
+        if self.pose_model_type is None:
+            pass
+        elif self.pose_model_type == "ort":
+            try:
+                import onnxruntime as ort
+                self.pose = ort.InferenceSession(pose_model_path, providers=ort_providers)
+            except:
+                print(f"Failed to load onnxruntime with {self.pose.get_providers()}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
+                self.pose = ort.InferenceSession(pose_model_path, providers=["CPUExecutionProvider"])
+        elif self.pose_model_type == "cv2":
+            self.pose = cv2.dnn.readNetFromONNX(pose_model_path)
+            self.pose.setPreferableBackend(cv2_backend)
+            self.pose.setPreferableTarget(cv2_providers)
+        else:
+            self.pose = torch.jit.load(pose_model_path)
+            self.pose.to(torchscript_device)
         
         if self.pose_filename is not None:
             self.pose_input_size, _ = guess_onnx_input_shape_dtype(self.pose_filename)
