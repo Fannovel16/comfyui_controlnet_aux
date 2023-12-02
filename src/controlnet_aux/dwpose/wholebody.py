@@ -13,7 +13,7 @@ from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
 from timeit import default_timer
 import os
-from controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype, get_ort_providers, get_model_type
+from controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype, get_model_type, get_ort_providers, is_model_torchscript
 import torch
 import torch.utils.benchmark.utils.timer as torch_timer
 
@@ -22,6 +22,9 @@ class Wholebody:
         self.det_filename = det_model_path and os.path.basename(det_model_path)
         self.pose_filename = pose_model_path and os.path.basename(pose_model_path)
         self.det, self.pose = None, None
+        # return type: None ort cv2 torchscript
+        self.det_model_type = get_model_type("DWPose",self.det_filename)
+        self.pose_model_type = get_model_type("DWPose",self.pose_filename)
         # Always loads to CPU to avoid building OpenCV.
         cv2_device = 'cpu'
         cv2_backend = cv2.dnn.DNN_BACKEND_OPENCV if cv2_device == 'cpu' else cv2.dnn.DNN_BACKEND_CUDA
@@ -29,45 +32,56 @@ class Wholebody:
         cv2_providers = cv2.dnn.DNN_TARGET_CPU if cv2_device == 'cpu' else cv2.dnn.DNN_TARGET_CUDA
         ort_providers = get_ort_providers()
 
-        if self.det_filename is None:
-            pass
-        elif ("onnx" in self.det_filename) and ort_providers:
-            print(f"DWPose: Caching ONNXRuntime session {self.det_filename}...")
-            import onnxruntime as ort
-            self.det = ort.InferenceSession(det_model_path, providers=ort_providers)
-        elif ("onnx" in self.det_filename):
-            print(f"DWPose: Caching OpenCV DNN module {self.det_filename} on cv2.DNN...")
-            self.det = cv2.dnn.readNetFromONNX(det_model_path)
-            self.det.setPreferableBackend(cv2_backend)
-            self.det.setPreferableTarget(cv2_providers)
-        else:
-            print(f"DWPose: Caching TorchScript module {self.det_filename} on ...")
-            self.det = torch.jit.load(det_model_path)
-            self.det.to(torchscript_device)
+        match self.det_model_type:
+            case None:
+                pass
+            case "ort":
+                try:
+                    import onnxruntime as ort
+                    self.det = ort.InferenceSession(det_model_path, providers=ort_providers)
+                except:
+                    print(f"Failed to load onnxruntime with {ort_providers}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
+                    self.det = ort.InferenceSession(det_model_path, providers=["CPUExecutionProvider"])
+            case "cv2":
+                try:
+                    self.det = cv2.dnn.readNetFromONNX(det_model_path)
+                    self.det.setPreferableBackend(cv2_backend)
+                    self.det.setPreferableTarget(cv2_providers)
+                except:
+                    print("TopK operators may not work on your OpenCV, try use onnxruntime with CPUExecutionProvider")
+                    try:
+                        import onnxruntime as ort
+                        self.det = ort.InferenceSession(det_model_path, providers=["CPUExecutionProvider"])
+                    except:
+                        print(f"Failed to load {det_model_path}, you can use other models instead")
+            case "torchscript":
+                self.det = torch.jit.load(det_model_path)
+                self.det.to(torchscript_device)
 
-        if self.pose_filename is None:
-            pass
-        elif ("onnx" in self.pose_filename) and ort_providers:
-            print(f"DWPose: Caching ONNXRuntime session {self.pose_filename}...")
-            import onnxruntime as ort
-            self.pose = ort.InferenceSession(pose_model_path, providers=ort_providers)
-        elif ("onnx" in self.pose_filename):
-            print(f"DWPose: Caching OpenCV DNN module {self.pose_filename}...")
-            self.pose = cv2.dnn.readNetFromONNX(pose_model_path)
-            self.pose.setPreferableBackend(cv2_backend)
-            self.pose.setPreferableTarget(cv2_providers)
-        else:
-            print(f"DWPose: Caching TorchScript module {self.pose_filename}...")
-            self.pose = torch.jit.load(pose_model_path)
-            self.pose.to(torchscript_device)
+        match self.pose_model_type:
+            case None:
+                pass
+            case "ort":
+                try:
+                    import onnxruntime as ort
+                    self.pose = ort.InferenceSession(pose_model_path, providers=ort_providers)
+                except:
+                    print(f"Failed to load onnxruntime with {self.pose.get_providers()}.\nPlease change EP_list in the config.yaml and restart ComfyUI")
+                    self.pose = ort.InferenceSession(pose_model_path, providers=["CPUExecutionProvider"])
+            case "cv2":
+                self.pose = cv2.dnn.readNetFromONNX(pose_model_path)
+                self.pose.setPreferableBackend(cv2_backend)
+                self.pose.setPreferableTarget(cv2_providers)
+            case "torchscript":
+                self.pose = torch.jit.load(pose_model_path)
+                self.pose.to(torchscript_device)
         
         if self.pose_filename is not None:
             self.pose_input_size, _ = guess_onnx_input_shape_dtype(self.pose_filename)
 
     def __call__(self, oriImg) -> Optional[np.ndarray]:
-        det_model_type, pose_model_type = get_model_type(self.det), get_model_type(self.pose)
         
-        if det_model_type == "torchscript":
+        if is_model_torchscript(self.det):
             det_start = torch_timer.timer()
             det_result = inference_jit_yolox(self.det, oriImg, detect_classes=[0])
             print(f"DWPose: Bbox {((torch_timer.timer() - det_start) * 1000):.2f}ms")
@@ -82,7 +96,7 @@ class Wholebody:
         if (det_result is None) or (det_result.shape[0] == 0):
             return None
 
-        if pose_model_type == "torchscript":
+        if is_model_torchscript(self.pose):
             pose_start = torch_timer.timer()
             keypoints, scores = inference_jit_pose(self.pose, det_result, oriImg, self.pose_input_size)
             print(f"DWPose: Pose {((torch_timer.timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} people\n")

@@ -2,6 +2,7 @@ import math
 import numpy as np
 import matplotlib
 import cv2
+import os
 from typing import List, Tuple, Union, Optional
 
 from .body import BodyResult, Keypoint
@@ -423,8 +424,11 @@ def guess_onnx_input_shape_dtype(filename):
         input_size = (256, 256)
     return input_size, dtype
 
-ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
-def get_ort_providers():
+if os.getenv('AUX_ORT_PROVIDERS'):
+    ONNX_PROVIDERS = os.getenv('AUX_ORT_PROVIDERS').split(',')
+else:
+    ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider"]
+def get_ort_providers() -> List[str]:
     providers = []
     try:
         import onnxruntime as ort
@@ -435,9 +439,19 @@ def get_ort_providers():
     except:
         return None
 
-def get_model_type(model):
-    if "InferenceSession" in type(model).__name__:
+def is_model_torchscript(model) -> bool:
+    return bool(type(model).__name__ == "RecursiveScriptModule")
+
+def get_model_type(Nodesname, filename) -> str:
+    ort_providers = list(filter(lambda x : x != "CPUExecutionProvider", get_ort_providers()))
+    if filename is None:
+        return None
+    elif ("onnx" in filename) and ort_providers:
+        print(f"{Nodesname}: Caching ONNXRuntime session {filename}...")
         return "ort"
-    if type(model).__name__ == "RecursiveScriptModule":
-        return "torchscript"
-    return "cv2"
+    elif ("onnx" in filename):
+        print(f"{Nodesname}: Caching OpenCV DNN module {filename} on cv2.DNN...")
+        return "cv2"
+    else:
+        print(f"{Nodesname}: Caching TorchScript module {filename} on ...")
+        return  "torchscript"
