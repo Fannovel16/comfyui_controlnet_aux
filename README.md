@@ -113,14 +113,29 @@ You need to use its node directly to set thresholds.
 * MediaPipe Face Mesh
 * Animal Pose Estimation
 
-You can get [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) from DWPose and OpenPose through two ways
+An array of [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) corresponsding to each frame in an IMAGE batch can be gotten from DWPose and OpenPose using `app.nodeOutputs` on the UI or `/history` API endpoint. JSON output from AnimalPose uses a kinda similar format to OpenPose JSON:
+```
+[
+    {
+        "version": "ap10k",
+        "animals": [
+            [[x1, y1, 1], [x2, y2, 1],..., [x17, y17, 1]],
+            [[x1, y1, 1], [x2, y2, 1],..., [x17, y17, 1]],
+            ...
+        ],
+        "canvas_height": 512,
+        "canvas_width": 768
+    },
+    ...
+]
+```
 
 For extension developers (e.g. Openpose editor):
 ```js
-const poseNodes = app.graph._nodes.filter(node => ["OpenposePreprocessor", "DWPreprocessor"].includes(node.type))
+const poseNodes = app.graph._nodes.filter(node => ["OpenposePreprocessor", "DWPreprocessor", "AnimalPosePreprocessor"].includes(node.type))
 for (const poseNode of poseNodes) {
-    const openpose = JSON.parse(app.nodeOutputs[poseNode.id].openpose_json[0])
-    console.log(openpose)
+    const openposeResults = JSON.parse(app.nodeOutputs[poseNode.id].openpose_json[0])
+    console.log(openposeResults) //An array containing Openpose JSON for each frame
 }
 ```
 
@@ -134,8 +149,8 @@ async function main() {
     history = history[promptId]
     const nodeOutputs = Object.values(history.outputs).filter(output => output.openpose_json)
     for (const nodeOutput of nodeOutputs) {
-        const openpose = JSON.parse(nodeOutput.openpose_json[0])
-        console.log(openpose)
+        const openposeResults = JSON.parse(nodeOutput.openpose_json[0])
+        console.log(openposeResults) //An array containing Openpose JSON for each frame
     }
 }
 main()
@@ -157,7 +172,7 @@ for o in history['outputs']:
     for node_id in history['outputs']:
         node_output = history['outputs'][node_id]
         if 'openpose_json' in node_output:
-            print(json.loads(node_output['openpose_json'][0]))
+            print(json.loads(node_output['openpose_json'][0])) #An list containing Openpose JSON for each frame
 ```
 ## Semantic Segmentation
 * OneFormer ADE20K Segmentor

@@ -197,13 +197,13 @@ class AnimalPoseImage:
                 det_result = inference_onnx_yolo_nas(self.det, oriImg, detect_classes=detect_classes, dtype=det_onnx_dtype)
             print(f"AnimalPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
         if (det_result is None) or (det_result.shape[0] == 0):
-            json_output = json.dumps({
+            openpose_dict = {
                 'version': 'ap10k',
                 'animals': [],
                 'canvas_height': oriImg.shape[0],
                 'canvas_width': oriImg.shape[1]
-            }, indent=4)
-            return np.zeros_like(oriImg), json_output
+            }
+            return np.zeros_like(oriImg), openpose_dict
         
         if pose_model_type == "torchscript":
             pose_start = torch_timer.timer()
@@ -251,10 +251,10 @@ class AnimalPoseImage:
             score[score < 0.0] = 0.0
             animal_kps_scores.append(np.concatenate((keypoints, score), axis=-1))
         
-        json_output = json.dumps({
+        openpose_dict = {
             'version': 'ap10k',
             'animals': [keypoints.tolist() for keypoints in animal_kps_scores],
             'canvas_height': oriImg.shape[0],
             'canvas_width': oriImg.shape[1]
-        }, indent=4)
-        return pose_img, json_output
+        }
+        return pose_img, openpose_dict

@@ -4,6 +4,7 @@ import numpy as np
 import warnings
 from controlnet_aux.dwpose import DwposeDetector, AnimalposeDetector
 import os
+import json
 
 #Trigger startup caching for onnxruntime
 ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
@@ -75,16 +76,16 @@ class DWPose_Preprocessor:
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"
-        self.openpose_json = None
+        self.openpose_dicts = []
         def func(image, **kwargs):
-            result = model(image, **kwargs)
-            self.openpose_json = result[1]
-            return result[0]
+            pose_img, openpose_dict = model(image, **kwargs)
+            self.openpose_dicts.append(openpose_dict)
+            return pose_img
         
         out = common_annotator_call(func, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, resolution=resolution)
         del model
         return {
-            'ui': { "openpose_json": [self.openpose_json] },
+            'ui': { "openpose_json": [json.dumps(self.openpose_dicts, indent=4)] },
             "result": (out, )
         }
 
@@ -130,15 +131,16 @@ class AnimalPose_Preprocessor:
             torchscript_device=model_management.get_torch_device()
         )
 
+        self.openpose_dicts = []
         def func(image, **kwargs):
-            result = model(image, **kwargs)
-            self.openpose_json = result[1]
-            return result[0]
+            pose_img, openpose_dict = model(image, **kwargs)
+            self.openpose_dicts.append(openpose_dict)
+            return pose_img
 
         out = common_annotator_call(func, image, image_and_json=True, resolution=resolution)
         del model
         return {
-            'ui': { "openpose_json": [self.openpose_json] },
+            'ui': { "openpose_json": [json.dumps(self.openpose_dicts, indent=4)] },
             "result": (out, )
         }
 
