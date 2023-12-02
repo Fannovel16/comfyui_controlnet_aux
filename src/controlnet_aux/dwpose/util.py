@@ -437,7 +437,7 @@ def get_ort_providers() -> List[str]:
                 providers.append(provider)
         return providers
     except:
-        return None
+        return []
 
 def is_model_torchscript(model) -> bool:
     return bool(type(model).__name__ == "RecursiveScriptModule")
