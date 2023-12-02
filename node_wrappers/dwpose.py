@@ -6,11 +6,11 @@ from controlnet_aux.dwpose import DwposeDetector, AnimalposeDetector
 import os
 
 #Trigger startup caching for onnxruntime
-ONNX_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+GPU_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
 def check_ort_gpu():
     try:
         import onnxruntime as ort
-        for provider in ONNX_PROVIDERS:
+        for provider in GPU_PROVIDERS:
             if provider in ort.get_available_providers():
                 return True
         return False
@@ -22,6 +22,7 @@ if not os.environ.get("DWPOSE_ONNXRT_CHECKED"):
         print("DWPose: Onnxruntime with acceleration providers detected")
     else:
         warnings.warn("DWPose: Onnxruntime not found or doesn't come with acceleration providers, switch to OpenCV with CPU device. DWPose might run very slowly")
+        os.environ['AUX_ORT_PROVIDERS'] = ''
     os.environ["DWPOSE_ONNXRT_CHECKED"] = '1'
 
 class DWPose_Preprocessor:
