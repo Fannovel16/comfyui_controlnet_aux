@@ -1,7 +1,4 @@
-import functools
-import os
-import warnings
-import torchvision #lack of nmp
+import torchvision # Fix issue Unknown builtin op: torchvision::nms
 import cv2
 import numpy as np
 import torch
@@ -10,12 +7,21 @@ from einops import rearrange
 from PIL import Image
 
 from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
-from .densepose import civitai_vis, densepose_chart_predictor_output_to_result_with_confidences
+from .densepose import DensePoseMaskedColormapResultsVisualizer, _extract_i_from_iuvarr, densepose_chart_predictor_output_to_result_with_confidences
+
+N_PART_LABELS = 24
 
 class DenseposeDetector:
     def __init__(self, model):
         self.dense_pose_estimation = model
         self.device = "cpu"
+        self.result_visualizer = DensePoseMaskedColormapResultsVisualizer(
+            cmap=cv2.COLORMAP_PARULA, 
+            alpha=1, 
+            data_extractor=_extract_i_from_iuvarr, 
+            segm_extractor=_extract_i_from_iuvarr, 
+            val_scale = 255.0 / N_PART_LABELS
+        )
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):
@@ -43,7 +49,7 @@ class DenseposeDetector:
         extractor = densepose_chart_predictor_output_to_result_with_confidences
         densepose_results = [extractor(pred_boxes[i:i+1], corase_segm[i:i+1], fine_segm[i:i+1], u[i:i+1], v[i:i+1]) for i in range(len(pred_boxes))]
 
-        hint_image = civitai_vis.visualize(hint_image_canvas, densepose_results)
+        hint_image = self.result_visualizer.visualize(hint_image_canvas, densepose_results)
         hint_image = cv2.cvtColor(hint_image, cv2.COLOR_BGR2RGB)
         hint_image = torch.from_numpy(hint_image)
 

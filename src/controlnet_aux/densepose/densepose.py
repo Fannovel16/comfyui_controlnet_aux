@@ -10,7 +10,6 @@ import cv2
 
 Image = np.ndarray
 Boxes = torch.Tensor
-N_PART_LABELS = 24
 ImageSizeType = Tuple[int, int]
 _RawBoxType = Union[List[float], Tuple[float, ...], torch.Tensor, np.ndarray]
 IntTupleBox = Tuple[int, int, int, int]
@@ -346,4 +345,3 @@ def resample_uv_tensors_to_bbox(
         uv[1][labels == part_id] = v_bbox[0, part_id][labels == part_id]
     return uv
 
-civitai_vis = DensePoseMaskedColormapResultsVisualizer(cmap=cv2.COLORMAP_PARULA, alpha=1, data_extractor=_extract_i_from_iuvarr, segm_extractor=_extract_i_from_iuvarr, val_scale = 255.0 / N_PART_LABELS)
