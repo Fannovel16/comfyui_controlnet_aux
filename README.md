@@ -36,6 +36,7 @@ All credit & copyright goes to https://github.com/lllyasviel.
 * Added YOLO-NAS models which are drop-in replacements of YOLOX
 * Fixed Openpose Face/Hands no longer detecting: https://github.com/Fannovel16/comfyui_controlnet_aux/issues/54
 * Added TorchScript implementation of DWPose and AnimalPose
+* Added TorchScript implementation of DensePose from [Colab notebook](https://colab.research.google.com/drive/16hcaaKs210ivpxjoyGNuvEXZD4eqOOSQ) which doesn't require detectron2. [Example](#densepose). Ps/r: Currently doesn't work
 # Q&A:
 ## Why some nodes doesn't appear after I installed this repo?
 
@@ -212,6 +213,9 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same k
 
 ### Animal Pose (AP-10K)
 ![](./example_animal_pose.png)
+
+### DensePose
+![](./example_densepose.png)
 
 ## Semantic Segmantation
 ### OneFormer ADE20K Segmentor
