@@ -16,11 +16,10 @@ class DensePose_Preprocessor:
 
     def execute(self, image, model, cmap, resolution=512):
         from controlnet_aux.densepose import DenseposeDetector
-        return (common_annotator_call(
-                DenseposeDetector.from_pretrained("LayerNorm/DensePose-TorchScript-with-hint-image", model).to(model_management.get_torch_device()), 
-                image, 
-                cmap="viridis" if "Viridis" in cmap else "parula", 
-                resolution=resolution), )
+        model = DenseposeDetector \
+                    .from_pretrained("LayerNorm/DensePose-TorchScript-with-hint-image", model) \
+                    .to(model_management.get_torch_device()), 
+        return (common_annotator_call(image, cmap="viridis" if "Viridis" in cmap else "parula", resolution=resolution), )
 
 
 NODE_CLASS_MAPPINGS = {
