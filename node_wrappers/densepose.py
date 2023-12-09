@@ -5,10 +5,7 @@ class DensePose_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return create_node_input_types(
-            model=([
-                "densepose_r50_fpn_dl.torchscript", 
-                #"densepose_r101_fpn_dl.torchscript"#TODO: Convert r101 model
-            ], {"default": "densepose_r50_fpn_dl.torchscript"}),
+            model=(["densepose_r50_fpn_dl.torchscript", "densepose_r101_fpn_dl.torchscript"], {"default": "densepose_r50_fpn_dl.torchscript"}),
             cmap=(["Viridis (MagicAnimate)", "Parula (CivitAI)"], {"default": "Viridis (MagicAnimate)"})
         )
 
@@ -19,7 +16,6 @@ class DensePose_Preprocessor:
 
     def execute(self, image, model, cmap, resolution=512):
         from controlnet_aux.densepose import DenseposeDetector
-        model = model.replace("fpn_dl", "fpn_dl_fixed")
         return (common_annotator_call(
                 DenseposeDetector.from_pretrained("hr16/DensePose-TorchScript-with-hint-image", model).to(model_management.get_torch_device()), 
                 image, 
