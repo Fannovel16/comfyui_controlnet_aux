@@ -18,7 +18,7 @@ class DensePose_Preprocessor:
         from controlnet_aux.densepose import DenseposeDetector
         model = DenseposeDetector \
                     .from_pretrained("LayerNorm/DensePose-TorchScript-with-hint-image", model) \
-                    .to(model_management.get_torch_device()), 
+                    .to(model_management.get_torch_device())
         return (common_annotator_call(model, image, cmap="viridis" if "Viridis" in cmap else "parula", resolution=resolution), )
 
 
