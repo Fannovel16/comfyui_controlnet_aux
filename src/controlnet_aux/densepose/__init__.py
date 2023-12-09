@@ -16,7 +16,6 @@ class DenseposeDetector:
         self.dense_pose_estimation = model
         self.device = "cpu"
         self.result_visualizer = DensePoseMaskedColormapResultsVisualizer(
-            cmap=cv2.COLORMAP_PARULA, 
             alpha=1, 
             data_extractor=_extract_i_from_iuvarr, 
             segm_extractor=_extract_i_from_iuvarr, 
@@ -49,16 +48,19 @@ class DenseposeDetector:
         extractor = densepose_chart_predictor_output_to_result_with_confidences
         densepose_results = [extractor(pred_boxes[i:i+1], corase_segm[i:i+1], fine_segm[i:i+1], u[i:i+1], v[i:i+1]) for i in range(len(pred_boxes))]
 
-        hint_image = self.result_visualizer.visualize(hint_image_canvas, densepose_results)
-        hint_image = cv2.cvtColor(hint_image, cv2.COLOR_BGR2RGB)
-
         if cmap=="viridis":
+            self.result_visualizer.mask_visualizer.cmap = cv2.COLORMAP_VIRIDIS
+            hint_image = self.result_visualizer.visualize(hint_image_canvas, densepose_results)
+            hint_image = cv2.cvtColor(hint_image, cv2.COLOR_BGR2RGB)
             hint_image[:, :, 0][hint_image[:, :, 0] == 0] = 68
             hint_image[:, :, 1][hint_image[:, :, 1] == 0] = 1
             hint_image[:, :, 2][hint_image[:, :, 2] == 0] = 84
+        else:
+            self.result_visualizer.mask_visualizer.cmap = cv2.COLORMAP_PARULA
+            hint_image = self.result_visualizer.visualize(hint_image_canvas, densepose_results)
+            hint_image = cv2.cvtColor(hint_image, cv2.COLOR_BGR2RGB)
 
         detected_map = remove_pad(HWC3(hint_image))
-
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
         return detected_map
