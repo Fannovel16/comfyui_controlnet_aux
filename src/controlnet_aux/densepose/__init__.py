@@ -51,18 +51,14 @@ class DenseposeDetector:
 
         hint_image = self.result_visualizer.visualize(hint_image_canvas, densepose_results)
         hint_image = cv2.cvtColor(hint_image, cv2.COLOR_BGR2RGB)
-        hint_image = torch.from_numpy(hint_image)
 
         if cmap=="viridis":
             hint_image[:, :, 0][hint_image[:, :, 0] == 0] = 68
             hint_image[:, :, 1][hint_image[:, :, 1] == 0] = 1
             hint_image[:, :, 2][hint_image[:, :, 2] == 0] = 84
 
-        detected_map = hint_image
-
-        detected_map = detected_map.cpu().detach().numpy()
+        detected_map = remove_pad(HWC3(hint_image))
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
-        detected_map = remove_pad(HWC3(detected_map))
         return detected_map
