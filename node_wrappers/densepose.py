@@ -19,7 +19,7 @@ class DensePose_Preprocessor:
         model = DenseposeDetector \
                     .from_pretrained("LayerNorm/DensePose-TorchScript-with-hint-image", model) \
                     .to(model_management.get_torch_device()), 
-        return (common_annotator_call(image, cmap="viridis" if "Viridis" in cmap else "parula", resolution=resolution), )
+        return (common_annotator_call(model, image, cmap="viridis" if "Viridis" in cmap else "parula", resolution=resolution), )
 
 
 NODE_CLASS_MAPPINGS = {
