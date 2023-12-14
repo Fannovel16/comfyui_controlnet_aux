@@ -64,7 +64,7 @@ def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):
 
     out_list = []
     for image in tensor_image:
-        np_image = np.asarray(image * 255., dtype=np.uint8)
+        np_image = np.asarray(image.cpu() * 255., dtype=np.uint8)
         np_result = model(np_image, output_type="np", detect_resolution=detect_resolution, **kwargs)
         out_list.append(torch.from_numpy(np_result.astype(np.float32) / 255.0))
     return torch.stack(out_list, dim=0)
