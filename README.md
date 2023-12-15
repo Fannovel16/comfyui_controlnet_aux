@@ -49,7 +49,7 @@ You need to use its node directly to set thresholds.
 | HED Lines                   | hed                       | control_v11p_sd15_softedge <br> control_hed |
 | Realistic Lineart           | lineart (or `lineart_coarse` if `coarse` is enabled) | control_v11p_sd15_lineart |
 | Anime Lineart               | lineart_anime             | control_v11p_sd15s2_lineart_anime         |
-| Manga Lineart               |                           | control_v11p_sd15s2_lineart_anime         |
+| Manga Lineart               | lineart_anime_denoise     | control_v11p_sd15s2_lineart_anime         |
 | M-LSD Lines                 | mlsd                      | control_v11p_sd15_mlsd <br> control_mlsd  |
 | PiDiNet Lines               | pidinet                   | control_v11p_sd15_softedge <br> control_scribble |
 | Scribble Lines              | scribble                  | control_v11p_sd15_scribble <br> control_scribble |
@@ -63,7 +63,7 @@ You need to use its node directly to set thresholds.
 | LeReS - Depth Map           | depth_leres               | control_v11f1p_sd15_depth <br> control_depth <br> t2iadapter_depth |
 | Zoe - Depth Map             | depth_zoe                 | control_v11f1p_sd15_depth <br> control_depth <br> t2iadapter_depth |
 | MiDaS - Normal Map          | normal_map                | control_normal                            |
-| BAE - Normal Map            |                           | control_v11p_sd15_normalbae               |
+| BAE - Normal Map            | normal_bae                | control_v11p_sd15_normalbae               |
 
 ## Faces and Poses
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
