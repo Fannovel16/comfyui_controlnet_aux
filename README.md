@@ -47,6 +47,7 @@ You need to use its node directly to set thresholds.
 | Binary Lines                | binary                    | control_scribble                          |
 | Canny Edge                  | canny                     | control_v11p_sd15_canny <br> control_canny <br> t2iadapter_canny |
 | HED Lines                   | hed                       | control_v11p_sd15_softedge <br> control_hed |
+| Standard Lineart            | standard_lineart          | control_v11p_sd15_lineart                 |
 | Realistic Lineart           | lineart (or `lineart_coarse` if `coarse` is enabled) | control_v11p_sd15_lineart |
 | Anime Lineart               | lineart_anime             | control_v11p_sd15s2_lineart_anime         |
 | Manga Lineart               | lineart_anime_denoise     | control_v11p_sd15s2_lineart_anime         |
@@ -69,9 +70,10 @@ You need to use its node directly to set thresholds.
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
 |-----------------------------|---------------------------|-------------------------------------------|
 | DWPose Pose Estimation      | dw_openpose_full          | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
-| OpenPose Pose Estimation    | openpose (detect_body) <br> openpose_hand (detect_body + detect_hand) <br> openpose_faceonly (detect_face) <br> openpose_full (detect_hand + detect_body + detect_face)   | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
+| OpenPose Pose Estimation    | openpose (detect_body) <br> openpose_hand (detect_body + detect_hand) <br> openpose_faceonly (detect_face) <br> openpose_full (detect_hand + detect_body + detect_face)    | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
 | MediaPipe Face Mesh         | mediapipe_face            | controlnet_sd21_laion_face_v2             | 
-| Animal Pose Estimation      | Currently in [PR](https://github.com/Mikubill/sd-webui-controlnet/pull/2293) | [animal_pose_epoch22 (sd1.5)](https://drive.google.com/file/d/1Q0lvCVFx2hGlgI7Q-npJKDFqZRwZltYY/view) |
+| Animal Pose Estimation      | animal_openpose           | [
+control_sd15_animal_openpose_fp16.pth](https://huggingface.co/huchenlei/animal_openpose/blob/main/control_sd15_animal_openpose_fp16.pth) |
 
 An array of [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) corresponsding to each frame in an IMAGE batch can be gotten from DWPose and OpenPose using `app.nodeOutputs` on the UI or `/history` API endpoint. JSON output from AnimalPose uses a kinda similar format to OpenPose JSON:
 ```
