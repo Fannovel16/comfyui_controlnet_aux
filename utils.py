@@ -31,7 +31,7 @@ if os.path.exists(config_path):
 else:
     annotator_ckpts_path = str(Path(here, "./ckpts"))
     USE_SYMLINKS = False
-    ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider"]
+    ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider", "CoreMLExecutionProvider"]
 
 os.environ['AUX_USE_SYMLINKS'] = str(USE_SYMLINKS)
 os.environ['AUX_ANNOTATOR_CKPTS_PATH'] = annotator_ckpts_path
@@ -44,7 +44,7 @@ log.info(f"Using ort providers: {ORT_PROVIDERS}")
 MAX_RESOLUTION=2048 #Who the hell feed 4k images to ControlNet?
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
-ANIFACESEG_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite" 
+ANIFACESEG_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite"
 
 
 def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):

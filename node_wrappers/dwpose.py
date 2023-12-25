@@ -7,7 +7,7 @@ import os
 import json
 
 #Trigger startup caching for onnxruntime
-GPU_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider"]
+GPU_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CoreMLExecutionProvider"]
 def check_ort_gpu():
     try:
         import onnxruntime as ort
@@ -37,13 +37,13 @@ class DWPose_Preprocessor:
         input_types["optional"] = {
             **input_types["optional"],
             "bbox_detector": (
-                ["yolox_l.torchscript.pt", "yolox_m.torchscript.pt", "yolox_s.torchscript.pt", "yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx", "yolox_l.onnx", "yolox_m.onnx", "yolox_s.onnx"], 
+                ["yolox_l.torchscript.pt", "yolox_m.torchscript.pt", "yolox_s.torchscript.pt", "yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx", "yolox_l.onnx", "yolox_m.onnx", "yolox_s.onnx"],
                 {"default": "yolox_l.onnx"}
             ),
             "pose_estimator": (["dw-ll_ucoco_384_bs5.torchscript.pt", "dw-ll_ucoco_384.onnx", "dw-ll_ucoco.onnx", "dw-mm_ucoco.onnx", "dw-ss_ucoco.onnx"], {"default": "dw-ll_ucoco_384.onnx"})
         }
         return input_types
-        
+
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "estimate_pose"
 
@@ -58,7 +58,7 @@ class DWPose_Preprocessor:
             yolo_repo = "hr16/yolo-nas-fp16"
         else:
             raise NotImplementedError(f"Download mechanism for {bbox_detector}")
-        
+
         if pose_estimator == "dw-ll_ucoco_384.onnx":
             pose_repo = DWPOSE_MODEL_NAME
         elif pose_estimator.endswith(".onnx"):
@@ -82,7 +82,7 @@ class DWPose_Preprocessor:
             pose_img, openpose_dict = model(image, **kwargs)
             self.openpose_dicts.append(openpose_dict)
             return pose_img
-        
+
         out = common_annotator_call(func, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, resolution=resolution)
         del model
         return {
@@ -100,7 +100,7 @@ class AnimalPose_Preprocessor:
             ),
             pose_estimator = (["rtmpose-m_ap10k_256_bs5.torchscript.pt", "rtmpose-m_ap10k_256.onnx"], {"default": "rtmpose-m_ap10k_256.onnx"})
         )
-        
+
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "estimate_pose"
 
@@ -115,7 +115,7 @@ class AnimalPose_Preprocessor:
             yolo_repo = "hr16/yolo-nas-fp16"
         else:
             raise NotImplementedError(f"Download mechanism for {bbox_detector}")
-        
+
         if pose_estimator == "dw-ll_ucoco_384.onnx":
             pose_repo = DWPOSE_MODEL_NAME
         elif pose_estimator.endswith(".onnx"):
