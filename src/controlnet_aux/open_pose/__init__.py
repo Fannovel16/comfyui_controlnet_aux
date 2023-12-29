@@ -231,9 +231,8 @@ class OpenposeDetector:
         detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
         
         poses = self.detect_poses(detected_map, include_hand=include_hand, include_face=include_face)
-        detected_map = remove_pad(detected_map)
         canvas = draw_poses(poses, detected_map.shape[0], detected_map.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
-
+        canvas = remove_pad(canvas)
         detected_map = HWC3(canvas)
 
         if output_type == "pil":
