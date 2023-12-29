@@ -227,13 +227,11 @@ class OpenposeDetector:
             include_face = hand_and_face
 
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
-
-        detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
+        input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
         
-        poses = self.detect_poses(detected_map, include_hand=include_hand, include_face=include_face)
-        canvas = draw_poses(poses, detected_map.shape[0], detected_map.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
-        canvas = remove_pad(canvas)
-        detected_map = HWC3(canvas)
+        poses = self.detect_poses(input_image, include_hand=include_hand, include_face=include_face)
+        canvas = draw_poses(poses, input_image.shape[0], input_image.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
+        detected_map = HWC3(remove_pad(canvas))
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
