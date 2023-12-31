@@ -18,6 +18,7 @@ from custom_manopth.manolayer import ManoLayer
 import scipy.sparse
 import custom_mesh_graphormer.modeling.data.config as cfg
 from pathlib import Path
+from comfy.model_management import get_torch_device
 
 class MANO(nn.Module):
     def __init__(self):
@@ -80,6 +81,9 @@ class SparseMM(torch.autograd.Function):
         return None, grad_input
 
 def spmm(sparse, dense):
+    device = get_torch_device()
+    sparse = sparse.to(device)
+    dense = dense.to(device)
     return SparseMM.apply(sparse, dense)
 
 

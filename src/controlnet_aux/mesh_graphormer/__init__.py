@@ -28,8 +28,8 @@ class MeshGraphormerDetector:
 
         depth_map, mask, info = self.pipeline.get_depth(input_image, mask_bbox_padding)
         if depth_map is None:
-            depth_map = np.zeros_like(input_image)
-            mask = np.zeros_like(mask)
+            depth_map = np.zeros_like(input_image, dtype=np.uint8)
+            mask = np.zeros_like(input_image, dtype=np.uint8)
 
         #The hand is small
         depth_map, mask = HWC3(depth_map), HWC3(mask)
