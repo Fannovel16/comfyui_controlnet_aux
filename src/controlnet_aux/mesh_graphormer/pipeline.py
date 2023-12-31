@@ -297,7 +297,8 @@ class MeshGraphormerMediapipe(Preprocessor):
         info = {}
 
         # STEP 3: Load the input image.
-        image = mp.Image(image_format=mp.ImageFormat.SRGB, data=np_image)
+        #https://stackoverflow.com/a/76407270
+        image = mp.Image(image_format=mp.ImageFormat.SRGB, data=np_image.copy())
 
         # STEP 4: Detect hand landmarks from the input image.
         detection_result = self.detector.detect(image)
