@@ -72,6 +72,7 @@ You need to use its node directly to set thresholds.
 | Zoe - Depth Map             | depth_zoe                 | control_v11f1p_sd15_depth <br> control_depth <br> t2iadapter_depth |
 | MiDaS - Normal Map          | normal_map                | control_normal                            |
 | BAE - Normal Map            | normal_bae                | control_v11p_sd15_normalbae               |
+| Mesh Graphormer - Hand Depth Map & Mask ([HandRefinder](https://github.com/wenquanlu/HandRefiner)) |               | [control_sd15_inpaint_depth_hand_fp16](https://huggingface.co/hr16/ControlNet-HandRefiner-pruned/blob/main/control_sd15_inpaint_depth_hand_fp16.safetensors) |
 
 ## Faces and Poses
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
@@ -79,7 +80,7 @@ You need to use its node directly to set thresholds.
 | DWPose Pose Estimation      | dw_openpose_full          | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
 | OpenPose Pose Estimation    | openpose (detect_body) <br> openpose_hand (detect_body + detect_hand) <br> openpose_faceonly (detect_face) <br> openpose_full (detect_hand + detect_body + detect_face)    | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
 | MediaPipe Face Mesh         | mediapipe_face            | controlnet_sd21_laion_face_v2             | 
-| Animal Pose Estimation      | animal_openpose           | [control_sd15_animal_openpose_fp16.pth](https://huggingface.co/huchenlei/animal_openpose/blob/main/control_sd15_animal_openpose_fp16.pth) |
+| Animal Pose Estimation      | animal_openpose           | [control_sd15_animal_openpose_fp16](https://huggingface.co/huchenlei/animal_openpose/blob/main/control_sd15_animal_openpose_fp16.pth) |
 
 An array of [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) corresponsding to each frame in an IMAGE batch can be gotten from DWPose and OpenPose using `app.nodeOutputs` on the UI or `/history` API endpoint. JSON output from AnimalPose uses a kinda similar format to OpenPose JSON:
 ```

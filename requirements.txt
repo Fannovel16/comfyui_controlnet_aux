@@ -18,3 +18,7 @@ yapf
 omegaconf
 ftfy
 addict
+trimesh
+pyembree
+embreex
+yacs

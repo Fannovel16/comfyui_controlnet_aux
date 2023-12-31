@@ -23,6 +23,13 @@ def run_script(cmd, cwd='.'):
 
     return process.wait()
 
+def install_deps():
+    try:
+        import mediapipe
+    except ImportError:
+        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'mediapipe'])
+        run_script([sys.executable, '-s', '-m', 'pip', 'install', '--upgrade', 'protobuf'])
+
 class Media_Pipe_Face_Mesh_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
@@ -37,15 +44,9 @@ class Media_Pipe_Face_Mesh_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Faces and Poses"
 
     def detect(self, image, max_faces, min_confidence, resolution=512):
-        try:
-            import mediapipe
-        except ImportError:
-            run_script([sys.executable, '-s', '-m', 'pip', 'install', 'mediapipe'])
-            run_script([sys.executable, '-s', '-m', 'pip', 'install', '--upgrade', 'protobuf'])
-
         #Ref: https://github.com/Fannovel16/comfy_controlnet_preprocessors/issues/70#issuecomment-1677967369
+        install_deps()
         from controlnet_aux.mediapipe_face import MediapipeFaceDetector
-
         return (common_annotator_call(MediapipeFaceDetector(), image, max_faces=max_faces, min_confidence=min_confidence, resolution=resolution), )
 
 NODE_CLASS_MAPPINGS = {
