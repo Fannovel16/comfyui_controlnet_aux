@@ -4,8 +4,6 @@ yapf
 omegaconf
 ftfy
 addict
-trimesh
-pyembree
-embreex
+trimesh[easy]
 yacs
 setuptools>=67.0.0

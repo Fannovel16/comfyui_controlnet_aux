@@ -32,12 +32,6 @@ def install_deps():
     except ImportError:
         run_script([sys.executable, '-s', '-m', 'pip', 'install', 'mediapipe'])
         run_script([sys.executable, '-s', '-m', 'pip', 'install', '--upgrade', 'protobuf'])
-    try:
-        import pyembree
-    except ImportError:
-        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'trimesh', 'pyembree', 'embreex', 'yacs'])
-        #Re-install after being overwritten by pyembree
-        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'setuptools>=67.0.0'])
 
 class Mesh_Graphormer_Depth_Map_Preprocessor:
     @classmethod
