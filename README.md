@@ -72,7 +72,7 @@ You need to use its node directly to set thresholds.
 | Zoe - Depth Map             | depth_zoe                 | control_v11f1p_sd15_depth <br> control_depth <br> t2iadapter_depth |
 | MiDaS - Normal Map          | normal_map                | control_normal                            |
 | BAE - Normal Map            | normal_bae                | control_v11p_sd15_normalbae               |
-| Mesh Graphormer - Hand Depth Map & Mask ([HandRefinder](https://github.com/wenquanlu/HandRefiner))  |               | [control_sd15_inpaint_depth_hand_fp16](https://huggingface.co/hr16/ControlNet-HandRefiner-pruned/blob/main/control_sd15_inpaint_depth_hand_fp16.safetensors) |
+| Mesh Graphormer - Hand Refiner ([HandRefinder](https://github.com/wenquanlu/HandRefiner))  |               | [control_sd15_inpaint_depth_hand_fp16](https://huggingface.co/hr16/ControlNet-HandRefiner-pruned/blob/main/control_sd15_inpaint_depth_hand_fp16.safetensors) |
 
 ## Faces and Poses
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
