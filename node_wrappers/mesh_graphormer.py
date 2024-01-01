@@ -32,6 +32,11 @@ def install_deps():
     except ImportError:
         run_script([sys.executable, '-s', '-m', 'pip', 'install', 'mediapipe'])
         run_script([sys.executable, '-s', '-m', 'pip', 'install', '--upgrade', 'protobuf'])
+    
+    try:
+        import trimesh
+    except ImportError:
+        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'trimesh[easy]'])
 
 class Mesh_Graphormer_Depth_Map_Preprocessor:
     @classmethod
