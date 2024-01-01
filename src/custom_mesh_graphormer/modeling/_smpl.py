@@ -37,7 +37,7 @@ class SMPL(nn.Module):
         i = torch.LongTensor([row, col])
         v = torch.FloatTensor(data)
         J_regressor_shape = [24, 6890]
-        self.register_buffer('J_regressor', torch.sparse.FloatTensor(i, v, J_regressor_shape).to_dense())
+        self.register_buffer('J_regressor', torch.sparse_coo_tensor(i, v, J_regressor_shape).to_dense())
         self.register_buffer('weights', torch.FloatTensor(smpl_model['weights']))
         self.register_buffer('posedirs', torch.FloatTensor(smpl_model['posedirs']))
         self.register_buffer('v_template', torch.FloatTensor(smpl_model['v_template']))
@@ -156,6 +156,9 @@ class SparseMM(torch.autograd.Function):
         return None, grad_input
 
 def spmm(sparse, dense):
+    device = torch.device('cuda:0')
+    sparse = sparse.to(device)
+    dense = dense.to(device)
     return SparseMM.apply(sparse, dense)
 
 
@@ -168,13 +171,13 @@ def scipy_to_pytorch(A, U, D):
         u = scipy.sparse.coo_matrix(U[i])
         i = torch.LongTensor(np.array([u.row, u.col]))
         v = torch.FloatTensor(u.data)
-        ptU.append(torch.sparse.FloatTensor(i, v, u.shape))
+        ptU.append(torch.sparse_coo_tensor(i, v, u.shape))
     
     for i in range(len(D)):
         d = scipy.sparse.coo_matrix(D[i])
         i = torch.LongTensor(np.array([d.row, d.col]))
         v = torch.FloatTensor(d.data)
-        ptD.append(torch.sparse.FloatTensor(i, v, d.shape)) 
+        ptD.append(torch.sparse_coo_tensor(i, v, d.shape)) 
 
     return ptU, ptD
 
@@ -197,7 +200,7 @@ def adjmat_sparse(adjmat, nsize=1):
     data = adjmat.data
     i = torch.LongTensor(np.array([row, col]))
     v = torch.from_numpy(data).float()
-    adjmat = torch.sparse.FloatTensor(i, v, adjmat.shape)
+    adjmat = torch.sparse_coo_tensor(i, v, adjmat.shape)
     return adjmat
 
 def get_graph_params(filename, nsize=1):

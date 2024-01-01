@@ -6,8 +6,6 @@ Licensed under the MIT license.
 
 import torch
 import custom_mesh_graphormer.modeling.data.config as cfg
-from comfy.model_management import get_torch_device
-device = get_torch_device()
 
 class Graphormer_Hand_Network(torch.nn.Module):
     '''
@@ -28,8 +26,8 @@ class Graphormer_Hand_Network(torch.nn.Module):
         batch_size = images.size(0)
         # Generate T-pose template mesh
         template_pose = torch.zeros((1,48))
-        template_pose = template_pose.to(device)
-        template_betas = torch.zeros((1,10)).to(device)
+        template_pose = template_pose.cuda()
+        template_betas = torch.zeros((1,10)).cuda()
         template_vertices, template_3d_joints = mesh_model.layer(template_pose, template_betas)
         template_vertices = template_vertices/1000.0
         template_3d_joints = template_3d_joints/1000.0
@@ -64,7 +62,7 @@ class Graphormer_Hand_Network(torch.nn.Module):
             # apply mask vertex/joint modeling
             # meta_masks is a tensor of all the masks, randomly generated in dataloader
             # we pre-define a [MASK] token, which is a floating-value vector with 0.01s  
-            special_token = torch.ones_like(features[:,:-49,:]).to(device)*0.01
+            special_token = torch.ones_like(features[:,:-49,:]).cuda()*0.01
             features[:,:-49,:] = features[:,:-49,:]*meta_masks + special_token*(1-meta_masks)
 
         # forward pass

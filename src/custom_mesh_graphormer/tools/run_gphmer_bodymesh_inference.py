@@ -39,8 +39,6 @@ from custom_mesh_graphormer.utils.geometric_layers import orthographic_projectio
 
 from PIL import Image
 from torchvision import transforms
-from comfy.model_management import get_torch_device, soft_empty_cache
-device = get_torch_device()
 
 transform = transforms.Compose([           
                     transforms.Resize(224),
@@ -67,8 +65,8 @@ def run_inference(args, image_list, Graphormer_model, smpl, renderer, mesh_sampl
                 img_tensor = transform(img)
                 img_visual = transform_visualize(img)
 
-                batch_imgs = torch.unsqueeze(img_tensor, 0).to(device)
-                batch_visual_imgs = torch.unsqueeze(img_visual, 0).to(device)
+                batch_imgs = torch.unsqueeze(img_tensor, 0).cuda()
+                batch_visual_imgs = torch.unsqueeze(img_visual, 0).cuda()
                 # forward-pass
                 pred_camera, pred_3d_joints, pred_vertices_sub2, pred_vertices_sub, pred_vertices, hidden_states, att = Graphormer_model(batch_imgs, smpl, mesh_sampler)
                     
@@ -315,7 +313,7 @@ def main(args):
             _model.load_state_dict(states, strict=False)
             del states
             gc.collect()
-            soft_empty_cache()
+            torch.cuda.empty_cache()
 
     # update configs to enable attention outputs
     setattr(_model.trans_encoder[-1].config,'output_attentions', True)

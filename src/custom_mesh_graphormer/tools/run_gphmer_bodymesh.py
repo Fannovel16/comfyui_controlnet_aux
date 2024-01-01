@@ -36,8 +36,6 @@ from custom_mesh_graphormer.utils.metric_logger import AverageMeter, EvalMetrics
 from custom_mesh_graphormer.utils.renderer import Renderer, visualize_reconstruction, visualize_reconstruction_test
 from custom_mesh_graphormer.utils.metric_pampjpe import reconstruction_error
 from custom_mesh_graphormer.utils.geometric_layers import orthographic_projection
-from comfy.model_management import get_torch_device, soft_empty_cache
-device = get_torch_device()
 
 from azureml.core.run import Run
 aml_run = Run.get_context()
@@ -168,9 +166,9 @@ def run(args, train_dataloader, val_dataloader, Graphormer_model, smpl, mesh_sam
                                            weight_decay=0)
 
     # define loss function (criterion) and optimizer
-    criterion_2d_keypoints = torch.nn.MSELoss(reduction='none').to(device)
-    criterion_keypoints = torch.nn.MSELoss(reduction='none').to(device)
-    criterion_vertices = torch.nn.L1Loss().to(device)
+    criterion_2d_keypoints = torch.nn.MSELoss(reduction='none').cuda(args.device)
+    criterion_keypoints = torch.nn.MSELoss(reduction='none').cuda(args.device)
+    criterion_vertices = torch.nn.L1Loss().cuda(args.device)
 
     if args.distributed:
         Graphormer_model = torch.nn.parallel.DistributedDataParallel(
@@ -206,22 +204,22 @@ def run(args, train_dataloader, val_dataloader, Graphormer_model, smpl, mesh_sam
         adjust_learning_rate(optimizer, epoch, args)
         data_time.update(time.time() - end)
 
-        images = images.to(device)
-        gt_2d_joints = annotations['joints_2d'].to(device)
+        images = images.cuda(args.device)
+        gt_2d_joints = annotations['joints_2d'].cuda(args.device)
         gt_2d_joints = gt_2d_joints[:,cfg.J24_TO_J14,:]
-        has_2d_joints = annotations['has_2d_joints'].to(device)
+        has_2d_joints = annotations['has_2d_joints'].cuda(args.device)
 
-        gt_3d_joints = annotations['joints_3d'].to(device)
+        gt_3d_joints = annotations['joints_3d'].cuda(args.device)
         gt_3d_pelvis = gt_3d_joints[:,cfg.J24_NAME.index('Pelvis'),:3]
         gt_3d_joints = gt_3d_joints[:,cfg.J24_TO_J14,:] 
         gt_3d_joints[:,:,:3] = gt_3d_joints[:,:,:3] - gt_3d_pelvis[:, None, :]
-        has_3d_joints = annotations['has_3d_joints'].to(device)
+        has_3d_joints = annotations['has_3d_joints'].cuda(args.device)
 
-        gt_pose = annotations['pose'].to(device)
-        gt_betas = annotations['betas'].to(device)
-        has_smpl = annotations['has_smpl'].to(device)
-        mjm_mask = annotations['mjm_mask'].to(device)
-        mvm_mask = annotations['mvm_mask'].to(device)
+        gt_pose = annotations['pose'].cuda(args.device)
+        gt_betas = annotations['betas'].cuda(args.device)
+        has_smpl = annotations['has_smpl'].cuda(args.device)
+        mjm_mask = annotations['mjm_mask'].cuda(args.device)
+        mvm_mask = annotations['mvm_mask'].cuda(args.device)
 
         # generate simplified mesh
         gt_vertices = smpl(gt_pose, gt_betas)
@@ -355,8 +353,8 @@ def run(args, train_dataloader, val_dataloader, Graphormer_model, smpl, mesh_sam
 
 def run_eval_general(args, val_dataloader, Graphormer_model, smpl, mesh_sampler):
     smpl.eval()
-    criterion_keypoints = torch.nn.MSELoss(reduction='none').to(device)
-    criterion_vertices = torch.nn.L1Loss().to(device)
+    criterion_keypoints = torch.nn.MSELoss(reduction='none').cuda(args.device)
+    criterion_vertices = torch.nn.L1Loss().cuda(args.device)
 
     epoch = 0
     if args.distributed:
@@ -399,16 +397,16 @@ def run_validate(args, val_loader, Graphormer_model, criterion, criterion_vertic
         for i, (img_keys, images, annotations) in enumerate(val_loader):
             batch_size = images.size(0)
             # compute output
-            images = images.to(device)
-            gt_3d_joints = annotations['joints_3d'].to(device)
+            images = images.cuda(args.device)
+            gt_3d_joints = annotations['joints_3d'].cuda(args.device)
             gt_3d_pelvis = gt_3d_joints[:,cfg.J24_NAME.index('Pelvis'),:3]
             gt_3d_joints = gt_3d_joints[:,cfg.J24_TO_J14,:] 
             gt_3d_joints[:,:,:3] = gt_3d_joints[:,:,:3] - gt_3d_pelvis[:, None, :]
-            has_3d_joints = annotations['has_3d_joints'].to(device)
+            has_3d_joints = annotations['has_3d_joints'].cuda(args.device)
 
-            gt_pose = annotations['pose'].to(device)
-            gt_betas = annotations['betas'].to(device)
-            has_smpl = annotations['has_smpl'].to(device)
+            gt_pose = annotations['pose'].cuda(args.device)
+            gt_betas = annotations['betas'].cuda(args.device)
+            has_smpl = annotations['has_smpl'].cuda(args.device)
 
             # generate simplified mesh
             gt_vertices = smpl(gt_pose, gt_betas)

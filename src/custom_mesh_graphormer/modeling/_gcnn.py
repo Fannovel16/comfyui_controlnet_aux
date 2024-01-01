@@ -6,7 +6,6 @@ import scipy.sparse
 import math
 from pathlib import Path
 data_path = Path(__file__).parent / "data"
-from comfy.model_management import get_torch_device
 
 class SparseMM(torch.autograd.Function):
     """Redefine sparse @ dense matrix multiplication to enable backpropagation.
@@ -27,6 +26,9 @@ class SparseMM(torch.autograd.Function):
         return None, grad_input
 
 def spmm(sparse, dense):
+    device = torch.device('cuda:0')
+    sparse = sparse.to(device)
+    dense = dense.to(device)
     return SparseMM.apply(sparse, dense)
 
 
@@ -127,7 +129,7 @@ class GraphConvolution(torch.nn.Module):
     """Simple GCN layer, similar to https://arxiv.org/abs/1609.02907."""
     def __init__(self, in_features, out_features, mesh='body', bias=True):
         super(GraphConvolution, self).__init__()
-        device=get_torch_device()
+        device=torch.device('cuda')
         self.in_features = in_features
         self.out_features = out_features
 

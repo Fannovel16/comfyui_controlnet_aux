@@ -36,8 +36,6 @@ from custom_mesh_graphormer.utils.metric_logger import AverageMeter
 from custom_mesh_graphormer.utils.renderer import Renderer, visualize_reconstruction_and_att_local, visualize_reconstruction_no_text
 from custom_mesh_graphormer.utils.metric_pampjpe import reconstruction_error
 from custom_mesh_graphormer.utils.geometric_layers import orthographic_projection
-from comfy.model_management import get_torch_device, soft_empty_cache
-device = get_torch_device()
 
 from PIL import Image
 from torchvision import transforms
@@ -68,8 +66,8 @@ def run_inference(args, image_list, Graphormer_model, mano, renderer, mesh_sampl
                 img_tensor = transform(img)
                 img_visual = transform_visualize(img)
 
-                batch_imgs = torch.unsqueeze(img_tensor, 0).to(device)
-                batch_visual_imgs = torch.unsqueeze(img_visual, 0).to(device)
+                batch_imgs = torch.unsqueeze(img_tensor, 0).cuda()
+                batch_visual_imgs = torch.unsqueeze(img_visual, 0).cuda()
                 # forward-pass
                 pred_camera, pred_3d_joints, pred_vertices_sub, pred_vertices, hidden_states, att = Graphormer_model(batch_imgs, mano, mesh_sampler)
                 # obtain 3d joints from full mesh
@@ -209,7 +207,7 @@ def main(args):
 
     # Mesh and MANO utils
     mano_model = MANO().to(args.device)
-    mano_model.layer = mano_model.layer.to(device)
+    mano_model.layer = mano_model.layer.cuda()
     mesh_sampler = Mesh()
 
     # Renderer for visualization
@@ -302,7 +300,7 @@ def main(args):
             _model.load_state_dict(state_dict, strict=False)
             del state_dict
             gc.collect()
-            soft_empty_cache()
+            torch.cuda.empty_cache()
 
     # update configs to enable attention outputs
     setattr(_model.trans_encoder[-1].config,'output_attentions', True)
