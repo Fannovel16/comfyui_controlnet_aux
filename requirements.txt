@@ -22,3 +22,4 @@ trimesh
 pyembree
 embreex
 yacs
+setuptools>=67.0.0 #Re-install after being overwritten by pyembree
