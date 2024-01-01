@@ -12,7 +12,7 @@ class DensePose_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors/Faces and Poses"
+    CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
     def execute(self, image, model, cmap, resolution=512):
         from controlnet_aux.densepose import DenseposeDetector
@@ -26,5 +26,5 @@ NODE_CLASS_MAPPINGS = {
     "DensePosePreprocessor": DensePose_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "DensePosePreprocessor": "DensePose Estimation"
+    "DensePosePreprocessor": "DensePose Estimator"
 }

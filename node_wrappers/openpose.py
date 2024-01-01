@@ -13,7 +13,7 @@ class OpenPose_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "estimate_pose"
 
-    CATEGORY = "ControlNet Preprocessors/Faces and Poses"
+    CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
     def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, **kwargs):
         from controlnet_aux.open_pose import OpenposeDetector
@@ -42,5 +42,5 @@ NODE_CLASS_MAPPINGS = {
     "OpenposePreprocessor": OpenPose_Preprocessor,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "OpenposePreprocessor": "OpenPose Pose Recognition",
+    "OpenposePreprocessor": "OpenPose Pose",
 }

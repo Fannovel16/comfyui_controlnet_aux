@@ -41,7 +41,7 @@ class Media_Pipe_Face_Mesh_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "detect"
 
-    CATEGORY = "ControlNet Preprocessors/Faces and Poses"
+    CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
     def detect(self, image, max_faces, min_confidence, resolution=512):
         #Ref: https://github.com/Fannovel16/comfy_controlnet_preprocessors/issues/70#issuecomment-1677967369

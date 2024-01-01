@@ -49,7 +49,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
     RETURN_NAMES = ("IMAGE", "INPAINTING_MASK")
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
+    CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, mask_bbox_padding=30, resolution=512, **kwargs):
         install_deps()
@@ -69,5 +69,5 @@ NODE_CLASS_MAPPINGS = {
     "MeshGraphormer-DepthMapPreprocessor": Mesh_Graphormer_Depth_Map_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "MeshGraphormer-DepthMapPreprocessor": "Mesh Graphormer - Hand Refiner"
+    "MeshGraphormer-DepthMapPreprocessor": "MeshGraphormer Hand Refiner"
 }

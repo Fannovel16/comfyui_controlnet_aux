@@ -13,7 +13,7 @@ class LERES_Depth_Map_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
+    CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, rm_nearest, rm_background, resolution=512, **kwargs):
         from controlnet_aux.leres import LeresDetector
@@ -27,5 +27,5 @@ NODE_CLASS_MAPPINGS = {
     "LeReS-DepthMapPreprocessor": LERES_Depth_Map_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "LeReS-DepthMapPreprocessor": "LeReS - Depth Map (enable boost for leres++)"
+    "LeReS-DepthMapPreprocessor": "LeReS Depth Map (enable boost for leres++)"
 }

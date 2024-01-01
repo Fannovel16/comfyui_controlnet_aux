@@ -9,7 +9,7 @@ class BAE_Normal_Map_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
+    CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, resolution=512, **kwargs):
         from controlnet_aux.normalbae import NormalBaeDetector
@@ -23,5 +23,5 @@ NODE_CLASS_MAPPINGS = {
     "BAE-NormalMapPreprocessor": BAE_Normal_Map_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "BAE-NormalMapPreprocessor": "BAE - Normal Map"
+    "BAE-NormalMapPreprocessor": "BAE Normal Map"
 }

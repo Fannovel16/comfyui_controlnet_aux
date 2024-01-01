@@ -47,7 +47,7 @@ class DWPose_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "estimate_pose"
 
-    CATEGORY = "ControlNet Preprocessors/Faces and Poses"
+    CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
     def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="dw-ll_ucoco_384.onnx", **kwargs):
         if bbox_detector == "yolox_l.onnx":
@@ -104,7 +104,7 @@ class AnimalPose_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "estimate_pose"
 
-    CATEGORY = "ControlNet Preprocessors/Faces and Poses"
+    CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
     def estimate_pose(self, image, resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="rtmpose-m_ap10k_256.onnx", **kwargs):
         if bbox_detector == "yolox_l.onnx":
@@ -150,6 +150,6 @@ NODE_CLASS_MAPPINGS = {
     "AnimalPosePreprocessor": AnimalPose_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "DWPreprocessor": "DWPose Estimation",
-    "AnimalPosePreprocessor": "Animal Pose Estimation (AP10K)"
+    "DWPreprocessor": "DWPose Estimator",
+    "AnimalPosePreprocessor": "AnimalPose Estimator (AP10K)"
 }

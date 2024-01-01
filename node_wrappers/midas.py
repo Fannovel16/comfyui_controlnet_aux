@@ -13,7 +13,7 @@ class MIDAS_Normal_Map_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
+    CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, a, bg_threshold, resolution=512, **kwargs):
         from controlnet_aux.midas import MidasDetector
@@ -36,7 +36,7 @@ class MIDAS_Depth_Map_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
+    CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, a, bg_threshold, resolution=512, **kwargs):
         from controlnet_aux.midas import MidasDetector
@@ -52,6 +52,6 @@ NODE_CLASS_MAPPINGS = {
     "MiDaS-DepthMapPreprocessor": MIDAS_Depth_Map_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "MiDaS-NormalMapPreprocessor": "MiDaS - Normal Map",
-    "MiDaS-DepthMapPreprocessor": "MiDaS - Depth Map"
+    "MiDaS-NormalMapPreprocessor": "MiDaS Normal Map",
+    "MiDaS-DepthMapPreprocessor": "MiDaS Depth Map"
 }

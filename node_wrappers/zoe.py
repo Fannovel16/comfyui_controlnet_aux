@@ -9,7 +9,7 @@ class Zoe_Depth_Map_Preprocessor:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
 
-    CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
+    CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, resolution=512, **kwargs):
         from controlnet_aux.zoe import ZoeDetector
@@ -23,5 +23,5 @@ NODE_CLASS_MAPPINGS = {
     "Zoe-DepthMapPreprocessor": Zoe_Depth_Map_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Zoe-DepthMapPreprocessor": "Zoe - Depth Map"
+    "Zoe-DepthMapPreprocessor": "Zoe Depth Map"
 }
