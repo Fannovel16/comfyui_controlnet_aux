@@ -17,6 +17,9 @@ except ImportError:
 from custom_mesh_graphormer.utils.geometric_layers import rodrigues
 import custom_mesh_graphormer.modeling.data.config as cfg
 
+from comfy.model_management import get_torch_device
+device = get_torch_device()
+
 class SMPL(nn.Module):
 
     def __init__(self, gender='neutral'):
@@ -156,7 +159,6 @@ class SparseMM(torch.autograd.Function):
         return None, grad_input
 
 def spmm(sparse, dense):
-    device = torch.device('cuda:0')
     sparse = sparse.to(device)
     dense = dense.to(device)
     return SparseMM.apply(sparse, dense)

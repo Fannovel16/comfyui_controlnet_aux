@@ -37,6 +37,9 @@ from custom_mesh_graphormer.utils.renderer import Renderer, visualize_reconstruc
 from custom_mesh_graphormer.utils.metric_pampjpe import reconstruction_error
 from custom_mesh_graphormer.utils.geometric_layers import orthographic_projection
 
+from comfy.model_management import get_torch_device
+device = get_torch_device()
+
 from azureml.core.run import Run
 aml_run = Run.get_context()
 
@@ -94,7 +97,7 @@ def keypoint_3d_loss(criterion_keypoints, pred_keypoints_3d, gt_keypoints_3d, ha
         pred_keypoints_3d = pred_keypoints_3d - pred_root[:, None, :]
         return (conf * criterion_keypoints(pred_keypoints_3d, gt_keypoints_3d)).mean()
     else:
-        return torch.FloatTensor(1).fill_(0.).cuda()
+        return torch.FloatTensor(1).fill_(0.).to(device)
 
 def vertices_loss(criterion_vertices, pred_vertices, gt_vertices, has_smpl):
     """
@@ -105,7 +108,7 @@ def vertices_loss(criterion_vertices, pred_vertices, gt_vertices, has_smpl):
     if len(gt_vertices_with_shape) > 0:
         return criterion_vertices(pred_vertices_with_shape, gt_vertices_with_shape)
     else:
-        return torch.FloatTensor(1).fill_(0.).cuda()
+        return torch.FloatTensor(1).fill_(0.).to(device)
     
 
 def run(args, train_dataloader, Graphormer_model, mano_model, renderer, mesh_sampler):
@@ -119,9 +122,9 @@ def run(args, train_dataloader, Graphormer_model, mano_model, renderer, mesh_sam
                                            weight_decay=0)
 
     # define loss function (criterion) and optimizer
-    criterion_2d_keypoints = torch.nn.MSELoss(reduction='none').cuda(args.device)
-    criterion_keypoints = torch.nn.MSELoss(reduction='none').cuda(args.device)
-    criterion_vertices = torch.nn.L1Loss().cuda(args.device)
+    criterion_2d_keypoints = torch.nn.MSELoss(reduction='none').to(device)
+    criterion_keypoints = torch.nn.MSELoss(reduction='none').to(device)
+    criterion_vertices = torch.nn.L1Loss().to(device)
 
     if args.distributed:
         Graphormer_model = torch.nn.parallel.DistributedDataParallel(
@@ -149,15 +152,15 @@ def run(args, train_dataloader, Graphormer_model, mano_model, renderer, mesh_sam
         adjust_learning_rate(optimizer, epoch, args)
         data_time.update(time.time() - end)
 
-        images = images.cuda()
-        gt_2d_joints = annotations['joints_2d'].cuda()
-        gt_pose = annotations['pose'].cuda()
-        gt_betas = annotations['betas'].cuda()
-        has_mesh = annotations['has_smpl'].cuda()
+        images = images.to(device)
+        gt_2d_joints = annotations['joints_2d'].to(device)
+        gt_pose = annotations['pose'].to(device)
+        gt_betas = annotations['betas'].to(device)
+        has_mesh = annotations['has_smpl'].to(device)
         has_3d_joints = has_mesh
         has_2d_joints = has_mesh
-        mjm_mask = annotations['mjm_mask'].cuda()
-        mvm_mask = annotations['mvm_mask'].cuda()
+        mjm_mask = annotations['mjm_mask'].to(device)
+        mvm_mask = annotations['mvm_mask'].to(device)
 
         # generate mesh
         gt_vertices, gt_3d_joints = mano_model.layer(gt_pose, gt_betas)
@@ -170,7 +173,7 @@ def run(args, train_dataloader, Graphormer_model, mano_model, renderer, mesh_sam
         gt_vertices = gt_vertices - gt_3d_root[:, None, :]
         gt_vertices_sub = gt_vertices_sub - gt_3d_root[:, None, :]
         gt_3d_joints = gt_3d_joints - gt_3d_root[:, None, :]
-        gt_3d_joints_with_tag = torch.ones((batch_size,gt_3d_joints.shape[1],4)).cuda()
+        gt_3d_joints_with_tag = torch.ones((batch_size,gt_3d_joints.shape[1],4)).to(device)
         gt_3d_joints_with_tag[:,:,:3] = gt_3d_joints
 
         # prepare masks for mask vertex/joint modeling
@@ -268,8 +271,8 @@ def run(args, train_dataloader, Graphormer_model, mano_model, renderer, mesh_sam
 
 def run_eval_and_save(args, split, val_dataloader, Graphormer_model, mano_model, renderer, mesh_sampler):
 
-    criterion_keypoints = torch.nn.MSELoss(reduction='none').cuda(args.device)
-    criterion_vertices = torch.nn.L1Loss().cuda(args.device)
+    criterion_keypoints = torch.nn.MSELoss(reduction='none').to(device)
+    criterion_vertices = torch.nn.L1Loss().to(device)
 
     if args.distributed:
         Graphormer_model = torch.nn.parallel.DistributedDataParallel(
@@ -309,7 +312,7 @@ def run_aml_inference_hand_mesh(args, val_loader, Graphormer_model, criterion, c
         for i, (img_keys, images, annotations) in enumerate(val_loader):
             batch_size = images.size(0)
             # compute output
-            images = images.cuda()
+            images = images.to(device)
             
             # forward-pass
             pred_camera, pred_3d_joints, pred_vertices_sub, pred_vertices = Graphormer_model(images, mano_model, mesh_sampler)
@@ -356,7 +359,7 @@ def run_inference_hand_mesh(args, val_loader, Graphormer_model, criterion, crite
         for i, (img_keys, images, annotations) in enumerate(val_loader):
             batch_size = images.size(0)
             # compute output
-            images = images.cuda()
+            images = images.to(device)
 
             # forward-pass
             pred_camera, pred_3d_joints, pred_vertices_sub, pred_vertices = Graphormer_model(images, mano_model, mesh_sampler)
@@ -596,7 +599,7 @@ def main(args):
 
     # Mesh and SMPL utils
     mano_model = MANO().to(args.device)
-    mano_model.layer = mano_model.layer.cuda()
+    mano_model.layer = mano_model.layer.to(device)
     mesh_sampler = Mesh()
 
     # Renderer for visualization

@@ -40,6 +40,9 @@ from custom_mesh_graphormer.utils.geometric_layers import orthographic_projectio
 from PIL import Image
 from torchvision import transforms
 
+from comfy.model_management import get_torch_device
+device = get_torch_device()
+
 transform = transforms.Compose([           
                     transforms.Resize(224),
                     transforms.CenterCrop(224),
@@ -65,8 +68,8 @@ def run_inference(args, image_list, Graphormer_model, smpl, renderer, mesh_sampl
                 img_tensor = transform(img)
                 img_visual = transform_visualize(img)
 
-                batch_imgs = torch.unsqueeze(img_tensor, 0).cuda()
-                batch_visual_imgs = torch.unsqueeze(img_visual, 0).cuda()
+                batch_imgs = torch.unsqueeze(img_tensor, 0).to(device)
+                batch_visual_imgs = torch.unsqueeze(img_visual, 0).to(device)
                 # forward-pass
                 pred_camera, pred_3d_joints, pred_vertices_sub2, pred_vertices_sub, pred_vertices, hidden_states, att = Graphormer_model(batch_imgs, smpl, mesh_sampler)
                     

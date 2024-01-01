@@ -18,6 +18,8 @@ from custom_mesh_graphormer.modeling._gcnn import GraphConvolution, GraphResBloc
 from .modeling_utils import prune_linear_layer
 LayerNormClass = torch.nn.LayerNorm
 BertLayerNorm = torch.nn.LayerNorm
+from comfy.model_management import get_torch_device
+device = get_torch_device()
 
 
 class BertSelfAttention(nn.Module):
@@ -233,7 +235,7 @@ class EncoderBlock(BertPreTrainedModel):
 
         batch_size = len(img_feats)
         seq_length = len(img_feats[0])
-        input_ids = torch.zeros([batch_size, seq_length],dtype=torch.long).cuda()
+        input_ids = torch.zeros([batch_size, seq_length],dtype=torch.long).to(device)
 
         if position_ids is None:
             position_ids = torch.arange(seq_length, dtype=torch.long, device=input_ids.device)
