@@ -6,4 +6,3 @@ ftfy
 addict
 trimesh[easy]
 yacs
-setuptools>=67.0.0
