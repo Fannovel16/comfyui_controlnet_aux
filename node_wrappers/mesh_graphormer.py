@@ -47,6 +47,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
         )
 
     RETURN_TYPES = ("IMAGE", "MASK")
+    RETURN_NAMES = ("IMAGE", "INPAINTING_MASK")
     FUNCTION = "execute"
 
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Map"
@@ -69,5 +70,5 @@ NODE_CLASS_MAPPINGS = {
     "MeshGraphormer-DepthMapPreprocessor": Mesh_Graphormer_Depth_Map_Preprocessor
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "MeshGraphormer-DepthMapPreprocessor": "Mesh Graphormer - Hand Depth Map & Mask"
+    "MeshGraphormer-DepthMapPreprocessor": "Mesh Graphormer - Hand Refiner"
 }

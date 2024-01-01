@@ -155,7 +155,7 @@ for o in history['outputs']:
 # Examples
 > A picture is worth a thousand words
 
-Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same kind of results from preprocessor nodes of this repo.
+Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below. You can get the same kind of results from preprocessor nodes of this repo.
 ## Line Extractors
 ### Canny Edge
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_canny.png)
@@ -173,7 +173,8 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same k
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_zoedepth.png)
 ## BAE - Normal Map
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_normalbae.png)
-
+## MeshGraphormer
+![](./examples/example_mesh_graphormer.png)
 ## Faces and Poses
 ### OpenPose
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openpose.png)
