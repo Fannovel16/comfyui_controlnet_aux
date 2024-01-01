@@ -24,4 +24,5 @@
 * Added TorchScript implementation of DensePose from [Colab notebook](https://colab.research.google.com/drive/16hcaaKs210ivpxjoyGNuvEXZD4eqOOSQ) which doesn't require detectron2. [Example](#densepose). Thanks [@LayerNome](https://github.com/Layer-norm) for fixing bugs related.
 * Added Standard Lineart Preprocessor
 * Fixed OpenPose misplacements in some cases 
-* Added Mesh Graphormer - Hand Depth Map & Mask 
+* Added Mesh Graphormer - Hand Depth Map & Mask
+* Misaligned hands bug from MeshGraphormer was fixed
