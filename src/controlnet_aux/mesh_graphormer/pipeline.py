@@ -41,6 +41,7 @@ from pathlib import Path
 from controlnet_aux.util import custom_hf_download, annotator_ckpts_path
 import custom_mesh_graphormer
 from comfy.model_management import soft_empty_cache
+from packaging import version
 
 args = Namespace(
     num_workers=4,
@@ -66,6 +67,11 @@ args = Namespace(
     hrnet_checkpoint=custom_hf_download("hr16/ControlNet-HandRefiner-pruned", 'hrnetv2_w64_imagenet_pretrained.pth', cache_dir=annotator_ckpts_path)
 )
 
+#Since mediapipe v0.10.5, the hand  category has been correct
+if version.parse(mp.__version__) >= version.parse('0.10.5'):
+    true_hand_category = {"Right": "right", "Left": "left"}
+else:
+    true_hand_category = {"Right": "left", "Left": "right"}
 
 class MeshGraphormerMediapipe(Preprocessor):
     def __init__(self, args=args) -> None:
@@ -332,11 +338,9 @@ class MeshGraphormerMediapipe(Preprocessor):
         hands = []
         depth_failure = False
         crop_lens = []
+        
         for idx in range(len(hand_landmarks_list)):
-            if handedness_list[idx][0].category_name == "Right":  # the left hand
-                hand = "left"
-            else:
-                hand = "right"
+            hand = true_hand_category[handedness_list[idx][0].category_name]
             hands.append(hand)
             hand_landmarks = hand_landmarks_list[idx]
             handedness = handedness_list[idx]
