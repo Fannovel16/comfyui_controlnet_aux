@@ -20,6 +20,7 @@ import custom_mesh_graphormer.modeling.data.config as cfg
 from pathlib import Path
 
 from comfy.model_management import get_torch_device
+from wrapper_for_mps import sparse_to_dense
 device = get_torch_device()
 
 class MANO(nn.Module):
@@ -97,13 +98,13 @@ def scipy_to_pytorch(A, U, D):
         u = scipy.sparse.coo_matrix(U[i])
         i = torch.LongTensor(np.array([u.row, u.col]))
         v = torch.FloatTensor(u.data)
-        ptU.append(torch.sparse_coo_tensor(i, v, u.shape))
+        ptU.append(sparse_to_dense(torch.sparse_coo_tensor(i, v, u.shape)))
     
     for i in range(len(D)):
         d = scipy.sparse.coo_matrix(D[i])
         i = torch.LongTensor(np.array([d.row, d.col]))
         v = torch.FloatTensor(d.data)
-        ptD.append(torch.sparse_coo_tensor(i, v, d.shape)) 
+        ptD.append(sparse_to_dense(torch.sparse_coo_tensor(i, v, d.shape)))
 
     return ptU, ptD
 
@@ -126,7 +127,7 @@ def adjmat_sparse(adjmat, nsize=1):
     data = adjmat.data
     i = torch.LongTensor(np.array([row, col]))
     v = torch.from_numpy(data).float()
-    adjmat = torch.sparse_coo_tensor(i, v, adjmat.shape)
+    adjmat = sparse_to_dense(torch.sparse_coo_tensor(i, v, adjmat.shape))
     return adjmat
 
 def get_graph_params(filename, nsize=1):

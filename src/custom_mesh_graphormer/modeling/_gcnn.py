@@ -8,6 +8,7 @@ from pathlib import Path
 data_path = Path(__file__).parent / "data"
 
 from comfy.model_management import get_torch_device
+from wrapper_for_mps import sparse_to_dense
 device = get_torch_device()
 
 class SparseMM(torch.autograd.Function):
@@ -143,7 +144,7 @@ class GraphConvolution(torch.nn.Module):
             adj_mat_value = torch.load(data_path / 'mano_195_adjmat_values.pt')
             adj_mat_size = torch.load(data_path / 'mano_195_adjmat_size.pt')
 
-        self.adjmat = torch.sparse_coo_tensor(adj_indices, adj_mat_value, size=adj_mat_size).to(device)
+        self.adjmat = sparse_to_dense(torch.sparse_coo_tensor(adj_indices, adj_mat_value, size=adj_mat_size)).to(device)
 
         self.weight = torch.nn.Parameter(torch.FloatTensor(in_features, out_features))
         if bias:
