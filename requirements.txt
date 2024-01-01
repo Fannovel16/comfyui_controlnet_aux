@@ -1,17 +1,3 @@
-torch
-importlib_metadata
-huggingface_hub
-scipy
-opencv-python>=4.7.0.72
-filelock
-numpy
-Pillow
-einops
-torchvision
-pyyaml
-scikit-image
-python-dateutil
-mediapipe
 svglib
 fvcore
 yapf
@@ -22,4 +8,4 @@ trimesh
 pyembree
 embreex
 yacs
-setuptools>=67.0.0 #Re-install after being overwritten by pyembree
+setuptools>=67.0.0
