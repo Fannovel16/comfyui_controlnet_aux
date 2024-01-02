@@ -7,7 +7,7 @@ import torch
 from einops import rearrange
 from PIL import Image
 
-from controlnet_aux.util import HWC3, nms, resize_image_with_pad, safe_step,common_input_validate, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
+from controlnet_aux.util import HWC3, nms, resize_image_with_pad, safe_step,common_input_validate, custom_hf_download, HF_MODEL_NAME
 from .model import pidinet
 
 
@@ -16,8 +16,8 @@ class PidiNetDetector:
         self.netNetwork = netNetwork
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="table5_pidinet.pth", cache_dir=annotator_ckpts_path):
-        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="table5_pidinet.pth"):
+        model_path = custom_hf_download(pretrained_model_or_path, filename)
 
         netNetwork = pidinet()
         netNetwork.load_state_dict({k.replace('module.', ''): v for k, v in torch.load(model_path)['state_dict'].items()})

@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, annotator_ckpts_path, create_node_input_types
+from ..utils import common_annotator_call, create_node_input_types
 import comfy.model_management as model_management
 import numpy as np
 import warnings
@@ -72,7 +72,7 @@ class DWPose_Preprocessor:
         model = DwposeDetector.from_pretrained(
             pose_repo,
             yolo_repo,
-            cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator,
+            det_filename=bbox_detector, pose_filename=pose_estimator,
             torchscript_device=model_management.get_torch_device()
         )
         detect_hand = detect_hand == "enable"
@@ -129,7 +129,7 @@ class AnimalPose_Preprocessor:
         model = AnimalposeDetector.from_pretrained(
             pose_repo,
             yolo_repo,
-            cache_dir=annotator_ckpts_path, det_filename=bbox_detector, pose_filename=pose_estimator,
+            det_filename=bbox_detector, pose_filename=pose_estimator,
             torchscript_device=model_management.get_torch_device()
         )
 

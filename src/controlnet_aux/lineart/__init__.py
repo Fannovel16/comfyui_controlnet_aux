@@ -8,7 +8,7 @@ import torch.nn as nn
 from einops import rearrange
 from PIL import Image
 
-from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
+from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, custom_hf_download, HF_MODEL_NAME
 
 norm_layer = nn.InstanceNorm2d
 
@@ -96,9 +96,9 @@ class LineartDetector:
         self.model_coarse = coarse_model
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="sk_model.pth", coarse_filename="sk_model2.pth", cache_dir=annotator_ckpts_path):
-        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
-        coarse_model_path = custom_hf_download(pretrained_model_or_path, coarse_filename, cache_dir=cache_dir)
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="sk_model.pth", coarse_filename="sk_model2.pth"):
+        model_path = custom_hf_download(pretrained_model_or_path, filename)
+        coarse_model_path = custom_hf_download(pretrained_model_or_path, coarse_filename)
 
         model = Generator(3, 1, 3)
         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))

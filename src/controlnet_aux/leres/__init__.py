@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from PIL import Image
 
-from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
+from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, HF_MODEL_NAME
 from .leres.depthmap import estimateboost, estimateleres
 from .leres.multi_depth_model_woauxi import RelDepthModel
 from .leres.net_tools import strip_prefix_if_present
@@ -19,15 +19,15 @@ class LeresDetector:
         self.pix2pixmodel = pix2pixmodel
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="res101.pth", pix2pix_filename="latest_net_G.pth", cache_dir=annotator_ckpts_path):
-        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="res101.pth", pix2pix_filename="latest_net_G.pth"):
+        model_path = custom_hf_download(pretrained_model_or_path, filename)
         checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
 
         model = RelDepthModel(backbone='resnext101')
         model.load_state_dict(strip_prefix_if_present(checkpoint['depth_model'], "module."), strict=True)
         del checkpoint
 
-        pix2pix_model_path = custom_hf_download(pretrained_model_or_path, pix2pix_filename, cache_dir=cache_dir)
+        pix2pix_model_path = custom_hf_download(pretrained_model_or_path, pix2pix_filename)
 
         opt = TestOptions().parse()
         if not torch.cuda.is_available():
