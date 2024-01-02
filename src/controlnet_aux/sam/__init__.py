@@ -23,7 +23,7 @@ class SamDetector:
         self.mask_generator = mask_generator
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=SAM_MODEL_NAME, model_type="vit_h", filename="sam_vit_h_4b8939.pth", subfolder=None):
+    def from_pretrained(cls, pretrained_model_or_path=SAM_MODEL_NAME, model_type="vit_t", filename="mobile_sam.pt", subfolder=None):
         """
         Possible model_type : vit_h, vit_l, vit_b, vit_t
         download weights from https://github.com/facebookresearch/segment-anything
