@@ -42,10 +42,6 @@ log.info(f"Using symlinks: {USE_SYMLINKS}")
 log.info(f"Using ort providers: {ORT_PROVIDERS}")
 
 MAX_RESOLUTION=2048 #Who the hell feed 4k images to ControlNet?
-HF_MODEL_NAME = "lllyasviel/Annotators"
-DWPOSE_MODEL_NAME = "yzd-v/DWPose"
-ANIFACESEG_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite"
-
 
 def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):
     if "detect_resolution" in kwargs:

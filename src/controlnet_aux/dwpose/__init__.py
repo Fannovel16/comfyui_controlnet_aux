@@ -222,11 +222,8 @@ class AnimalposeDetector:
         self.animal_pose_estimation = animal_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path, torchscript_device="cuda"):
+    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename="yolox_l.onnx", pose_filename="dw-ll_ucoco_384.onnx", cache_dir=annotator_ckpts_path, torchscript_device="cuda"):
         global global_cached_animalpose
-        pretrained_det_model_or_path = pretrained_det_model_or_path or pretrained_model_or_path
-        det_filename = det_filename or "yolox_l.onnx"
-        pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
         det_model_path = custom_hf_download(pretrained_det_model_or_path, det_filename, cache_dir=cache_dir)
         pose_model_path = custom_hf_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
         

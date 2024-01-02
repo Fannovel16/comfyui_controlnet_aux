@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, DWPOSE_MODEL_NAME, create_node_input_types
+from ..utils import common_annotator_call, create_node_input_types
 import comfy.model_management as model_management
 
 class OpenPose_Preprocessor:
@@ -24,7 +24,7 @@ class OpenPose_Preprocessor:
 
 
         self.openpose_json = None
-        model = OpenposeDetector.from_pretrained(HF_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
+        model = OpenposeDetector.from_pretrained().to(model_management.get_torch_device())
         
         def cb(image, **kwargs):
             result = model(image, **kwargs)

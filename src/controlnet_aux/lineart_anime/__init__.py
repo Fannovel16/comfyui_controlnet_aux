@@ -10,7 +10,7 @@ from einops import rearrange
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
 
 
 class UnetGenerator(nn.Module):
@@ -118,8 +118,7 @@ class LineartAnimeDetector:
         self.model = model
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):
-        filename = filename or "netG.pth"
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="netG.pth", cache_dir=annotator_ckpts_path):
         model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         norm_layer = functools.partial(nn.InstanceNorm2d, affine=False, track_running_stats=False)

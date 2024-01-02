@@ -2,7 +2,7 @@ import os
 from .api import make_detectron2_model, semantic_run
 from pathlib import Path
 import warnings
-from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
 import numpy as np
 import cv2
 from PIL import Image
@@ -27,8 +27,7 @@ class OneformerSegmentor:
         return self
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path, config_path = None):
-        filename = filename or "250_16_swin_l_oneformer_ade20k_160k.pth"
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="250_16_swin_l_oneformer_ade20k_160k.pth", cache_dir=annotator_ckpts_path, config_path = None):
         config_path = config_path or DEFAULT_CONFIGS["ade20k" if "ade20k" in filename else "coco"]["config"]
         model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 

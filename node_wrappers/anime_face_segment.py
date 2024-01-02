@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, annotator_ckpts_path, ANIFACESEG_MODEL_NAME, create_node_input_types
+from ..utils import common_annotator_call, create_node_input_types
 import comfy.model_management as model_management
 import torch
 from einops import rearrange
@@ -27,7 +27,7 @@ class AnimeFace_SemSegPreprocessor:
     def execute(self, image, remove_background_using_abg=True, resolution=512, **kwargs):
         from controlnet_aux.anime_face_segment import AnimeFaceSegmentor
 
-        model = AnimeFaceSegmentor.from_pretrained(ANIFACESEG_MODEL_NAME, cache_dir=annotator_ckpts_path).to(model_management.get_torch_device())
+        model = AnimeFaceSegmentor.from_pretrained().to(model_management.get_torch_device())
         if remove_background_using_abg:
             out_image_with_mask = common_annotator_call(model, image, resolution=resolution, remove_background=True)
             out_image = out_image_with_mask[..., :3]

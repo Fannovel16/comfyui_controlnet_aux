@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from PIL import Image
 
-from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
 from .models.mbv2_mlsd_large import MobileV2_MLSD_Large
 from .utils import pred_lines
 
@@ -16,8 +16,7 @@ class MLSDdetector:
         self.model = model
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):
-        filename = filename or "mlsd_large_512_fp32.pth"
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="mlsd_large_512_fp32.pth", cache_dir=annotator_ckpts_path):
         subfolder = "annotator/ckpts" if pretrained_model_or_path == "lllyasviel/ControlNet" else ''
         model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir, subfolder=subfolder)
         model = MobileV2_MLSD_Large()

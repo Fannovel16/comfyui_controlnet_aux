@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, annotator_ckpts_path, HF_MODEL_NAME, create_node_input_types
+from ..utils import common_annotator_call, create_node_input_types
 import comfy.model_management as model_management
 
 class Scribble_Preprocessor:

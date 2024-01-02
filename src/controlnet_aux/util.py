@@ -8,6 +8,13 @@ from pathlib import Path
 import warnings
 from huggingface_hub import hf_hub_download
 
+HF_MODEL_NAME = "lllyasviel/Annotators"
+DWPOSE_MODEL_NAME = "yzd-v/DWPose"
+ANIFACESEG_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite"
+DENSEPOSE_MODEL_NAME = "LayerNorm/DensePose-TorchScript-with-hint-image"
+MESH_GRAPHORMER_MODEL_NAME = "hr16/ControlNet-HandRefiner-pruned"
+SAM_MODEL_NAME = "dhkim2810/MobileSAM"
+
 annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
 USE_SYMLINKS = False
 

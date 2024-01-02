@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from PIL import Image
 
-from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
 from .leres.depthmap import estimateboost, estimateleres
 from .leres.multi_depth_model_woauxi import RelDepthModel
 from .leres.net_tools import strip_prefix_if_present
@@ -19,9 +19,7 @@ class LeresDetector:
         self.pix2pixmodel = pix2pixmodel
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, pix2pix_filename=None, cache_dir=annotator_ckpts_path):
-        filename = filename or "res101.pth"
-        pix2pix_filename = pix2pix_filename or "latest_net_G.pth"
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="res101.pth", pix2pix_filename="latest_net_G.pth", cache_dir=annotator_ckpts_path):
         model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
         checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
 

@@ -6,7 +6,7 @@ import torch
 from einops import rearrange
 from PIL import Image
 
-from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
 from .api import MiDaSInference
 
 
@@ -15,8 +15,7 @@ class MidasDetector:
         self.model = model
         
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, model_type="dpt_hybrid", filename=None, cache_dir=annotator_ckpts_path):
-        filename = filename or "dpt_hybrid-midas-501f0c75.pt"
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, model_type="dpt_hybrid", filename="dpt_hybrid-midas-501f0c75.pt", cache_dir=annotator_ckpts_path):
         subfolder = "annotator/ckpts" if pretrained_model_or_path == "lllyasviel/ControlNet" else ''
         model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir, subfolder=subfolder)
         model = MiDaSInference(model_type=model_type, model_path=model_path)

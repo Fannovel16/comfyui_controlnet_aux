@@ -3,7 +3,7 @@ from .util import seg2img
 import torch
 import os
 import cv2
-from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download, ANIFACESEG_MODEL_NAME
 from huggingface_hub import hf_hub_download
 from PIL import Image
 from einops import rearrange
@@ -16,9 +16,7 @@ class AnimeFaceSegmentor:
         self.seg_model = seg_model
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=None, filename=None, seg_filename=None, cache_dir=annotator_ckpts_path):
-        filename = filename or "UNet.pth"
-        seg_filename = seg_filename or "isnetis.ckpt"
+    def from_pretrained(cls, pretrained_model_or_path=ANIFACESEG_MODEL_NAME, filename="UNet.pth", seg_filename="isnetis.ckpt", cache_dir=annotator_ckpts_path):
         model_path = custom_hf_download(pretrained_model_or_path, filename, subfolder="Annotators", cache_dir=cache_dir)
         seg_model_path = custom_hf_download("skytnt/anime-seg", seg_filename, cache_dir=cache_dir)
 

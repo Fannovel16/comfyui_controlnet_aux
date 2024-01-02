@@ -9,7 +9,7 @@ import torchvision.transforms as transforms
 from einops import rearrange
 from PIL import Image
 
-from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download
+from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
 from .nets.NNET import NNET
 
 
@@ -34,8 +34,7 @@ class NormalBaeDetector:
         self.norm = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, cache_dir=annotator_ckpts_path):        
-        filename = filename or "scannet.pt"
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="scannet.pt", cache_dir=annotator_ckpts_path):
         model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
 
         args = types.SimpleNamespace()

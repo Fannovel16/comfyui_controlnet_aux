@@ -232,3 +232,5 @@ Note that if this is your first time using ComfyUI, please test if it can run on
 3. Run `install.bat` or pip command mentioned in Installation
 
 ![](./examples/example_onnx.png)
+
+# Assets files of preprocessors

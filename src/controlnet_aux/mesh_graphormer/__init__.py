@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from PIL import Image
-from controlnet_aux.util import resize_image_with_pad, common_input_validate, HWC3, custom_hf_download, annotator_ckpts_path
+from controlnet_aux.util import resize_image_with_pad, common_input_validate, HWC3, custom_hf_download, annotator_ckpts_path, MESH_GRAPHORMER_MODEL_NAME
 from controlnet_aux.mesh_graphormer.pipeline import MeshGraphormerMediapipe, args
 
 class MeshGraphormerDetector:
@@ -9,11 +9,9 @@ class MeshGraphormerDetector:
         self.pipeline = pipeline
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, filename=None, hrnet_filename=None, cache_dir=annotator_ckpts_path):
-        filename = filename or "graphormer_hand_state_dict.bin"
-        hrnet_filename = hrnet_filename or "hrnetv2_w64_imagenet_pretrained.pth"
-        args.resume_checkpoint = custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_ckpts_path)
-        args.hrnet_checkpoint = custom_hf_download(pretrained_model_or_path, hrnet_filename, cache_dir=annotator_ckpts_path)
+    def from_pretrained(cls, pretrained_model_or_path=MESH_GRAPHORMER_MODEL_NAME, filename="graphormer_hand_state_dict.bin", hrnet_filename="hrnetv2_w64_imagenet_pretrained.pth", cache_dir=annotator_ckpts_path):
+        args.resume_checkpoint = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+        args.hrnet_checkpoint = custom_hf_download(pretrained_model_or_path, hrnet_filename, cache_dir=cache_dir)
         pipeline = MeshGraphormerMediapipe(args)
         return cls(pipeline)
     
