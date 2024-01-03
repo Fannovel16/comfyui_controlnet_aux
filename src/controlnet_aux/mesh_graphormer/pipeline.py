@@ -25,7 +25,7 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from torchvision import transforms
 from pathlib import Path
-from controlnet_aux.util import custom_hf_download, annotator_ckpts_path
+from controlnet_aux.util import custom_hf_download
 import custom_mesh_graphormer
 from comfy.model_management import soft_empty_cache
 from packaging import version
@@ -51,7 +51,7 @@ args = Namespace(
     run_eval_only=True,
     device="cpu",
     seed=88,
-    hrnet_checkpoint=custom_hf_download("hr16/ControlNet-HandRefiner-pruned", 'hrnetv2_w64_imagenet_pretrained.pth', cache_dir=annotator_ckpts_path)
+    hrnet_checkpoint=custom_hf_download("hr16/ControlNet-HandRefiner-pruned", 'hrnetv2_w64_imagenet_pretrained.pth')
 )
 
 #Since mediapipe v0.10.5, the hand category has been correct

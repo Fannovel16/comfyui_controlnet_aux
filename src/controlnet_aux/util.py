@@ -19,6 +19,12 @@ annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
 USE_SYMLINKS = False
 
 try:
+    annotator_ckpts_path = os.environ['AUX_ANNOTATOR_CKPTS_PATH']
+except:
+    warnings.warn("Custom pressesor model path not set successfully.")
+    pass
+
+try:
     USE_SYMLINKS = eval(os.environ['AUX_USE_SYMLINKS'])
 except:
     warnings.warn("USE_SYMLINKS not set successfully. Using default value: False to download models.")

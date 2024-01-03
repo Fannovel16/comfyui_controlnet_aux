@@ -6,7 +6,7 @@ import torch.nn as nn
 from einops import rearrange
 from PIL import Image
 
-from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download, DENSEPOSE_MODEL_NAME
+from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, custom_hf_download, DENSEPOSE_MODEL_NAME
 from .densepose import DensePoseMaskedColormapResultsVisualizer, _extract_i_from_iuvarr, densepose_chart_predictor_output_to_result_with_confidences
 
 N_PART_LABELS = 24
@@ -23,8 +23,8 @@ class DenseposeDetector:
         )
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=DENSEPOSE_MODEL_NAME, filename="densepose_r50_fpn_dl.torchscript", cache_dir=annotator_ckpts_path):
-        torchscript_model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+    def from_pretrained(cls, pretrained_model_or_path=DENSEPOSE_MODEL_NAME, filename="densepose_r50_fpn_dl.torchscript"):
+        torchscript_model_path = custom_hf_download(pretrained_model_or_path, filename)
         densepose = torch.jit.load(torchscript_model_path, map_location="cpu")
         return cls(densepose)
 

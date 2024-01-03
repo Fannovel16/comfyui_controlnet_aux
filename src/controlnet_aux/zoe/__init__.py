@@ -6,7 +6,7 @@ import torch
 from einops import rearrange
 from PIL import Image
 
-from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
+from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, HF_MODEL_NAME
 from .zoedepth.models.zoedepth.zoedepth_v1 import ZoeDepth
 from .zoedepth.utils.config import get_config
 
@@ -16,8 +16,8 @@ class ZoeDetector:
         self.model = model
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="ZoeD_M12_N.pt", cache_dir=annotator_ckpts_path):
-        model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir)
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="ZoeD_M12_N.pt"):
+        model_path = custom_hf_download(pretrained_model_or_path, filename)
             
         conf = get_config("zoedepth", "infer")
         model = ZoeDepth.build_from_config(conf)
