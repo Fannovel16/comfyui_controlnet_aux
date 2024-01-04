@@ -89,7 +89,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
             depth_map, mask, info = model(np_image, output_type="np", detect_resolution=resolution, mask_bbox_padding=mask_bbox_padding, seed=rand_seed)
             if mask_type == "based_on_depth":
                 mask = depth_map[:, :, :1].copy()
-                mask[mask > 0] = 1
+                mask[mask > 0] = 255
             depth_map_list.append(torch.from_numpy(depth_map.astype(np.float32) / 255.0))
             mask_list.append(torch.from_numpy(mask.astype(np.float32) / 255.0))
         depth_maps, masks = torch.stack(depth_map_list, dim=0), rearrange(torch.stack(mask_list, dim=0), "n h w 1 -> n 1 h w")
