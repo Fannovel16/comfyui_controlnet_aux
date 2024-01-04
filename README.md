@@ -1,19 +1,18 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
-
-This is a rework of [comfyui_controlnet_preprocessors](https://github.com/Fannovel16/comfy_controlnet_preprocessors) based on [ControlNet auxiliary models by 🤗](https://github.com/patrickvonplaten/controlnet_aux). I think the old repo isn't good enough to maintain.
-
-YOU NEED TO REMOVE `comfyui_controlnet_preprocessors` BEFORE USING THIS REPO. THESE TWO CONFLICT WITH EACH OTHER. 
-
-All old workflows still can be used with custom nodes in this repo but the version option won't do anything. Almost all v1 preprocessors are replaced by v1.1 except those doesn't apppear in v1.1.
-
-You don't need to care about the differences between v1 and v1.1 lol.
+![](./examples/example_mesh_graphormer.png)
+Plug-and-play ComfyUI node sets for making [ControlNet](https://github.com/lllyasviel/ControlNet/) hint images
 
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 
 All credit & copyright goes to https://github.com/lllyasviel.
 
+# 500 Stars 😄
+[![Star History Chart](https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date)](https://star-history.com/#Fannovel16/comfyui_controlnet_aux&Date)
+
+Thanks for yalls supports. I never thought the graph for stars would be linear lol.
+
 # Marigold
-**NEW!** Check out Marigold Depth Estimator which can generate very detailed and sharp depth map from high-resolution images. The mesh created by it is even 3D-printable. Due to diffusers, it can't be implemented in this extension but there is an Comfy implementation by Kijai
+Check out Marigold Depth Estimator which can generate very detailed and sharp depth map from high-resolution still images. The mesh created by it is even 3D-printable. Due to diffusers, it can't be implemented in this extension but there is an Comfy implementation by Kijai
 https://github.com/kijai/ComfyUI-Marigold
 
 ![](./examples/example_marigold_flat.jpg)
