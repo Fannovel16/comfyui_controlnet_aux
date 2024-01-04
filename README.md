@@ -6,11 +6,6 @@ The code is copy-pasted from the respective folders in https://github.com/lllyas
 
 All credit & copyright goes to https://github.com/lllyasviel.
 
-# 500 Stars 😄
-[![Star History Chart](https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date)](https://star-history.com/#Fannovel16/comfyui_controlnet_aux&Date)
-
-Thanks for yalls supports. I never thought the graph for stars would be linear lol.
-
 # Marigold
 Check out Marigold Depth Estimator which can generate very detailed and sharp depth map from high-resolution still images. The mesh created by it is even 3D-printable. Due to diffusers, it can't be implemented in this extension but there is an Comfy implementation by Kijai
 https://github.com/kijai/ComfyUI-Marigold
@@ -231,6 +226,11 @@ Note that if this is your first time using ComfyUI, please test if it can run on
 3. Run `install.bat` or pip command mentioned in Installation
 
 ![](./examples/example_onnx.png)
+
+# 500 Stars 😄
+[![Star History Chart](https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date)](https://star-history.com/#Fannovel16/comfyui_controlnet_aux&Date)
+
+Thanks for yalls supports. I never thought the graph for stars would be linear lol.
 
 # Assets files of preprocessors
 * anime_face_segment:  [bdsqlsz/qinglong_controlnet-lllite/Annotators/UNet.pth](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite/blob/main/Annotators/UNet.pth), [anime-seg/isnetis.ckpt](https://huggingface.co/skytnt/anime-seg/blob/main/isnetis.ckpt)
