@@ -58,7 +58,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
         orig =  create_node_input_types(
             mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}),
         )
-        orig = {
+        return {
             **orig,
             **dict(
                 mask_type=(["based_on_depth", "original"], {"default": "based_on_depth"}),
