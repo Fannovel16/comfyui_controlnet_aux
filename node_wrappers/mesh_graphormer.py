@@ -6,6 +6,7 @@ from einops import rearrange
 import os, sys
 import subprocess, threading
 import scipy.ndimage
+import cv2
 
 #Ref: https://github.com/ltdrdata/ComfyUI-Manager/blob/284e90dc8296a2e1e4f14b4b2d10fba2f52f0e53/__init__.py#L14
 def handle_stream(stream, prefix):
@@ -64,7 +65,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
         types = create_node_input_types(mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}))
         types["optional"].update(
             {
-                "mask_type": (["based_on_depth", "original"], {"default": "based_on_depth"}),
+                "mask_type": (["based_on_depth", "tight_bboxes", "original"], {"default": "based_on_depth"}),
                 "mask_expand": ("INT", {"default": 5, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
                 "rand_seed": ("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff})
             }
@@ -88,8 +89,18 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
             np_image = np.asarray(single_image.cpu() * 255., dtype=np.uint8)
             depth_map, mask, info = model(np_image, output_type="np", detect_resolution=resolution, mask_bbox_padding=mask_bbox_padding, seed=rand_seed)
             if mask_type == "based_on_depth":
-                mask = depth_map[:, :, :1].copy()
+                H, W = mask.shape[:2]
+                mask = cv2.resize(depth_map.copy(), (W, H))
                 mask[mask > 0] = 255
+
+            elif mask_type == "tight_bboxes":
+                mask = np.zeros_like(mask)
+                hand_bboxes = info["abs_boxes"]
+                for hand_bbox in hand_bboxes: 
+                    x_min, x_max, y_min, y_max = hand_bbox
+                    mask[y_min:y_max+1, x_min:x_max+1, :] = 255 #HWC
+
+            mask = mask[:, :, :1]
             depth_map_list.append(torch.from_numpy(depth_map.astype(np.float32) / 255.0))
             mask_list.append(torch.from_numpy(mask.astype(np.float32) / 255.0))
         depth_maps, masks = torch.stack(depth_map_list, dim=0), rearrange(torch.stack(mask_list, dim=0), "n h w 1 -> n 1 h w")
