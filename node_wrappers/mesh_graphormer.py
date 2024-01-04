@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, create_node_input_types, MAX_RESOLUTION
 import comfy.model_management as model_management
 import numpy as np
 import torch
@@ -42,7 +42,9 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return create_node_input_types(
-            mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}),
+            mask_bbox_padding=("INT", {"default": 0, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
+            mask_type=(["based_on_depth", "tight_box", "original"], {"default": "original"})
+            mask_expand=("INT", ),
             rand_seed=("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff})
         )
 
