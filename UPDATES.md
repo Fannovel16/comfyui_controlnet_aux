@@ -26,3 +26,4 @@
 * Fixed OpenPose misplacements in some cases 
 * Added Mesh Graphormer - Hand Depth Map & Mask
 * Misaligned hands bug from MeshGraphormer was fixed
+* Added more mask options for MeshGraphormer

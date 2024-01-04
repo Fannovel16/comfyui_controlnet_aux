@@ -39,18 +39,24 @@ def install_deps():
     except ImportError:
         run_script([sys.executable, '-s', '-m', 'pip', 'install', 'trimesh[easy]'])
 
-#Based on https://github.com/comfyanonymous/ComfyUI/blob/8c6493578b3dda233e9b9a953feeaf1e6ca434ad/comfy_extras/nodes_mask.py#L309
+#Sauce: https://github.com/comfyanonymous/ComfyUI/blob/8c6493578b3dda233e9b9a953feeaf1e6ca434ad/comfy_extras/nodes_mask.py#L309
 def expand_mask(mask, expand, tapered_corners):
     c = 0 if tapered_corners else 1
     kernel = np.array([[c, 1, c],
                         [1, 1, 1],
                         [c, 1, c]])
-    for _ in range(abs(expand)):
-        if expand < 0:
-            mask = scipy.ndimage.grey_erosion(mask, footprint=kernel)
-        else:
-            mask = scipy.ndimage.grey_dilation(mask, footprint=kernel)
-    return mask
+    mask = mask.reshape((-1, mask.shape[-2], mask.shape[-1]))
+    out = []
+    for m in mask:
+        output = m.numpy()
+        for _ in range(abs(expand)):
+            if expand < 0:
+                output = scipy.ndimage.grey_erosion(output, footprint=kernel)
+            else:
+                output = scipy.ndimage.grey_dilation(output, footprint=kernel)
+        output = torch.from_numpy(output)
+        out.append(output)
+    return torch.stack(out, dim=0)
 
 class Mesh_Graphormer_Depth_Map_Preprocessor:
     @classmethod
@@ -81,16 +87,13 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
         for single_image in image:
             np_image = np.asarray(single_image.cpu() * 255., dtype=np.uint8)
             depth_map, mask, info = model(np_image, output_type="np", detect_resolution=resolution, mask_bbox_padding=mask_bbox_padding, seed=rand_seed)
-            
             if mask_type == "based_on_depth":
-                mask = depth_map.copy()
-                mask[mask > 0] == 1
-            if mask_expand != 0:
-                mask = expand_mask(mask, mask_expand, tapered_corners=True)
-
+                mask = depth_map[:, :, :1].copy()
+                mask[mask > 0] = 1
             depth_map_list.append(torch.from_numpy(depth_map.astype(np.float32) / 255.0))
-            mask_list.append(torch.from_numpy(mask[:, :, :1].astype(np.float32) / 255.0))
-        return torch.stack(depth_map_list, dim=0), rearrange(torch.stack(mask_list, dim=0), "n h w 1 -> n 1 h w")
+            mask_list.append(torch.from_numpy(mask.astype(np.float32) / 255.0))
+        depth_maps, masks = torch.stack(depth_map_list, dim=0), rearrange(torch.stack(mask_list, dim=0), "n h w 1 -> n 1 h w")
+        return depth_maps, expand_mask(masks, mask_expand, tapered_corners=True)
     
 NODE_CLASS_MAPPINGS = {
     "MeshGraphormer-DepthMapPreprocessor": Mesh_Graphormer_Depth_Map_Preprocessor
