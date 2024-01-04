@@ -42,9 +42,9 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return create_node_input_types(
-            mask_bbox_padding=("INT", {"default": 0, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
+            mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}),
             mask_type=(["based_on_depth", "tight_box", "original"], {"default": "original"})
-            mask_expand=("INT", ),
+            mask_expand=("INT", {"default": 0, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
             rand_seed=("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff})
         )
 
