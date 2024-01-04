@@ -56,11 +56,13 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         types = create_node_input_types(mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}))
-        types.update(dict(optional={
+        types["optional"].update(
+            {
                 "mask_type": (["based_on_depth", "original"], {"default": "based_on_depth"}),
                 "mask_expand": ("INT", {"default": 5, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
                 "rand_seed": ("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff})
-            }))
+            }
+        )
         return types
 
     RETURN_TYPES = ("IMAGE", "MASK")
