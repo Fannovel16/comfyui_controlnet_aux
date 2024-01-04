@@ -42,7 +42,8 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return create_node_input_types(
-            mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100})
+            mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}),
+            rand_seed=("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff})
         )
 
     RETURN_TYPES = ("IMAGE", "MASK")
@@ -51,7 +52,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
-    def execute(self, image, mask_bbox_padding=30, resolution=512, **kwargs):
+    def execute(self, image, mask_bbox_padding=30, resolution=512, rand_seed=88, **kwargs):
         install_deps()
         from controlnet_aux.mesh_graphormer import MeshGraphormerDetector
         model = MeshGraphormerDetector.from_pretrained().to(model_management.get_torch_device())
@@ -60,7 +61,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
         mask_list = []
         for single_image in image:
             np_image = np.asarray(single_image.cpu() * 255., dtype=np.uint8)
-            depth_map, mask, info = model(np_image, output_type="np", detect_resolution=resolution, mask_bbox_padding=mask_bbox_padding)
+            depth_map, mask, info = model(np_image, output_type="np", detect_resolution=resolution, mask_bbox_padding=mask_bbox_padding, seed=rand_seed)
             depth_map_list.append(torch.from_numpy(depth_map.astype(np.float32) / 255.0))
             mask_list.append(torch.from_numpy(mask[:, :, :1].astype(np.float32) / 255.0))
         return torch.stack(depth_map_list, dim=0), rearrange(torch.stack(mask_list, dim=0), "n h w 1 -> n 1 h w")
