@@ -1,6 +1,6 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
 ![](./examples/example_mesh_graphormer.png)
-Plug-and-play ComfyUI node sets for making [ControlNet](https://github.com/lllyasviel/ControlNet/) hint images
+Plug-and-play [ComfyUI](https://github.com/comfyanonymous/ComfyUI) node sets for making [ControlNet](https://github.com/lllyasviel/ControlNet/) hint images
 
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 
