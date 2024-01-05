@@ -253,7 +253,10 @@ class AnimalposeDetector:
                 'canvas_height': input_image.shape[0],
                 'canvas_width': input_image.shape[1]
             }
+        else:
+            detected_map, openpose_dict = result
         detected_map = remove_pad(detected_map)
+
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
