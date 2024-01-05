@@ -256,8 +256,6 @@ class AnimalposeDetector:
         else:
             detected_map, openpose_dict = result
         detected_map = remove_pad(detected_map)
-
-
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
         
