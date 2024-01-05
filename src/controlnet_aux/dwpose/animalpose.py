@@ -193,7 +193,7 @@ class AnimalPoseImage:
         if self.pose_filename is not None:
             self.pose_input_size, _ = guess_onnx_input_shape_dtype(self.pose_filename)
     
-    def __call__(self, oriImg) -> Optional[np.ndarray]:
+    def __call__(self, oriImg):
         detect_classes = list(range(14, 23 + 1)) #https://github.com/ultralytics/ultralytics/blob/main/ultralytics/cfg/datasets/coco.yaml
 
         if is_model_torchscript(self.det):
