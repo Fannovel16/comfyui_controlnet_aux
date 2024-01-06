@@ -76,6 +76,12 @@ You need to use its node directly to set thresholds.
 | MediaPipe Face Mesh         | mediapipe_face            | controlnet_sd21_laion_face_v2             | 
 | Animal Estimator                 | animal_openpose           | [control_sd15_animal_openpose_fp16](https://huggingface.co/huchenlei/animal_openpose/blob/main/control_sd15_animal_openpose_fp16.pth) |
 
+### How to get OpenPose-format JSON?
+#### User-side
+This workflow will save images to ComfyUI's output folder (the same location as image). If you haven't found `Save Pose Keypoints` node, update this extension
+![](./examples/example_save_kps.png)
+
+#### Dev-side
 An array of [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) corresponsding to each frame in an IMAGE batch can be gotten from DWPose and OpenPose using `app.nodeOutputs` on the UI or `/history` API endpoint. JSON output from AnimalPose uses a kinda similar format to OpenPose JSON:
 ```
 [

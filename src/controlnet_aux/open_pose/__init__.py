@@ -66,8 +66,8 @@ def draw_poses(poses: List[PoseResult], H, W, draw_body=True, draw_hand=True, dr
 
     return canvas
 
-def encode_poses_as_json(poses: List[PoseResult], canvas_height: int, canvas_width: int) -> str:
-    """ Encode the pose as a JSON string following openpose JSON output format:
+def encode_poses_as_dict(poses: List[PoseResult], canvas_height: int, canvas_width: int) -> str:
+    """ Encode the pose as a dict following openpose JSON output format:
     https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md
     """
     def compress_keypoints(keypoints: Union[List[Keypoint], None]) -> Union[List[float], None]:
@@ -84,7 +84,7 @@ def encode_poses_as_json(poses: List[PoseResult], canvas_height: int, canvas_wid
             )
         ]
 
-    return json.dumps({
+    return {
         'people': [
             {
                 'pose_keypoints_2d': compress_keypoints(pose.body.keypoints),
@@ -96,7 +96,7 @@ def encode_poses_as_json(poses: List[PoseResult], canvas_height: int, canvas_wid
         ],
         'canvas_height': canvas_height,
         'canvas_width': canvas_width,
-    }, indent=4)
+    }
     
 class OpenposeDetector:
     """
@@ -233,6 +233,6 @@ class OpenposeDetector:
             detected_map = Image.fromarray(detected_map)
         
         if image_and_json:
-            return (detected_map, encode_poses_as_json(poses, detected_map.shape[0], detected_map.shape[1]))
+            return (detected_map, encode_poses_as_dict(poses, detected_map.shape[0], detected_map.shape[1]))
         
         return detected_map

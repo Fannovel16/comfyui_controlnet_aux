@@ -45,7 +45,7 @@ class DWPose_Preprocessor:
         }
         return input_types
 
-    RETURN_TYPES = ("IMAGE",)
+    RETURN_TYPES = ("IMAGE", "POSE_KEYPOINT")
     FUNCTION = "estimate_pose"
 
     CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
@@ -88,7 +88,7 @@ class DWPose_Preprocessor:
         del model
         return {
             'ui': { "openpose_json": [json.dumps(self.openpose_dicts, indent=4)] },
-            "result": (out, )
+            "result": (out, self.openpose_dicts)
         }
 
 class AnimalPose_Preprocessor:
@@ -102,7 +102,7 @@ class AnimalPose_Preprocessor:
             pose_estimator = (["rtmpose-m_ap10k_256_bs5.torchscript.pt", "rtmpose-m_ap10k_256.onnx"], {"default": "rtmpose-m_ap10k_256_bs5.torchscript.pt"})
         )
 
-    RETURN_TYPES = ("IMAGE",)
+    RETURN_TYPES = ("IMAGE", "POSE_KEYPOINT")
     FUNCTION = "estimate_pose"
 
     CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
@@ -143,7 +143,7 @@ class AnimalPose_Preprocessor:
         del model
         return {
             'ui': { "openpose_json": [json.dumps(self.openpose_dicts, indent=4)] },
-            "result": (out, )
+            "result": (out, self.openpose_dicts)
         }
 
 NODE_CLASS_MAPPINGS = {
