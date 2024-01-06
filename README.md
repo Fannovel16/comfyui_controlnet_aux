@@ -78,7 +78,7 @@ You need to use its node directly to set thresholds.
 
 ### How to get OpenPose-format JSON?
 #### User-side
-This workflow will save images to ComfyUI's output folder (the same location as image). If you haven't found `Save Pose Keypoints` node, update this extension
+This workflow will save images to ComfyUI's output folder (the same location as output images). If you haven't found `Save Pose Keypoints` node, update this extension
 ![](./examples/example_save_kps.png)
 
 #### Dev-side
