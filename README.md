@@ -233,11 +233,6 @@ Note that if this is your first time using ComfyUI, please test if it can run on
 
 ![](./examples/example_onnx.png)
 
-# 500 Stars 😄
-[![Star History Chart](https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date)](https://star-history.com/#Fannovel16/comfyui_controlnet_aux&Date)
-
-Thanks for yalls supports. I never thought the graph for stars would be linear lol.
-
 # Assets files of preprocessors
 * anime_face_segment:  [bdsqlsz/qinglong_controlnet-lllite/Annotators/UNet.pth](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite/blob/main/Annotators/UNet.pth), [anime-seg/isnetis.ckpt](https://huggingface.co/skytnt/anime-seg/blob/main/isnetis.ckpt)
 * densepose:  [LayerNorm/DensePose-TorchScript-with-hint-image/densepose_r50_fpn_dl.torchscript](https://huggingface.co/LayerNorm/DensePose-TorchScript-with-hint-image/blob/main/densepose_r50_fpn_dl.torchscript)
@@ -262,3 +257,15 @@ Thanks for yalls supports. I never thought the graph for stars would be linear l
 * sam:  [dhkim2810/MobileSAM/mobile_sam.pt](https://huggingface.co/dhkim2810/MobileSAM/blob/main/mobile_sam.pt)
 * uniformer:  [lllyasviel/Annotators/upernet_global_small.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/upernet_global_small.pth)
 * zoe:  [lllyasviel/Annotators/ZoeD_M12_N.pt](https://huggingface.co/lllyasviel/Annotators/blob/main/ZoeD_M12_N.pt)
+
+# 500 Stars 😄
+## Star History
+<a href="https://star-history.com/#Fannovel16/comfyui_controlnet_aux&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date" />
+  </picture>
+</a>
+
+Thanks for yalls supports. I never thought the graph for stars would be linear lol.
