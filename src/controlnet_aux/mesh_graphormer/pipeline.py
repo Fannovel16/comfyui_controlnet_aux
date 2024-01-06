@@ -190,8 +190,10 @@ class MeshGraphormerMediapipe(Preprocessor):
                     transforms.Normalize(
                         mean=[0.485, 0.456, 0.406],
                         std=[0.229, 0.224, 0.225])])
-        
-        base_options = python.BaseOptions(model_asset_path=str( Path(__file__).parent / "hand_landmarker.task" ))
+        #Fix File loading is not yet supported on Windows
+        with open(str( Path(__file__).parent / "hand_landmarker.task" ), 'rb') as file:
+            model_data = file.read()
+        base_options = python.BaseOptions(model_asset_buffer=model_data)
         options = vision.HandLandmarkerOptions(base_options=base_options,
                                             min_hand_detection_confidence=0.6,
                                             min_hand_presence_confidence=0.6,
