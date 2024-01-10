@@ -81,7 +81,7 @@ FACIAL_PART_RANGES = dict(
     nose=(27, 35),
     left_eye=(36, 41),
     right_eye=(42, 47),
-    upper_lip=list(range((48, 54+1))) + list(range(64, 60+1, -1)),
+    upper_lip=list(range(48, 54+1)) + list(range(64, 60+1, -1)),
     inner_mouth=(60, 67),
     lower_lip=list(range(60, 64+1)) + list(range(54, 48+1, -1)),
     left_pupil=68, right_pupil=69
