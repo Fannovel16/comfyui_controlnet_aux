@@ -39,7 +39,7 @@ class DWPose_Preprocessor:
             **input_types["optional"],
             "bbox_detector": (
                 ["yolox_l.torchscript.pt", "yolox_l.onnx", "yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx"],
-                {"default": "yolox_l.torchscript.pt"}
+                {"default": "yolox_l.onnx"}
             ),
             "pose_estimator": (["dw-ll_ucoco_384_bs5.torchscript.pt", "dw-ll_ucoco_384.onnx", "dw-ll_ucoco.onnx"], {"default": "dw-ll_ucoco_384_bs5.torchscript.pt"})
         }
