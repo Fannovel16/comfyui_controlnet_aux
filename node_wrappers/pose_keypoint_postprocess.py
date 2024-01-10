@@ -125,7 +125,7 @@ class FacialPartColoringFromPoseKps:
                 if part_name == "skin":
                     part_contours[17:] = part_contours[17:][::-1]
             else:
-                part_contours = facial_kps[FACIAL_PART_RANGES[part_name]]
+                part_contours = facial_kps[FACIAL_PART_RANGES[part_name], :]
             cv2.fillPoly(canvas, pts=[part_contours], color=part_color)
         return canvas
 
