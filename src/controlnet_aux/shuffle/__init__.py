@@ -9,7 +9,7 @@ from controlnet_aux.util import HWC3, common_input_validate, img2mask, make_nois
 
 
 class ContentShuffleDetector:
-    def __call__(self, input_image, h=None, w=None, f=None, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
+    def __call__(self, input_image, h=None, w=None, f=None, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", seed=-1, **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
@@ -20,8 +20,9 @@ class ContentShuffleDetector:
             w = W
         if f is None:
             f = 256
-        x = make_noise_disk(h, w, 1, f) * float(W - 1)
-        y = make_noise_disk(h, w, 1, f) * float(H - 1)
+        rng = np.random.default_rng(seed) if seed else None
+        x = make_noise_disk(h, w, 1, f, rng=rng) * float(W - 1)
+        y = make_noise_disk(h, w, 1, f, rng=rng) * float(H - 1)
         flow = np.concatenate([x, y], axis=2).astype(np.float32)
         detected_map = cv2.remap(input_image, flow, None, cv2.INTER_LINEAR)
         detected_map = remove_pad(detected_map)
