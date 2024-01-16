@@ -21,7 +21,7 @@ class Scribble_XDoG_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return create_node_input_types(
-            threshold = ("INT", {"default": 32, "min": 1, "max": 64, "step": 64})
+            threshold = ("INT", {"default": 32, "min": 1, "max": 64, "step": 1})
         )
 
     RETURN_TYPES = ("IMAGE",)
