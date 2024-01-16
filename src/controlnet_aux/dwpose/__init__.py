@@ -206,7 +206,7 @@ class DwposeDetector:
             detected_map = Image.fromarray(detected_map)
         
         if image_and_json:
-            return (detected_map, encode_poses_as_dict(poses, detected_map.shape[0], detected_map.shape[1]))
+            return (detected_map, encode_poses_as_dict(poses, input_image.shape[0], input_image.shape[1]))
         
         return detected_map
 
