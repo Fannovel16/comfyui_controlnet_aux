@@ -208,7 +208,6 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below
 
 ## Optical Flow
 ### Unimatch
-The preview is a bit out-of-sync but the optical flow is still correct
 ![](./examples/example_unimatch.png)
 
 # Testing workflow
