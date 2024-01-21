@@ -76,6 +76,11 @@ You need to use its node directly to set thresholds.
 | MediaPipe Face Mesh         | mediapipe_face            | controlnet_sd21_laion_face_v2             | 
 | Animal Estimator                 | animal_openpose           | [control_sd15_animal_openpose_fp16](https://huggingface.co/huchenlei/animal_openpose/blob/main/control_sd15_animal_openpose_fp16.pth) |
 
+## Optical Flow Estimators
+| Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
+|-----------------------------|---------------------------|-------------------------------------------|
+| Unimatch Optical Flow       |                           | (DragNUWA)[https://github.com/ProjectNUWA/DragNUWA] |
+
 ### How to get OpenPose-format JSON?
 #### User-side
 This workflow will save images to ComfyUI's output folder (the same location as output images). If you haven't found `Save Pose Keypoints` node, update this extension
@@ -200,6 +205,11 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below
 ## T2IAdapter-only
 ### Color Pallete for T2I-Adapter
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_color.png)
+
+## Optical Flow
+### Unimatch
+The preview is a bit out-of-sync but the optical flow is still correct
+![](./examples/example_unimatch.png)
 
 # Testing workflow
 https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_aux_full.json

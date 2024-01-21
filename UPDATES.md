@@ -28,3 +28,4 @@
 * Misaligned hands bug from MeshGraphormer was fixed
 * Added more mask options for MeshGraphormer
 * Added Save Pose Keypoint node for editing
+* Added Unimatch Optical Flow

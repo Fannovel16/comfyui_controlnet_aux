@@ -14,6 +14,7 @@ ANIFACESEG_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite"
 DENSEPOSE_MODEL_NAME = "LayerNorm/DensePose-TorchScript-with-hint-image"
 MESH_GRAPHORMER_MODEL_NAME = "hr16/ControlNet-HandRefiner-pruned"
 SAM_MODEL_NAME = "dhkim2810/MobileSAM"
+UNIMATCH_MODEL_NAME = "hr16/Unimatch"
 
 annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
 USE_SYMLINKS = False
