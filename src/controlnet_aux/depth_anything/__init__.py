@@ -47,6 +47,7 @@ class DepthAnythingDetector:
 
         device = next(iter(self.model.parameters())).device
         h, w = t.shape[:2]
+        h, w = int(h), int(w)
         image = transform({'image': input_image / 255.})['image']
         image = torch.from_numpy(image).unsqueeze(0).to(device)
         
