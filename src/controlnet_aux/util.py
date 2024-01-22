@@ -8,6 +8,7 @@ from pathlib import Path
 import warnings
 from huggingface_hub import hf_hub_download
 
+TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
 ANIFACESEG_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite"
