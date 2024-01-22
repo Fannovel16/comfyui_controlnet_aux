@@ -29,3 +29,4 @@
 * Added more mask options for MeshGraphormer
 * Added Save Pose Keypoint node for editing
 * Added Unimatch Optical Flow
+* Added Depth Anything
