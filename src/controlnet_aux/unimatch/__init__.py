@@ -181,9 +181,9 @@ class UnimatchDetector:
         assert image1.shape == image2.shape, f"[Unimatch] image1 and image2 must have the same size, got {image1.shape} and {image2.shape}"
 
         image1, output_type = common_input_validate(image1, output_type, **kwargs)
-        image1, remove_pad = resize_image_with_pad(image1, detect_resolution, upscale_method)
+        #image1, remove_pad = resize_image_with_pad(image1, detect_resolution, upscale_method)
         image2, output_type = common_input_validate(image2, output_type, **kwargs)
-        image2, remove_pad = resize_image_with_pad(image2, detect_resolution, upscale_method)
+        #image2, remove_pad = resize_image_with_pad(image2, detect_resolution, upscale_method)
         
         device = next(iter(self.unimatch.parameters())).device
         with torch.no_grad():
@@ -192,4 +192,4 @@ class UnimatchDetector:
         if output_type == "pil":
             vis_image = Image.fromarray(vis_image)
 
-        return remove_pad(flow), remove_pad(vis_image)
+        return flow, vis_image

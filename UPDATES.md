@@ -30,3 +30,4 @@
 * Added Save Pose Keypoint node for editing
 * Added Unimatch Optical Flow
 * Added Depth Anything & Zoe Depth Anything
+* Removed resolution field from Unimatch Optical Flow as that interpolating optical flow seems unstable

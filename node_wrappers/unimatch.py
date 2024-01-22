@@ -8,14 +8,16 @@ import torch.nn.functional as F
 class Unimatch_OptFlowPreprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            ckpt_name=(
-                ["gmflow-scale1-mixdata.pth", "gmflow-scale2-mixdata.pth", "gmflow-scale2-regrefine6-mixdata.pth"],
-                {"default": "gmflow-scale2-regrefine6-mixdata.pth"}
-            ),
-            backward_flow=("BOOLEAN", {"default": False}),
-            bidirectional_flow=("BOOLEAN", {"default": False})
-        )
+        return {
+            "required": dict(
+                ckpt_name=(
+                    ["gmflow-scale1-mixdata.pth", "gmflow-scale2-mixdata.pth", "gmflow-scale2-regrefine6-mixdata.pth"],
+                    {"default": "gmflow-scale2-regrefine6-mixdata.pth"}
+                ),
+                backward_flow=("BOOLEAN", {"default": False}),
+                bidirectional_flow=("BOOLEAN", {"default": False})
+            )
+        }
 
     RETURN_TYPES = ("OPTICAL_FLOW", "IMAGE")
     RETURN_NAMES = ("OPTICAL_FLOW", "PREVIEW_IMAGE")
@@ -23,7 +25,7 @@ class Unimatch_OptFlowPreprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Optical Flow"
 
-    def estimate(self, image, ckpt_name, backward_flow=False, bidirectional_flow=False, resolution=512):
+    def estimate(self, image, ckpt_name, backward_flow=False, bidirectional_flow=False):
         assert len(image) > 1, "[Unimatch] Requiring as least two frames as a optical flow estimator. Only use this node on video input."    
         from controlnet_aux.unimatch import UnimatchDetector
         tensor_images = image
@@ -31,7 +33,7 @@ class Unimatch_OptFlowPreprocessor:
         flows, vis_flows = [], []
         for i in range(len(tensor_images) - 1):
             image0, image1 = np.asarray(image[i:i+2].cpu() * 255., dtype=np.uint8)
-            flow, vis_flow = model(image0, image1, output_type="np", pred_bwd_flow=backward_flow, pred_bidir_flow=bidirectional_flow, detect_resolution=resolution)
+            flow, vis_flow = model(image0, image1, output_type="np", pred_bwd_flow=backward_flow, pred_bidir_flow=bidirectional_flow)
             flows.append(torch.from_numpy(flow).float())
             vis_flows.append(torch.from_numpy(vis_flow).float() / 255.)
         del model
