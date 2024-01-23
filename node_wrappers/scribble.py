@@ -29,11 +29,11 @@ class Scribble_XDoG_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, resolution=512, **kwargs):
+    def execute(self, image, threshold, resolution=512, **kwargs):
         from controlnet_aux.scribble import ScribbleXDog_Detector
 
         model = ScribbleXDog_Detector()
-        return (common_annotator_call(model, image, resolution=resolution), )
+        return (common_annotator_call(model, image, resolution=resolution, thr_a=threshold), )
 
 NODE_CLASS_MAPPINGS = {
     "ScribblePreprocessor": Scribble_Preprocessor,
