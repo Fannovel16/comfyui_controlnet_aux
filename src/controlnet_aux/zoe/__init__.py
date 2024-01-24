@@ -88,7 +88,7 @@ class ZoeDepthAnythingDetector:
 
         image_depth = input_image
         with torch.no_grad():
-            image_depth = torch.from_numpy(image_depth).float().to(device)
+            image_depth = torch.from_numpy(image_depth).float().to(self.device)
             image_depth = image_depth / 255.0
             image_depth = rearrange(image_depth, 'h w c -> 1 c h w')
             depth = self.model.infer(image_depth)
