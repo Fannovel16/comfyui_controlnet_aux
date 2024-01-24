@@ -11,7 +11,7 @@ import torch
 
 from .ted import TED  # TEED architecture
 from einops import rearrange
-from controlnet_aux.util import safe_step, custom_hf_download, BDS_MODEL_NAME, common_input_validate, resize_image_with_pad
+from controlnet_aux.util import safe_step, custom_hf_download, BDS_MODEL_NAME, common_input_validate, resize_image_with_pad, HWC3
 from PIL import Image
 
 
@@ -51,7 +51,7 @@ class TEDDetector:
                 edge = safe_step(edge, safe_steps)
             edge = (edge * 255.0).clip(0, 255).astype(np.uint8)
     
-        detected_map = remove_pad(edge)
+        detected_map = remove_pad(HWC3(edge))
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map[..., :3])
         
