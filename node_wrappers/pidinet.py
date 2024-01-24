@@ -25,5 +25,5 @@ NODE_CLASS_MAPPINGS = {
     "PiDiNetPreprocessor": PIDINET_Preprocessor,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "PiDiNetPreprocessor": "PiDiNet Lines"
+    "PiDiNetPreprocessor": "PiDiNet Soft-Edge Lines"
 }

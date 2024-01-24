@@ -47,16 +47,17 @@ You need to use its node directly to set thresholds.
 |-----------------------------|---------------------------|-------------------------------------------|
 | Binary Lines                | binary                    | control_scribble                          |
 | Canny Edge                  | canny                     | control_v11p_sd15_canny <br> control_canny <br> t2iadapter_canny |
-| HED Lines                   | hed                       | control_v11p_sd15_softedge <br> control_hed |
+| HED Soft-Edge Lines         | hed                       | control_v11p_sd15_softedge <br> control_hed |
 | Standard Lineart            | standard_lineart          | control_v11p_sd15_lineart                 |
 | Realistic Lineart           | lineart (or `lineart_coarse` if `coarse` is enabled) | control_v11p_sd15_lineart |
 | Anime Lineart               | lineart_anime             | control_v11p_sd15s2_lineart_anime         |
 | Manga Lineart               | lineart_anime_denoise     | control_v11p_sd15s2_lineart_anime         |
 | M-LSD Lines                 | mlsd                      | control_v11p_sd15_mlsd <br> control_mlsd  |
-| PiDiNet Lines               | pidinet                   | control_v11p_sd15_softedge <br> control_scribble |
+| PiDiNet Soft-Edge Lines     | pidinet                   | control_v11p_sd15_softedge <br> control_scribble |
 | Scribble Lines              | scribble                  | control_v11p_sd15_scribble <br> control_scribble |
 | Scribble XDoG Lines         | scribble_xdog             | control_v11p_sd15_scribble <br> control_scribble |
 | Fake Scribble Lines         | scribble_hed              | control_v11p_sd15_scribble <br> control_scribble |
+| TEED Soft-Edge Lines        | teed                      | [controlnet-sd-xl-1.0-softedge-dexined](https://huggingface.co/SargeZT/controlnet-sd-xl-1.0-softedge-dexined/blob/main/controlnet-sd-xl-1.0-softedge-dexined.safetensors) <br> (Theoretically) control_v11p_sd15_softedge
 
 ## Normal and Depth Estimators
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |

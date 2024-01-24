@@ -15,6 +15,7 @@ from .zoedepth.utils.config import get_config
 class ZoeDetector:
     def __init__(self, model):
         self.model = model
+        self.device = "cpu"
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="ZoeD_M12_N.pt"):
@@ -29,16 +30,16 @@ class ZoeDetector:
 
     def to(self, device):
         self.model.to(device)
+        self.device = device
         return self
     
     def __call__(self, input_image, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
-        device = next(iter(self.model.parameters())).device
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
         image_depth = input_image
         with torch.no_grad():
-            image_depth = torch.from_numpy(image_depth).float().to(device)
+            image_depth = torch.from_numpy(image_depth).float().to(self.device)
             image_depth = image_depth / 255.0
             image_depth = rearrange(image_depth, 'h w c -> 1 c h w')
             depth = self.model.infer(image_depth)
@@ -63,6 +64,7 @@ class ZoeDetector:
 class ZoeDepthAnythingDetector:
     def __init__(self, model):
         self.model = model
+        self.device = "cpu"
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=DEPTH_ANYTHING_MODEL_NAME, filename="depth_anything_metric_depth_indoor.pt"):
@@ -77,10 +79,10 @@ class ZoeDepthAnythingDetector:
 
     def to(self, device):
         self.model.to(device)
+        self.device = device
         return self
     
     def __call__(self, input_image, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
-        device = next(iter(self.model.parameters())).device
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 

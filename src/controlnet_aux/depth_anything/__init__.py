@@ -26,6 +26,7 @@ transform = Compose([
 class DepthAnythingDetector:
     def __init__(self, model):
         self.model = model
+        self.device = "cpu"
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=DEPTH_ANYTHING_MODEL_NAME, filename="depth_anything_vitl14.pth"):
@@ -38,6 +39,7 @@ class DepthAnythingDetector:
 
     def to(self, device):
         self.model.to(device)
+        self.device = device
         return self
     
     def __call__(self, input_image, detect_resolution=512, output_type=None, upscale_method="INTER_CUBIC", **kwargs):
@@ -45,11 +47,10 @@ class DepthAnythingDetector:
         t, remove_pad = resize_image_with_pad(np.zeros_like(input_image), detect_resolution, upscale_method)
         t = remove_pad(t)
 
-        device = next(iter(self.model.parameters())).device
         h, w = t.shape[:2]
         h, w = int(h), int(w)
         image = transform({'image': input_image / 255.})['image']
-        image = torch.from_numpy(image).unsqueeze(0).to(device)
+        image = torch.from_numpy(image).unsqueeze(0).to(self.device)
         
         with torch.no_grad():
             depth = self.model(image)

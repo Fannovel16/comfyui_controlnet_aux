@@ -58,6 +58,7 @@ class ControlNetHED_Apache2(torch.nn.Module):
 class HEDdetector:
     def __init__(self, netNetwork):
         self.netNetwork = netNetwork
+        self.device = "cpu"
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="ControlNetHED.pth"):
@@ -71,6 +72,7 @@ class HEDdetector:
     
     def to(self, device):
         self.netNetwork.to(device)
+        self.device = device
         return self
     
 
@@ -81,8 +83,7 @@ class HEDdetector:
         assert input_image.ndim == 3
         H, W, C = input_image.shape
         with torch.no_grad():
-            device = next(iter(self.netNetwork.parameters())).device
-            image_hed = torch.from_numpy(input_image).float().to(device)
+            image_hed = torch.from_numpy(input_image).float().to(self.device)
             image_hed = rearrange(image_hed, 'h w c -> 1 c h w')
             edges = self.netNetwork(image_hed)
             edges = [e.detach().cpu().numpy().astype(np.float32)[0, 0] for e in edges]

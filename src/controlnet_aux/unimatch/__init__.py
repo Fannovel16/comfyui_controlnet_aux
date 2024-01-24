@@ -149,6 +149,7 @@ class UnimatchDetector:
     def __init__(self, unimatch, config_args):
         self.unimatch = unimatch
         self.config_args = config_args
+        self.device = "cpu"
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=UNIMATCH_MODEL_NAME, filename="gmflow-scale2-regrefine6-mixdata.pth"):
@@ -175,6 +176,7 @@ class UnimatchDetector:
 
     def to(self, device):
         self.unimatch.to(device)
+        self.device = device
         return self
     
     def __call__(self, image1, image2, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", pred_bwd_flow=False, pred_bidir_flow=False, **kwargs):
@@ -184,10 +186,8 @@ class UnimatchDetector:
         #image1, remove_pad = resize_image_with_pad(image1, detect_resolution, upscale_method)
         image2, output_type = common_input_validate(image2, output_type, **kwargs)
         #image2, remove_pad = resize_image_with_pad(image2, detect_resolution, upscale_method)
-        
-        device = next(iter(self.unimatch.parameters())).device
         with torch.no_grad():
-            flow, vis_image = inference_flow(self.unimatch, image1, image2, device=device, pred_bwd_flow=pred_bwd_flow, pred_bidir_flow=pred_bidir_flow, **vars(self.config_args))
+            flow, vis_image = inference_flow(self.unimatch, image1, image2, device=self.device, pred_bwd_flow=pred_bwd_flow, pred_bidir_flow=pred_bidir_flow, **vars(self.config_args))
         
         if output_type == "pil":
             vis_image = Image.fromarray(vis_image)

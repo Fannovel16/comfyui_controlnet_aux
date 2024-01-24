@@ -32,6 +32,7 @@ class NormalBaeDetector:
     def __init__(self, model):
         self.model = model
         self.norm = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        self.device = "cpu"
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="scannet.pt"):
@@ -51,16 +52,16 @@ class NormalBaeDetector:
 
     def to(self, device):
         self.model.to(device)
+        self.device = device
         return self
 
 
     def __call__(self, input_image, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
-        device = next(iter(self.model.parameters())).device
         image_normal = detected_map
         with torch.no_grad():
-            image_normal = torch.from_numpy(image_normal).float().to(device)
+            image_normal = torch.from_numpy(image_normal).float().to(self.device)
             image_normal = image_normal / 255.0
             image_normal = rearrange(image_normal, 'h w c -> 1 c h w')
             image_normal = self.norm(image_normal)

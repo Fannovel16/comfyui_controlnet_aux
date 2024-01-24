@@ -324,19 +324,20 @@ class Face(object):
         self.model = FaceNet()
         self.model.load_state_dict(torch.load(face_model_path))
         self.model.eval()
+        self.device = "cpu"
 
     def to(self, device):
         self.model.to(device)
+        self.device = device
         return self
 
     def __call__(self, face_img):
-        device = next(iter(self.model.parameters())).device
         H, W, C = face_img.shape
 
         w_size = 384
         x_data = torch.from_numpy(util.smart_resize(face_img, (w_size, w_size))).permute([2, 0, 1]) / 256.0 - 0.5
 
-        x_data = x_data.to(device)
+        x_data = x_data.to(self.device)
 
         with torch.no_grad():
             hs = self.model(x_data[None, ...])

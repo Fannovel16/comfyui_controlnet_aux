@@ -94,6 +94,7 @@ class LineartDetector:
     def __init__(self, model, coarse_model):
         self.model = model
         self.model_coarse = coarse_model
+        self.device = "cpu"
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="sk_model.pth", coarse_filename="sk_model2.pth"):
@@ -113,17 +114,17 @@ class LineartDetector:
     def to(self, device):
         self.model.to(device)
         self.model_coarse.to(device)
+        self.device = device
         return self
     
     def __call__(self, input_image, coarse=False, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         detected_map, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
 
-        device = next(iter(self.model.parameters())).device
         model = self.model_coarse if coarse else self.model
         assert detected_map.ndim == 3
         with torch.no_grad():
-            image = torch.from_numpy(detected_map).float().to(device)
+            image = torch.from_numpy(detected_map).float().to(self.device)
             image = image / 255.0
             image = rearrange(image, 'h w c -> 1 c h w')
             line = model(image)[0][0]

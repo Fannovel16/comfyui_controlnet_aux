@@ -116,6 +116,7 @@ class UnetSkipConnectionBlock(nn.Module):
 class LineartAnimeDetector:
     def __init__(self, model):
         self.model = model
+        self.device = "cpu"
 
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="netG.pth"):
@@ -135,6 +136,7 @@ class LineartAnimeDetector:
 
     def to(self, device):
         self.model.to(device)
+        self.device = device
         return self
     
     def __call__(self, input_image, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
@@ -146,9 +148,8 @@ class LineartAnimeDetector:
         Wn = 256 * int(np.ceil(float(W) / 256.0))
         input_image = cv2.resize(input_image, (Wn, Hn), interpolation=cv2.INTER_CUBIC)
 
-        device = next(iter(self.model.parameters())).device
         with torch.no_grad():
-            image_feed = torch.from_numpy(input_image).float().to(device)
+            image_feed = torch.from_numpy(input_image).float().to(self.device)
             image_feed = image_feed / 127.5 - 1.0
             image_feed = rearrange(image_feed, 'h w c -> 1 c h w')
 

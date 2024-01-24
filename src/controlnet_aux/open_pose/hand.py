@@ -14,13 +14,14 @@ class Hand(object):
         model_dict = util.transfer(self.model, torch.load(model_path))
         self.model.load_state_dict(model_dict)
         self.model.eval()
+        self.device = "cpu"
 
     def to(self, device):
         self.model.to(device)
+        self.device = device
         return self
 
     def __call__(self, oriImgRaw):
-        device = next(iter(self.model.parameters())).device
         scale_search = [0.5, 1.0, 1.5, 2.0]
         # scale_search = [0.5]
         boxsize = 368
@@ -45,7 +46,7 @@ class Hand(object):
             im = np.ascontiguousarray(im)
 
             data = torch.from_numpy(im).float()
-            data = data.to(device)
+            data = data.to(self.device)
 
             with torch.no_grad():
                 output = self.model(data).cpu().numpy()
