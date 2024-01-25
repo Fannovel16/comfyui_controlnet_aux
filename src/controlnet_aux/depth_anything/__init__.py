@@ -23,6 +23,13 @@ transform = Compose([
     PrepareForNet(),
 ])
 
+#https://huggingface.co/LiheYoung/depth_anything_vitl14/raw/main/config.json
+DPT_CONFIGS = {
+    "depth_anything_vitl14.pth": {"encoder": "vitl", "features": 256, "out_channels": [256, 512, 1024, 1024], "use_bn": False, "use_clstoken": False},
+    "depth_anything_vitb14.pth": {"encoder": "vitb", "features": 128, "out_channels": [96, 192, 384, 768], "use_bn": False, "use_clstoken": False},
+    "depth_anything_vits14.pth": {"encoder": "vits", "features": 64, "out_channels": [48, 96, 192, 384], "use_bn": False, "use_clstoken": False}
+}
+
 class DepthAnythingDetector:
     def __init__(self, model):
         self.model = model
@@ -31,7 +38,7 @@ class DepthAnythingDetector:
     @classmethod
     def from_pretrained(cls, pretrained_model_or_path=DEPTH_ANYTHING_MODEL_NAME, filename="depth_anything_vitl14.pth"):
         model_path = custom_hf_download(pretrained_model_or_path, filename, subfolder="checkpoints", repo_type="space")
-        model = DPT_DINOv2(encoder='vitl', features=256, out_channels=[256, 512, 1024, 1024], localhub=True)
+        model = DPT_DINOv2(**DPT_CONFIGS[filename], localhub=True)
         model.load_state_dict(torch.load(model_path, map_location="cpu"))
         model.eval()
 
