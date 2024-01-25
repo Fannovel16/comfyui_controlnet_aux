@@ -17,6 +17,7 @@ MESH_GRAPHORMER_MODEL_NAME = "hr16/ControlNet-HandRefiner-pruned"
 SAM_MODEL_NAME = "dhkim2810/MobileSAM"
 UNIMATCH_MODEL_NAME = "hr16/Unimatch"
 DEPTH_ANYTHING_MODEL_NAME = "LiheYoung/Depth-Anything" #HF Space
+DIFFUSION_EDGE_MODEL_NAME = "hr16/Diffusion-Edge"
 
 annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
 USE_SYMLINKS = False

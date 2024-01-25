@@ -20,3 +20,5 @@ ftfy
 addict
 yacs
 trimesh[easy]
+albumentations
+scikit-learn

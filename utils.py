@@ -6,6 +6,9 @@ import yaml
 from pathlib import Path
 from enum import Enum
 from .log import log
+import subprocess
+import threading
+import sys
 
 here = Path(__file__).parent.resolve()
 
@@ -166,3 +169,23 @@ def get_unique_axis0(data):
     unique_idxs[:1] = True
     unique_idxs[1:] = np.any(arr[:-1, :] != arr[1:, :], axis=-1)
     return arr[unique_idxs]
+
+#Ref: https://github.com/ltdrdata/ComfyUI-Manager/blob/284e90dc8296a2e1e4f14b4b2d10fba2f52f0e53/__init__.py#L14
+def handle_stream(stream, prefix):
+    for line in stream:
+        print(prefix, line, end="")
+
+
+def run_script(cmd, cwd='.'):
+    process = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
+
+    stdout_thread = threading.Thread(target=handle_stream, args=(process.stdout, ""))
+    stderr_thread = threading.Thread(target=handle_stream, args=(process.stderr, "[!]"))
+
+    stdout_thread.start()
+    stderr_thread.start()
+
+    stdout_thread.join()
+    stderr_thread.join()
+
+    return process.wait()

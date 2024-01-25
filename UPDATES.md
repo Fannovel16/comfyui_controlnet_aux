@@ -32,3 +32,4 @@
 * Added Depth Anything & Zoe Depth Anything
 * Removed resolution field from Unimatch Optical Flow as that interpolating optical flow seems unstable
 * Added TEED Soft-Edge Preprocessor
+* Added DiffusionEdge
