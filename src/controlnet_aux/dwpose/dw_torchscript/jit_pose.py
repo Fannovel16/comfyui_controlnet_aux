@@ -66,7 +66,7 @@ def inference(model, img, bs=5):
         img.append(np.zeros_like(img[0]))
     input = np.stack(img, axis=0).transpose(0, 3, 1, 2)
     device, dtype = next(model.parameters()).device, next(model.parameters()).dtype
-    input = torch.from_numpy(input).to(device).to(dtype)
+    input = torch.from_numpy(input).to(device, dtype)
 
     out1, out2 = [], []
     for i in range(input.shape[0] // bs):
