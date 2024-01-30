@@ -100,7 +100,7 @@ def inference_detector(model, oriImg, detect_classes=[0]):
 
     device, dtype = next(model.parameters()).device, next(model.parameters()).dtype
     input = img[None, :, :, :]
-    input = torch.from_numpy(input).to(device).to(dtype)
+    input = torch.from_numpy(input).to(device, dtype)
 
     output = model(input).float().cpu().detach().numpy()
     predictions = demo_postprocess(output[0], input_shape)
