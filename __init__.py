@@ -69,11 +69,12 @@ class AIO_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         auxs = list(AUX_NODE_MAPPINGS.keys())
+        auxs.insert(0, "none")
         for name in AIO_NOT_SUPPORTED:
             if name in auxs: auxs.remove(name)
         
         return create_node_input_types(
-            preprocessor=(auxs, {"default": "CannyEdgePreprocessor"})
+            preprocessor=(auxs, {"default": "none"})
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -82,31 +83,34 @@ class AIO_Preprocessor:
     CATEGORY = "ControlNet Preprocessors"
 
     def execute(self, preprocessor, image, resolution=512):
-        aux_class = AUX_NODE_MAPPINGS[preprocessor]
-        input_types = aux_class.INPUT_TYPES()
-        input_types = {
-            **input_types["required"], 
-            **(input_types["optional"] if "optional" in input_types else {})
-        }
-        params = {}
-        for name, input_type in input_types.items():
-            if name == "image":
-                params[name] = image
-                continue
-            
-            if name == "resolution":
-                params[name] = resolution
-                continue
-            
-            if len(input_type) == 2 and ("default" in input_type[1]):
-                params[name] = input_type[1]["default"]
-                continue
+        if preprocessor == "none":
+            return (image, )
+        else:
+            aux_class = AUX_NODE_MAPPINGS[preprocessor]
+            input_types = aux_class.INPUT_TYPES()
+            input_types = {
+                **input_types["required"],
+                **(input_types["optional"] if "optional" in input_types else {})
+            }
+            params = {}
+            for name, input_type in input_types.items():
+                if name == "image":
+                    params[name] = image
+                    continue
 
-            default_values = { "INT": 0, "FLOAT": 0.0 }
-            if input_type[0] in default_values:
-                params[name] = default_values[input_type[0]]
+                if name == "resolution":
+                    params[name] = resolution
+                    continue
 
-        return getattr(aux_class(), aux_class.FUNCTION)(**params)
+                if len(input_type) == 2 and ("default" in input_type[1]):
+                    params[name] = input_type[1]["default"]
+                    continue
+
+                default_values = { "INT": 0, "FLOAT": 0.0 }
+                if input_type[0] in default_values:
+                    params[name] = default_values[input_type[0]]
+
+            return getattr(aux_class(), aux_class.FUNCTION)(**params)
 
 
 NODE_CLASS_MAPPINGS = {
