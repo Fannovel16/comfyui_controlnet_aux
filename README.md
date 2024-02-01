@@ -164,6 +164,12 @@ for o in history['outputs']:
 | Color Pallete               | color                     | t2iadapter_color                          |
 | Content Shuffle             | shuffle                   | t2iadapter_style                          |
 
+## Recolor
+| Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
+|-----------------------------|---------------------------|-------------------------------------------|
+| Image Luminance             | recolor_luminance         |                                           |
+| Image Intensity             | recolor_intensity         |                                           |
+
 # Examples
 > A picture is worth a thousand words
 
