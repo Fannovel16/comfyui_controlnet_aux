@@ -167,8 +167,8 @@ for o in history['outputs']:
 ## Recolor
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
 |-----------------------------|---------------------------|-------------------------------------------|
-| Image Luminance             | recolor_luminance         |                                           |
-| Image Intensity             | recolor_intensity         |                                           |
+| Image Luminance             | recolor_luminance         | [ioclab_sd15_recolor](https://huggingface.co/lllyasviel/sd_control_collection/resolve/main/ioclab_sd15_recolor.safetensors) <br> [sai_xl_recolor_256lora](https://huggingface.co/lllyasviel/sd_control_collection/resolve/main/sai_xl_recolor_256lora.safetensors) <br> [bdsqlsz_controlllite_xl_recolor_luminance](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite/resolve/main/bdsqlsz_controlllite_xl_recolor_luminance.safetensors) |
+| Image Intensity             | recolor_intensity         | Idk. Maybe same as above? |
 
 # Examples
 > A picture is worth a thousand words
