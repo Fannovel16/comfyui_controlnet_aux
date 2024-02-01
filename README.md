@@ -224,6 +224,9 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below
 ### Unimatch
 ![](./examples/example_unimatch.png)
 
+## Recolor
+![](./examples/example_recolor.png)
+
 # Testing workflow
 https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_aux_full.json
 ![](https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/pose.png?raw=true)
