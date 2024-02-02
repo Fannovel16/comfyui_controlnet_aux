@@ -10,6 +10,7 @@ class Unimatch_OptFlowPreprocessor:
     def INPUT_TYPES(s):
         return {
             "required": dict(
+                image=("IMAGE",),
                 ckpt_name=(
                     ["gmflow-scale1-mixdata.pth", "gmflow-scale2-mixdata.pth", "gmflow-scale2-regrefine6-mixdata.pth"],
                     {"default": "gmflow-scale2-regrefine6-mixdata.pth"}
