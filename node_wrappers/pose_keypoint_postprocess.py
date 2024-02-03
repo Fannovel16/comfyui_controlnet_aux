@@ -107,9 +107,11 @@ class FacialPartColoringFromPoseKps:
         return (torch.from_numpy(np_frames).float() / 255.,)
             
     def draw_kps(self, pose_frame, mode, **facial_part_colors):
-        canvas = np.zeros((pose_frame["canvas_height"], pose_frame["canvas_width"], 3), dtype=np.uint8)
-        for (person, part_name) in itertools.product(pose_frame["people"], FACIAL_PARTS):
-            facial_kps = rearrange(np.array(person['face_keypoints_2d']), "(n c) -> n c", n=70, c=3)[:, :2]
+        width, height = pose_frame["canvas_width"], pose_frame["canvas_height"]
+        canvas = np.zeros((height, width, 3), dtype=np.uint8)
+        for person, part_name in itertools.product(pose_frame["people"], FACIAL_PARTS):
+            n = len(person["face_keypoints_2d"]) // 3
+            facial_kps = rearrange(np.array(person["face_keypoints_2d"]), "(n c) -> n c", n=n, c=3)[:, :2] * (width, height)
             facial_kps = facial_kps.astype(np.int32)
             part_color = ImageColor.getrgb(facial_part_colors[part_name])[:3]
             if mode == "circle":
