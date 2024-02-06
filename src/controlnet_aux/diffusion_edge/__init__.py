@@ -11,7 +11,7 @@ class DiffusionEdgeDetector:
         self.device = "cpu"
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=DIFFUSION_EDGE_MODEL_NAME, filename="depth_anything_vitl14.pth"):
+    def from_pretrained(cls, pretrained_model_or_path=DIFFUSION_EDGE_MODEL_NAME, filename="diffusion_edge_indoor.pth"):
         model_path = custom_hf_download(pretrained_model_or_path, filename)
         model = DiffusionEdge(prepare_args(model_path))
         return cls(model)

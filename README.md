@@ -284,7 +284,10 @@ Note that if this is your first time using ComfyUI, please test if it can run on
 * sam:  [dhkim2810/MobileSAM/mobile_sam.pt](https://huggingface.co/dhkim2810/MobileSAM/blob/main/mobile_sam.pt)
 * uniformer:  [lllyasviel/Annotators/upernet_global_small.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/upernet_global_small.pth)
 * zoe:  [lllyasviel/Annotators/ZoeD_M12_N.pt](https://huggingface.co/lllyasviel/Annotators/blob/main/ZoeD_M12_N.pt)
-
+* teed:  [bdsqlsz/qinglong_controlnet-lllite/7_model.pth](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite/blob/main/7_model.pth)
+* depth_anything: Either [LiheYoung/Depth-Anything/depth_anything_vitl14.pth](https://huggingface.co/LiheYoung/Depth-Anything/blob/main/depth_anything_vitl14.pth), [LiheYoung/Depth-Anything/depth_anything_vitb14.pth](https://huggingface.co/LiheYoung/Depth-Anything/blob/main/depth_anything_vitb14.pth) or [LiheYoung/Depth-Anything/depth_anything_vits14.pth](https://huggingface.co/LiheYoung/Depth-Anything/blob/main/depth_anything_vits14.pth)
+* diffusion_edge: Either [hr16/Diffusion-Edge/diffusion_edge_indoor.pth](https://huggingface.co/hr16/Diffusion-Edge/blob/main/diffusion_edge_indoor.pth), [hr16/Diffusion-Edge/diffusion_edge_urban.pth](https://huggingface.co/hr16/Diffusion-Edge/blob/main/diffusion_edge_urban.pth) or [hr16/Diffusion-Edge/diffusion_edge_natrual.pth](https://huggingface.co/hr16/Diffusion-Edge/blob/main/diffusion_edge_natrual.pth)
+* unimatch: Either [hr16/Unimatch/gmflow-scale2-regrefine6-mixdata.pth](https://huggingface.co/hr16/Unimatch/blob/main/gmflow-scale2-regrefine6-mixdata.pth), [hr16/Unimatch/gmflow-scale2-mixdata.pth](https://huggingface.co/hr16/Unimatch/blob/main/gmflow-scale2-mixdata.pth) or [hr16/Unimatch/gmflow-scale1-mixdata.pth](https://huggingface.co/hr16/Unimatch/blob/main/gmflow-scale1-mixdata.pth)
 # 500 Stars 😄
 <a href="https://star-history.com/#Fannovel16/comfyui_controlnet_aux&Date">
   <picture>
