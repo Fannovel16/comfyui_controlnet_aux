@@ -247,7 +247,8 @@ Set `bbox_detector` and `pose_estimator` according to this picture. You can try 
 If onnxruntime is installed successfully and the checkpoint used endings with `.onnx`, it will replace default cv2 backend to take advantage of GPU. Note that if you are using NVidia card, this method currently can only works on CUDA 11.8 (ComfyUI_windows_portable_nvidia_cu118_or_cpu.7z) unless you compile onnxruntime yourself.
 
 1. Know your onnxruntime build:
-* * NVidia/AMD GPU: `onnxruntime-gpu`
+* * NVidia 11.x or bellow/AMD GPU: `onnxruntime-gpu`
+* * NVidia 12.x: `onnxruntime-gpu --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/`
 * * DirectML: `onnxruntime-directml`
 * * OpenVINO: `onnxruntime-openvino`
 
