@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from pathlib import Path
 import warnings
+from torch.hub import get_dir, download_url_to_file
 from huggingface_hub import hf_hub_download
 
 TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
@@ -217,6 +218,29 @@ def ade_palette():
             [71, 0, 255], [122, 0, 255], [0, 255, 184], [0, 92, 255],
             [184, 255, 0], [0, 133, 255], [255, 214, 0], [25, 194, 194],
             [102, 255, 0], [92, 0, 255]]
+
+def custom_torch_download(filename, cache_dir=annotator_ckpts_path):
+    local_dir = os.path.join(get_dir(), 'checkpoints')
+    model_path = os.path.join(local_dir, filename)
+
+    if not os.path.exists(model_path):
+        local_dir = os.path.join(cache_dir, "torch")
+        if not os.path.exists(local_dir):
+            os.mkdir(local_dir)
+
+        model_path = os.path.join(local_dir, filename)
+
+        if not os.path.exists(model_path):
+
+            model_url = "https://download.pytorch.org/models/"+filename
+            try:
+                download_url_to_file(url = model_url, dst = model_path)
+            except:
+                warnings.warn("ssl verify failed, try use http instead.")
+                model_url = "http://download.pytorch.org/models/"+filename
+                download_url_to_file(url = model_url, dst = model_path)
+
+    return model_path
 
 def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
     local_dir = os.path.join(cache_dir, pretrained_model_or_path)
