@@ -220,11 +220,12 @@ def ade_palette():
             [184, 255, 0], [0, 133, 255], [255, 214, 0], [25, 194, 194],
             [102, 255, 0], [92, 0, 255]]
 
+#https://stackoverflow.com/a/55542529
 def check_hash_from_torch_hub(file_path, filename):
     from hashlib import sha256
     h = sha256()
     basename, _ = filename.split('.')
-    _, orig_hash = basename.split('-')
+    _, ref_hash = basename.split('-')
     with open(file_path, 'rb') as file:
         while True:
             # Reading is buffered, so we can read smaller chunks.
@@ -234,7 +235,7 @@ def check_hash_from_torch_hub(file_path, filename):
             h.update(chunk)
 
     curr_hash = h.hexdigest()
-    return curr_hash[:len(orig_hash)] == orig_hash
+    return curr_hash[:len(ref_hash)] == ref_hash
 
 def custom_torch_download(filename, cache_dir=annotator_ckpts_path):
     local_dir = os.path.join(get_dir(), 'checkpoints')
