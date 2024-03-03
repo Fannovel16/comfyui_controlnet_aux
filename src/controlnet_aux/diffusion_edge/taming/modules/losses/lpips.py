@@ -7,13 +7,15 @@ from collections import namedtuple
 
 from .util import get_ckpt_path
 
+from controlnet_aux.util import custom_torch_download
+
 class LPIPS(nn.Module):
     # Learned perceptual metric
     def __init__(self, use_dropout=True):
         super().__init__()
         self.scaling_layer = ScalingLayer()
         self.chns = [64, 128, 256, 512, 512]  # vg16 features
-        self.net = vgg16(pretrained=True, requires_grad=False)
+        self.net = vgg16(pretrained=False, requires_grad=False)
         self.lin0 = NetLinLayer(self.chns[0], use_dropout=use_dropout)
         self.lin1 = NetLinLayer(self.chns[1], use_dropout=use_dropout)
         self.lin2 = NetLinLayer(self.chns[2], use_dropout=use_dropout)
@@ -73,9 +75,11 @@ class NetLinLayer(nn.Module):
 
 
 class vgg16(torch.nn.Module):
-    def __init__(self, requires_grad=False, pretrained=True):
+    def __init__(self, requires_grad=False, pretrained=False):
         super(vgg16, self).__init__()
-        vgg_pretrained_features = models.vgg16(pretrained=pretrained).features
+        vgg16_model = models.vgg16(pretrained=pretrained)
+        vgg16_model.load_state_dict(torch.load(custom_torch_download(filename="vgg16-397923af.pth")), strict=True)
+        vgg_pretrained_features = vgg16_model.features
         self.slice1 = torch.nn.Sequential()
         self.slice2 = torch.nn.Sequential()
         self.slice3 = torch.nn.Sequential()
