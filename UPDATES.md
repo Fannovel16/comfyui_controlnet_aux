@@ -34,3 +34,4 @@
 * Added TEED Soft-Edge Preprocessor
 * Added DiffusionEdge
 * Added Image Luminance and Image Intensity
+* Added Normal DSINE

@@ -129,8 +129,8 @@ def pad64(x):
     return int(np.ceil(float(x) / 64.0) * 64 - x)
 
 #https://github.com/Mikubill/sd-webui-controlnet/blob/main/scripts/processor.py#L17
-#Added upscale_method param
-def resize_image_with_pad(input_image, resolution, upscale_method = "", skip_hwc3=False):
+#Added upscale_method, mode params
+def resize_image_with_pad(input_image, resolution, upscale_method = "", skip_hwc3=False, mode='edge'):
     if skip_hwc3:
         img = input_image
     else:
@@ -141,7 +141,7 @@ def resize_image_with_pad(input_image, resolution, upscale_method = "", skip_hwc
     W_target = int(np.round(float(W_raw) * k))
     img = cv2.resize(img, (W_target, H_target), interpolation=get_upscale_method(upscale_method) if k > 1 else cv2.INTER_AREA)
     H_pad, W_pad = pad64(H_target), pad64(W_target)
-    img_padded = np.pad(img, [[0, H_pad], [0, W_pad], [0, 0]], mode='edge')
+    img_padded = np.pad(img, [[0, H_pad], [0, W_pad], [0, 0]], mode=mode)
 
     def remove_pad(x):
         return safer_memory(x[:H_target, :W_target, ...])
