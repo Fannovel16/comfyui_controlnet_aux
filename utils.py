@@ -8,7 +8,7 @@ from enum import Enum
 from .log import log
 import subprocess
 import threading
-import comfy
+import sys
 
 here = Path(__file__).parent.resolve()
 
@@ -61,18 +61,12 @@ def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):
         np_results = model(np_images, output_type="np", detect_resolution=detect_resolution, **kwargs)
         return torch.from_numpy(np_results.astype(np.float32) / 255.0)
 
-    pbar = comfy.utils.ProgressBar(tensor_image.shape[0])
-    out_tensor = None
-    for i, image in enumerate(tensor_image):
+    out_list = []
+    for image in tensor_image:
         np_image = np.asarray(image.cpu() * 255., dtype=np.uint8)
         np_result = model(np_image, output_type="np", detect_resolution=detect_resolution, **kwargs)
-        
-        out = torch.from_numpy(np_result.astype(np.float32) / 255.0)
-        if out_tensor is None:
-            out_tensor = torch.zeros(tensor_image.shape[0], *out.shape)
-        out_tensor[i] = out
-        pbar.update(1)
-    return out_tensor
+        out_list.append(torch.from_numpy(np_result.astype(np.float32) / 255.0))
+    return torch.stack(out_list, dim=0)
 
 def create_node_input_types(**extra_kwargs):
     return {
