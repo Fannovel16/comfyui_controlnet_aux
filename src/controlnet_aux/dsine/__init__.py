@@ -68,7 +68,8 @@ class DsineDetector:
         return self
 
 
-    def __call__(self, input_image, fov=60.0, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
+    def __call__(self, input_image, fov=60.0, iterations=5, detect_resolution=512, output_type="pil", upscale_method="INTER_CUBIC", **kwargs):
+        self.model.num_iter = iterations
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         orig_H, orig_W = input_image.shape[:2]
         l, r, t, b = get_pad(orig_H, orig_W)
