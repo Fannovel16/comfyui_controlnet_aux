@@ -220,21 +220,22 @@ def ade_palette():
             [184, 255, 0], [0, 133, 255], [255, 214, 0], [25, 194, 194],
             [102, 255, 0], [92, 0, 255]]
 
-#https://stackoverflow.com/a/55542529
+#https://stackoverflow.com/a/44873382
+#Assume that the minimum version of Python ppl use is 3.9
+def sha256sum(file_path):
+    import hashlib
+    h  = hashlib.sha256()
+    b  = bytearray(128*1024)
+    mv = memoryview(b)
+    with open(file_path, 'rb', buffering=0) as f:
+        while n := f.readinto(mv):
+            h.update(mv[:n])
+    return h.hexdigest()
+
 def check_hash_from_torch_hub(file_path, filename):
-    from hashlib import sha256
-    h = sha256()
     basename, _ = filename.split('.')
     _, ref_hash = basename.split('-')
-    with open(file_path, 'rb') as file:
-        while True:
-            # Reading is buffered, so we can read smaller chunks.
-            chunk = file.read(h.block_size)
-            if not chunk:
-                break
-            h.update(chunk)
-
-    curr_hash = h.hexdigest()
+    curr_hash = sha256sum(file_path)
     return curr_hash[:len(ref_hash)] == ref_hash
 
 def custom_torch_download(filename, cache_dir=annotator_ckpts_path):
