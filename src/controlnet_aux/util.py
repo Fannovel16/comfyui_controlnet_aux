@@ -9,6 +9,7 @@ import warnings
 from torch.hub import get_dir, download_url_to_file
 from huggingface_hub import hf_hub_download
 
+
 TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
@@ -219,6 +220,22 @@ def ade_palette():
             [184, 255, 0], [0, 133, 255], [255, 214, 0], [25, 194, 194],
             [102, 255, 0], [92, 0, 255]]
 
+def check_hash_from_torch_hub(file_path, filename):
+    from hashlib import sha256
+    h = sha256()
+    basename, _ = filename.split('.')
+    _, orig_hash = basename.split('-')
+    with open(file_path, 'rb') as file:
+        while True:
+            # Reading is buffered, so we can read smaller chunks.
+            chunk = file.read(h.block_size)
+            if not chunk:
+                break
+            h.update(chunk)
+
+    curr_hash = h.hexdigest()
+    return curr_hash[:len(orig_hash)] == orig_hash
+
 def custom_torch_download(filename, cache_dir=annotator_ckpts_path):
     local_dir = os.path.join(get_dir(), 'checkpoints')
     model_path = os.path.join(local_dir, filename)
@@ -231,15 +248,14 @@ def custom_torch_download(filename, cache_dir=annotator_ckpts_path):
         model_path = os.path.join(local_dir, filename)
 
         if not os.path.exists(model_path):
-
             model_url = "https://download.pytorch.org/models/"+filename
             try:
                 download_url_to_file(url = model_url, dst = model_path)
             except:
-                warnings.warn("ssl verify failed, try use http instead.")
-                model_url = "http://download.pytorch.org/models/"+filename
+                warnings.warn(f"SSL verify failed, try use HTTP instead. {filename}'s hash will be checked")
                 download_url_to_file(url = model_url, dst = model_path)
-
+                assert check_hash_from_torch_hub(model_path, filename), f"Hash check failed as file {filename} is corrupted"
+                print("Hash check passed")
     return model_path
 
 def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
