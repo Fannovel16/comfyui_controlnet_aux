@@ -9,6 +9,8 @@ from controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.efficientnet impo
 from controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.resnet import resnet101, ResNet101_Weights
 from controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.swin_transformer import swin_b, Swin_B_Weights
 from controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.vgg import vgg16, VGG16_Weights
+
+from controlnet_aux.util import custom_torch_download
 # from controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.wcc import fft
 ### Compared to unet4:
 # 1. add FFT-Conv on the mid feature.
@@ -697,7 +699,9 @@ class Unet(nn.Module):
             if cfg.get('without_pretrain', False):
                 self.init_conv_mask = swin_b()
             else:
-                self.init_conv_mask = swin_b(weights=Swin_B_Weights)
+                swin_b_model = swin_b(pretrained=False)
+                swin_b_model.load_state_dict(torch.load(custom_torch_download(filename="swin_b-68c6b09e.pth")), strict=False)
+                self.init_conv_mask = swin_b_model
         elif cfg.cond_net == 'vgg':
             f_condnet = 128
             if cfg.get('without_pretrain', False):

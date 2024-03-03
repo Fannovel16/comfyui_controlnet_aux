@@ -6,7 +6,9 @@ import numpy as np
 import torch
 from pathlib import Path
 import warnings
+from torch.hub import get_dir, download_url_to_file
 from huggingface_hub import hf_hub_download
+
 
 TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
 HF_MODEL_NAME = "lllyasviel/Annotators"
@@ -217,6 +219,46 @@ def ade_palette():
             [71, 0, 255], [122, 0, 255], [0, 255, 184], [0, 92, 255],
             [184, 255, 0], [0, 133, 255], [255, 214, 0], [25, 194, 194],
             [102, 255, 0], [92, 0, 255]]
+
+#https://stackoverflow.com/a/44873382
+#Assume that the minimum version of Python ppl use is 3.9
+def sha256sum(file_path):
+    import hashlib
+    h  = hashlib.sha256()
+    b  = bytearray(128*1024)
+    mv = memoryview(b)
+    with open(file_path, 'rb', buffering=0) as f:
+        while n := f.readinto(mv):
+            h.update(mv[:n])
+    return h.hexdigest()
+
+def check_hash_from_torch_hub(file_path, filename):
+    basename, _ = filename.split('.')
+    _, ref_hash = basename.split('-')
+    curr_hash = sha256sum(file_path)
+    return curr_hash[:len(ref_hash)] == ref_hash
+
+def custom_torch_download(filename, cache_dir=annotator_ckpts_path):
+    local_dir = os.path.join(get_dir(), 'checkpoints')
+    model_path = os.path.join(local_dir, filename)
+
+    if not os.path.exists(model_path):
+        local_dir = os.path.join(cache_dir, "torch")
+        if not os.path.exists(local_dir):
+            os.mkdir(local_dir)
+
+        model_path = os.path.join(local_dir, filename)
+
+        if not os.path.exists(model_path):
+            model_url = "https://download.pytorch.org/models/"+filename
+            try:
+                download_url_to_file(url = model_url, dst = model_path)
+            except:
+                warnings.warn(f"SSL verify failed, try use HTTP instead. {filename}'s hash will be checked")
+                download_url_to_file(url = model_url, dst = model_path)
+                assert check_hash_from_torch_hub(model_path, filename), f"Hash check failed as file {filename} is corrupted"
+                print("Hash check passed")
+    return model_path
 
 def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
     local_dir = os.path.join(cache_dir, pretrained_model_or_path)
