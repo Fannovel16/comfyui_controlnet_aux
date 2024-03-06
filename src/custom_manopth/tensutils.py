@@ -14,7 +14,7 @@ def th_posemap_axisang(pose_vectors):
 
 def th_with_zeros(tensor):
     batch_size = tensor.shape[0]
-    padding = tensor.new([0.0, 0.0, 0.0, 1.0])
+    padding = torch.tensor([0.0, 0.0, 0.0, 1.0], device = tensor.device, dtype = tensor.dtype)
     padding.requires_grad = False
 
     concat_list = [tensor, padding.view(1, 1, 4).repeat(batch_size, 1, 1)]
