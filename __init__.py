@@ -26,8 +26,8 @@ def load_nodes():
     node_display_name_mappings = {}
 
     for filename in (here / "node_wrappers").iterdir():
-        
         module_name = filename.stem
+        if module_name.startswith('.'): continue #Skip hidden files created by the OS (e.g. [.DS_Store](https://en.wikipedia.org/wiki/.DS_Store))
         try:
             module = importlib.import_module(
                 f".node_wrappers.{module_name}", package=__package__
