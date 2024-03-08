@@ -74,17 +74,21 @@ LAPA_COLORS = dict(
     inner_mouth="rgb(255, 204, 255)",
     lower_lip="rgb(255, 0, 102)"
 )
-#Based on https://www.researchgate.net/profile/Fabrizio-Falchi/publication/338048224/figure/fig1/AS:837860722741255@1576772971540/68-facial-landmarks.jpg
-#Note that programmers count from 0
+
+#One-based index
+def kps_idxs(start, end):
+    step = -1 if start > end else 1
+    return list(range(start-1, end+1-1, step))
+
+#Source: https://www.researchgate.net/profile/Fabrizio-Falchi/publication/338048224/figure/fig1/AS:837860722741255@1576772971540/68-facial-landmarks.jpg
 FACIAL_PART_RANGES = dict(
-    skin=(0, 26),
-    nose=(27, 35),
-    left_eye=(36, 41),
-    right_eye=(42, 47),
-    upper_lip=list(range(48, 54+1)) + list(range(64, 60+1, -1)),
-    inner_mouth=(60, 67),
-    lower_lip=list(range(60, 64+1)) + list(range(54, 48+1, -1)),
-    left_pupil=68, right_pupil=69
+    skin=kps_idxs(1, 17) + kps_idxs(27, 18),
+    nose=kps_idxs(28, 36),
+    left_eye=kps_idxs(37, 42),
+    right_eye=kps_idxs(43, 48),
+    upper_lip=kps_idxs(49, 55) + kps_idxs(65, 61),
+    lower_lip=kps_idxs(61, 68),
+    inner_mouth=kps_idxs(61, 65) + kps_idxs(55, 49)
 )
 
 
@@ -114,21 +118,12 @@ class FacialPartColoringFromPoseKps:
             facial_kps = rearrange(np.array(person["face_keypoints_2d"]), "(n c) -> n c", n=n, c=3)[:, :2] * (width, height)
             facial_kps = facial_kps.astype(np.int32)
             part_color = ImageColor.getrgb(facial_part_colors[part_name])[:3]
-            if mode == "circle":
-                start, end = FACIAL_PART_RANGES[part_name]
-                part_contours = facial_kps[start:end+1]
+            part_contours = facial_kps[FACIAL_PART_RANGES[part_name], :]
+            if mode == "point":
                 for pt in part_contours:
                     cv2.circle(canvas, pt, radius=2, color=part_color, thickness=-1)
-                continue
-
-            if part_name not in ["upper_lip", "inner_mouth", "lower_lip"]:
-                start, end = FACIAL_PART_RANGES[part_name]
-                part_contours = facial_kps[start:end+1]
-                if part_name == "skin":
-                    part_contours[17:] = part_contours[17:][::-1]
             else:
-                part_contours = facial_kps[FACIAL_PART_RANGES[part_name], :]
-            cv2.fillPoly(canvas, pts=[part_contours], color=part_color)
+                cv2.fillPoly(canvas, pts=[part_contours], color=part_color)
         return canvas
 
 NODE_CLASS_MAPPINGS = {
