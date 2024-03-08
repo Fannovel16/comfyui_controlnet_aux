@@ -263,6 +263,8 @@ def custom_torch_download(filename, cache_dir=annotator_ckpts_path):
     return model_path
 
 def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
+    if use_symlinks:
+        cache_dir = annotator_ckpts_path
     local_dir = os.path.join(cache_dir, pretrained_model_or_path)
     model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
     
