@@ -8,6 +8,7 @@ from pathlib import Path
 import warnings
 from torch.hub import get_dir, download_url_to_file
 from huggingface_hub import hf_hub_download
+import tempfile
 
 
 TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
@@ -21,6 +22,7 @@ UNIMATCH_MODEL_NAME = "hr16/Unimatch"
 DEPTH_ANYTHING_MODEL_NAME = "LiheYoung/Depth-Anything" #HF Space
 DIFFUSION_EDGE_MODEL_NAME = "hr16/Diffusion-Edge"
 
+temp_dir = tempfile.gettempdir()
 annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
 USE_SYMLINKS = False
 
@@ -260,7 +262,7 @@ def custom_torch_download(filename, cache_dir=annotator_ckpts_path):
                 print("Hash check passed")
     return model_path
 
-def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
+def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
     local_dir = os.path.join(cache_dir, pretrained_model_or_path)
     model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
     
@@ -310,4 +312,5 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_c
                 shutil.rmtree(cache_dir_d)
             except Exception as e :
                 print(e)
+        
     return model_path
