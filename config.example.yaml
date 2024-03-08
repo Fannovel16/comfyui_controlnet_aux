@@ -1,7 +1,7 @@
 # this is an example for config.yaml file, you can rename it to config.yaml if you want to use it
 # ###############################################################################################
 # This path is for custom pressesor models base folder. default is "./ckpts"
-# you can also use absolute paths like: "/root/ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts" or "D:\\comfyui\\custom_nodes\\comfyui_controlnet_aux\\ckpts"
+# you can also use absolute paths like: "/root/ComfyUI/custom_nodes/comfyui_controlnet_aux/ckpts" or "D:\\ComfyUI\\custom_nodes\\comfyui_controlnet_aux\\ckpts"
 annotator_ckpts_path: "./ckpts"
 # ###############################################################################################
 # This path is for downloading temporary files.
