@@ -9,6 +9,7 @@ from .log import log
 import subprocess
 import threading
 import comfy
+import tempfile
 
 here = Path(__file__).parent.resolve()
 
@@ -18,12 +19,22 @@ if os.path.exists(config_path):
     config = yaml.load(open(config_path, "r"), Loader=yaml.FullLoader)
 
     annotator_ckpts_path = str(Path(here, config["annotator_ckpts_path"]))
+    TEMP_DIR = config["custom_temp_path"]
     USE_SYMLINKS = config["USE_SYMLINKS"]
     ORT_PROVIDERS = config["EP_list"]
 
     if USE_SYMLINKS is None or type(USE_SYMLINKS) != bool:
         log.error("USE_SYMLINKS must be a boolean. Using False by default.")
         USE_SYMLINKS = False
+
+    if TEMP_DIR is None:
+        TEMP_DIR = tempfile.gettempdir()
+    elif not os.path.isdir(TEMP_DIR):
+        try:
+            os.makedirs(TEMP_DIR)
+        except:
+            log.error("Failed to create custom temp directory. Using default.")
+            TEMP_DIR = tempfile.gettempdir()
 
     if not os.path.isdir(annotator_ckpts_path):
         try:
@@ -33,11 +44,13 @@ if os.path.exists(config_path):
             annotator_ckpts_path = str(Path(here, "./ckpts"))
 else:
     annotator_ckpts_path = str(Path(here, "./ckpts"))
+    TEMP_DIR = tempfile.gettempdir()
     USE_SYMLINKS = False
     ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider", "CoreMLExecutionProvider"]
 
-os.environ['AUX_USE_SYMLINKS'] = str(USE_SYMLINKS)
 os.environ['AUX_ANNOTATOR_CKPTS_PATH'] = annotator_ckpts_path
+os.environ['AUX_TEMP_DIR'] = str(TEMP_DIR)
+os.environ['AUX_USE_SYMLINKS'] = str(USE_SYMLINKS)
 os.environ['AUX_ORT_PROVIDERS'] = str(",".join(ORT_PROVIDERS))
 
 log.info(f"Using ckpts path: {annotator_ckpts_path}")
