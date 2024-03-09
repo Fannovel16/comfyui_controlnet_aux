@@ -309,9 +309,9 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, c
             except:
                 print("Maybe not able to create symlink. Disable using symlinks.")
                 use_symlinks = False
-                cache_dir_d = os.path.join(cache_dir, "aux", pretrained_model_or_path)
+                cache_dir_d = os.path.join(cache_dir, "ckpts", pretrained_model_or_path)
         else:
-            cache_dir_d = os.path.join(cache_dir, "aux", pretrained_model_or_path)
+            cache_dir_d = os.path.join(cache_dir, "ckpts", pretrained_model_or_path)
 
         model_path = hf_hub_download(repo_id=pretrained_model_or_path,
             cache_dir=cache_dir_d,
@@ -326,7 +326,7 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, c
         if not use_symlinks:
             try:
                 import shutil
-                shutil.rmtree(cache_dir_d)
+                shutil.rmtree(os.path.join(cache_dir, "ckpts"))
             except Exception as e :
                 print(e)
 
