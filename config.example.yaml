@@ -5,8 +5,8 @@
 annotator_ckpts_path: "./ckpts"
 # ###############################################################################################
 # This path is for downloading temporary files.
-# You SHOULD use absolute path for this like"D:\\temp", DO NOT use relative paths. None for default.
-custom_temp_path: None
+# You SHOULD use absolute path for this like"D:\\temp", DO NOT use relative paths. Empty for default.
+custom_temp_path: 
 # ###############################################################################################
 # if you already have downloaded ckpts via huggingface hub into default cache path like: ~/.cache/huggingface/hub, you can set this True to use symlinks to save space
 USE_SYMLINKS: False
