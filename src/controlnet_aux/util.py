@@ -254,6 +254,7 @@ def custom_torch_download(filename, ckpts_dir=annotator_ckpts_path):
     model_path = os.path.join(local_dir, filename)
 
     if not os.path.exists(model_path):
+        print(f"Failed to find {model_path}.\n Downloading from pytorch.org")
         local_dir = os.path.join(ckpts_dir, "torch")
         if not os.path.exists(local_dir):
             os.mkdir(local_dir)
@@ -275,8 +276,6 @@ def custom_torch_download(filename, ckpts_dir=annotator_ckpts_path):
 
 def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, ckpts_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
     
-    print(f"cacher folder is {cache_dir}, you can set it by custom_tmp_path in config.yaml")
-
     local_dir = os.path.join(ckpts_dir, pretrained_model_or_path)
     model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
 
@@ -285,6 +284,7 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, c
     
     if not os.path.exists(model_path):
         print(f"Failed to find {model_path}.\n Downloading from huggingface.co")
+        print(f"cacher folder is {cache_dir}, you can change it by custom_tmp_path in config.yaml")
         if use_symlinks:
             cache_dir_d = os.getenv("HUGGINGFACE_HUB_CACHE")
             if cache_dir_d is None:
