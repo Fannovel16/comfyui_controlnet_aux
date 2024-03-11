@@ -15,7 +15,6 @@ from timeit import default_timer
 import os
 from controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype, get_model_type, get_ort_providers, is_model_torchscript
 import torch
-import torch.utils.benchmark.utils.timer as torch_timer
 
 class Wholebody:
     def __init__(self, det_model_path: Optional[str] = None, pose_model_path: Optional[str] = None, torchscript_device="cuda"):
@@ -78,7 +77,7 @@ class Wholebody:
             self.pose_input_size, _ = guess_onnx_input_shape_dtype(self.pose_filename)
 
     def __call__(self, oriImg) -> Optional[np.ndarray]:
-        
+        import torch.utils.benchmark.utils.timer as torch_timer
         if is_model_torchscript(self.det):
             det_start = torch_timer.timer()
             det_result = inference_jit_yolox(self.det, oriImg, detect_classes=[0])
