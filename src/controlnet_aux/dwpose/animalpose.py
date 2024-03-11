@@ -14,7 +14,6 @@ from timeit import default_timer
 from controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype, get_ort_providers, get_model_type, is_model_torchscript
 import json
 import torch
-import torch.utils.benchmark.utils.timer as torch_timer
 
 def drawBetweenKeypoints(pose_img, keypoints, indexes, color, scaleFactor):
     ind0 = indexes[0] - 1
@@ -194,6 +193,7 @@ class AnimalPoseImage:
             self.pose_input_size, _ = guess_onnx_input_shape_dtype(self.pose_filename)
     
     def __call__(self, oriImg):
+        import torch.utils.benchmark.utils.timer as torch_timer
         detect_classes = list(range(14, 23 + 1)) #https://github.com/ultralytics/ultralytics/blob/main/ultralytics/cfg/datasets/coco.yaml
 
         if is_model_torchscript(self.det):
