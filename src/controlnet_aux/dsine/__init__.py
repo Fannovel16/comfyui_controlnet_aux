@@ -10,7 +10,7 @@ from einops import rearrange
 from PIL import Image
 
 from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, DIFFUSION_EDGE_MODEL_NAME
-from .models.dsine import DSINE
+from .models.dsine_arch import DSINE
 from controlnet_aux.dsine.utils.utils import get_intrins_from_fov
 
 # load model
