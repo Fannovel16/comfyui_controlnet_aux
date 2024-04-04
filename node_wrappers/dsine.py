@@ -5,7 +5,7 @@ class DSINE_Normal_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return create_node_input_types(
-            fov=("FLOAT", {"min": 0.0, "max": 365.0, "step": 1.0, "default": 60.0}),
+            fov=("FLOAT", {"min": 0.0, "max": 365.0, "step": 0.05, "default": 60.0}),
             iterations=("INT", {"min": 1, "max": 20, "step": 1, "default": 5})
         )
 
