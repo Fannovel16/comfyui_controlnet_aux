@@ -1,14 +1,15 @@
 import os
 import random
+import tempfile
+import warnings
+from contextlib import suppress
+from pathlib import Path
 
 import cv2
 import numpy as np
 import torch
-from pathlib import Path
-import warnings
+from huggingface_hub import constants, hf_hub_download
 from torch.hub import get_dir, download_url_to_file
-from huggingface_hub import hf_hub_download
-import tempfile
 
 
 TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
@@ -275,18 +276,18 @@ def custom_torch_download(filename, ckpts_dir=annotator_ckpts_path):
     return model_path
 
 def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, ckpts_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
-    
+
     local_dir = os.path.join(ckpts_dir, pretrained_model_or_path)
     model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
 
     if len(str(model_path)) >= 255:
         warnings.warn(f"Path {model_path} is too long, \n please change annotator_ckpts_path in config.yaml")
-    
+
     if not os.path.exists(model_path):
         print(f"Failed to find {model_path}.\n Downloading from huggingface.co")
         print(f"cacher folder is {cache_dir}, you can change it by custom_tmp_path in config.yaml")
         if use_symlinks:
-            cache_dir_d = os.getenv("HUGGINGFACE_HUB_CACHE")
+            cache_dir_d = constants.HF_HUB_CACHE    # use huggingface newer env variables `HF_HUB_CACHE`
             if cache_dir_d is None:
                 import platform
                 if platform.system() == "Windows":
@@ -295,12 +296,11 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, c
                     cache_dir_d = os.path.join(os.getenv("HOME"), ".cache", "huggingface", "hub")
             try:
                 # test_link
-                if not os.path.exists(cache_dir_d):
-                    os.makedirs(cache_dir_d)
-                open(os.path.join(cache_dir_d, f"linktest_{filename}.txt"), "w")
-                os.link(os.path.join(cache_dir_d, f"linktest_{filename}.txt"), os.path.join(ckpts_dir, f"linktest_{filename}.txt"))
-                os.remove(os.path.join(ckpts_dir, f"linktest_{filename}.txt"))
-                os.remove(os.path.join(cache_dir_d, f"linktest_{filename}.txt"))
+                Path(cache_dir_d).mkdir(parents=True, exist_ok=True)
+                Path(ckpts_dir).mkdir(parents=True, exist_ok=True)
+                (Path(cache_dir_d) / f"linktest_{filename}.txt").touch()
+                # symlink instead of link avoid `invalid cross-device link` error.
+                os.symlink(os.path.join(cache_dir_d, f"linktest_{filename}.txt"), os.path.join(ckpts_dir, f"linktest_{filename}.txt"))
                 print("Using symlinks to download models. \n",\
                       "Make sure you have enough space on your cache folder. \n",\
                       "And do not purge the cache folder after downloading.\n",\
@@ -310,6 +310,10 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, c
                 print("Maybe not able to create symlink. Disable using symlinks.")
                 use_symlinks = False
                 cache_dir_d = os.path.join(cache_dir, "ckpts", pretrained_model_or_path)
+            finally:    # always remove test link files
+                with suppress(FileNotFoundError):
+                    os.remove(os.path.join(ckpts_dir, f"linktest_{filename}.txt"))
+                    os.remove(os.path.join(cache_dir_d, f"linktest_{filename}.txt"))
         else:
             cache_dir_d = os.path.join(cache_dir, "ckpts", pretrained_model_or_path)
 
