@@ -65,17 +65,21 @@ AUX_NODE_MAPPINGS, AUX_DISPLAY_NAME_MAPPINGS = load_nodes()
 AIO_NOT_SUPPORTED = ["InpaintPreprocessor"]
 #For nodes not mapping image to image
 
+def preprocessor_options():
+    auxs = list(AUX_NODE_MAPPINGS.keys())
+    auxs.insert(0, "none")
+    for name in AIO_NOT_SUPPORTED:
+        if name in auxs:
+            auxs.remove(name)
+    return auxs
+
+
+PREPROCESSOR_OPTIONS = preprocessor_options()
+
 class AIO_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        auxs = list(AUX_NODE_MAPPINGS.keys())
-        auxs.insert(0, "none")
-        for name in AIO_NOT_SUPPORTED:
-            if name in auxs: auxs.remove(name)
-        
-        return create_node_input_types(
-            preprocessor=(auxs, {"default": "none"})
-        )
+        return create_node_input_types(preprocessor=(PREPROCESSOR_OPTIONS, {"default": "none"}))
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
@@ -113,14 +117,35 @@ class AIO_Preprocessor:
             return getattr(aux_class(), aux_class.FUNCTION)(**params)
 
 
+class ControlNetPreprocessorSelector:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "preprocessor": (PREPROCESSOR_OPTIONS,),
+            }
+        }
+
+    RETURN_TYPES = (PREPROCESSOR_OPTIONS,)
+    RETURN_NAMES = ("preprocessor",)
+    FUNCTION = "get_preprocessor"
+
+    CATEGORY = "ControlNet Preprocessors"
+
+    def get_preprocessor(self, preprocessor: str):
+        return (preprocessor,)
+
+
 NODE_CLASS_MAPPINGS = {
     **AUX_NODE_MAPPINGS,
     "AIO_Preprocessor": AIO_Preprocessor,
-    **HIE_NODE_CLASS_MAPPINGS
+    "ControlNetPreprocessorSelector": ControlNetPreprocessorSelector,
+    **HIE_NODE_CLASS_MAPPINGS,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     **AUX_DISPLAY_NAME_MAPPINGS,
     "AIO_Preprocessor": "AIO Aux Preprocessor",
-    **HIE_NODE_DISPLAY_NAME_MAPPINGS
+    "ControlNetPreprocessorSelector": "Preprocessor Selector",
+    **HIE_NODE_DISPLAY_NAME_MAPPINGS,
 }
