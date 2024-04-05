@@ -91,6 +91,15 @@ FACIAL_PART_RANGES = dict(
     inner_mouth=kps_idxs(61, 65) + kps_idxs(55, 49)
 )
 
+def is_normalized(keypoints) -> bool:
+    point_normalized = [
+        0 <= np.abs(k[0]) <= 1 and 0 <= np.abs(k[1]) <= 1 
+        for k in keypoints 
+        if k is not None
+    ]
+    if not point_normalized:
+        return False
+    return np.all(point_normalized)
 
 class FacialPartColoringFromPoseKps:
     @classmethod
@@ -115,7 +124,9 @@ class FacialPartColoringFromPoseKps:
         canvas = np.zeros((height, width, 3), dtype=np.uint8)
         for person, part_name in itertools.product(pose_frame["people"], FACIAL_PARTS):
             n = len(person["face_keypoints_2d"]) // 3
-            facial_kps = rearrange(np.array(person["face_keypoints_2d"]), "(n c) -> n c", n=n, c=3)[:, :2] * (width, height)
+            facial_kps = rearrange(np.array(person["face_keypoints_2d"]), "(n c) -> n c", n=n, c=3)[:, :2]
+            if is_normalized(facial_kps):
+                facial_kps *= (width, height)
             facial_kps = facial_kps.astype(np.int32)
             part_color = ImageColor.getrgb(facial_part_colors[part_name])[:3]
             part_contours = facial_kps[FACIAL_PART_RANGES[part_name], :]
