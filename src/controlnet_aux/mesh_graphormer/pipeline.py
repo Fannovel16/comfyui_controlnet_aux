@@ -61,7 +61,7 @@ else:
     true_hand_category = {"Right": "left", "Left": "right"}
 
 class MeshGraphormerMediapipe(Preprocessor):
-    def __init__(self, args=args) -> None:
+    def __init__(self, args=args, detect_thr=0.6, presence_thr=0.6) -> None:
         #global logger
         # Setup CUDA, GPU & distributed training
         args.num_gpus = int(os.environ['WORLD_SIZE']) if 'WORLD_SIZE' in os.environ else 1
@@ -195,8 +195,8 @@ class MeshGraphormerMediapipe(Preprocessor):
             model_data = file.read()
         base_options = python.BaseOptions(model_asset_buffer=model_data)
         options = vision.HandLandmarkerOptions(base_options=base_options,
-                                            min_hand_detection_confidence=0.6,
-                                            min_hand_presence_confidence=0.6,
+                                            min_hand_detection_confidence=detect_thr,
+                                            min_hand_presence_confidence=presence_thr,
                                             min_tracking_confidence=0.6,
                                             num_hands=2)
 

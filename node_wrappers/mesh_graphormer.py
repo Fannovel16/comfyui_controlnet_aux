@@ -47,7 +47,9 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
             {
                 "mask_type": (["based_on_depth", "tight_bboxes", "original"], {"default": "based_on_depth"}),
                 "mask_expand": ("INT", {"default": 5, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
-                "rand_seed": ("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff})
+                "rand_seed": ("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff}),
+                "detect_thr": ("FLOAT", {"default": 0.6, "min": 0, "max": 1, "step": 0.01}),
+                "presence_thr": ("FLOAT", {"default": 0.6, "min": 0, "max": 1, "step": 0.01}),
             }
         )
         return types
@@ -58,10 +60,10 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
-    def execute(self, image, mask_bbox_padding=30, mask_type="based_on_depth", mask_expand=5, resolution=512, rand_seed=88, **kwargs):
+    def execute(self, image, mask_bbox_padding=30, mask_type="based_on_depth", mask_expand=5, resolution=512, rand_seed=88, detect_thr=0.6, presence_thr=0.6, **kwargs):
         install_deps()
         from controlnet_aux.mesh_graphormer import MeshGraphormerDetector
-        model = MeshGraphormerDetector.from_pretrained().to(model_management.get_torch_device())
+        model = MeshGraphormerDetector.from_pretrained(detect_thr=detect_thr, presence_thr=presence_thr).to(model_management.get_torch_device())
         
         depth_map_list = []
         mask_list = []
