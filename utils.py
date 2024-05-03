@@ -57,7 +57,9 @@ log.info(f"Using ckpts path: {annotator_ckpts_path}")
 log.info(f"Using symlinks: {USE_SYMLINKS}")
 log.info(f"Using ort providers: {ORT_PROVIDERS}")
 
-MAX_RESOLUTION=2048 #Who the hell feed 4k images to ControlNet?
+# Sync with theoritical limit from Comfy base
+# https://github.com/comfyanonymous/ComfyUI/blob/eecd69b53a896343775bcb02a4f8349e7442ffd1/nodes.py#L45
+MAX_RESOLUTION=16384
 
 def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):
     if "detect_resolution" in kwargs:
