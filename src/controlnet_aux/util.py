@@ -148,6 +148,8 @@ def resize_image_with_pad(input_image, resolution, upscale_method = "", skip_hwc
     else:
         img = HWC3(input_image)
     H_raw, W_raw, _ = img.shape
+    if resolution == 0:
+        return img, lambda x: x
     k = float(resolution) / float(min(H_raw, W_raw))
     H_target = int(np.round(float(H_raw) * k))
     W_target = int(np.round(float(W_raw) * k))
