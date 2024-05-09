@@ -35,3 +35,4 @@
 * Added DiffusionEdge
 * Added Image Luminance and Image Intensity
 * Added Normal DSINE
+* Added TTPlanet Tile (09/05/2024, DD/MM/YYYY)

@@ -4,7 +4,6 @@ import numpy as np
 from PIL import Image
 from controlnet_aux.util import get_upscale_method, common_input_validate, HWC3
 
-
 class TileDetector:
     def __call__(self, input_image=None, pyrUp_iters=3, output_type=None, upscale_method="INTER_AREA", **kwargs):
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
@@ -21,4 +20,67 @@ class TileDetector:
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
 
+        return detected_map
+
+
+# Source: https://huggingface.co/TTPlanet/TTPLanet_SDXL_Controlnet_Tile_Realistic/blob/main/TTP_tile_preprocessor_v5.py
+
+def apply_gaussian_blur(image_np, ksize=5, sigmaX=1.0):
+    if ksize % 2 == 0:
+        ksize += 1  # ksize must be odd
+    blurred_image = cv2.GaussianBlur(image_np, (ksize, ksize), sigmaX=sigmaX)
+    return blurred_image
+
+def apply_guided_filter(image_np, radius, eps):
+    # Convert image to float32 for the guided filter
+    image_np_float = np.float32(image_np) / 255.0
+    # Apply the guided filter
+    filtered_image = cv2.ximgproc.guidedFilter(image_np_float, image_np_float, radius, eps)
+    # Scale back to uint8
+    filtered_image = np.clip(filtered_image * 255, 0, 255).astype(np.uint8)
+    return filtered_image
+
+class TTPlanet_Tile_Detector_GF:
+    def __call__(self, input_image, scale_factor, blur_strength, radius, eps, output_type=None, **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        img_np = input_image[:, :, ::-1] # RGB to BGR
+        
+        # Apply Gaussian blur
+        img_np = apply_gaussian_blur(img_np, ksize=int(blur_strength), sigmaX=blur_strength / 2)            
+
+        # Apply Guided Filter
+        img_np = apply_guided_filter(img_np, radius, eps)
+
+        # Resize image
+        height, width = img_np.shape[:2]
+        new_width = int(width / scale_factor)
+        new_height = int(height / scale_factor)
+        resized_down = cv2.resize(img_np, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        resized_img = cv2.resize(resized_down, (width, height), interpolation=cv2.INTER_CUBIC)
+        detected_map = HWC3(resized_img[:, :, ::-1]) # BGR to RGB
+        
+        if output_type == "pil":
+            detected_map = Image.fromarray(detected_map)
+        
+        return detected_map
+
+class TTPLanet_Tile_Detector_Simple:
+    def __call__(self, input_image, scale_factor, blur_strength, output_type=None, **kwargs):
+        input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        img_np = input_image[:, :, ::-1] # RGB to BGR
+        
+        # Resize image first if you want blur to apply after resizing
+        height, width = img_np.shape[:2]
+        new_width = int(width / scale_factor)
+        new_height = int(height / scale_factor)
+        resized_down = cv2.resize(img_np, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        resized_img = cv2.resize(resized_down, (width, height), interpolation=cv2.INTER_LANCZOS4)
+    
+        # Apply Gaussian blur after resizing
+        img_np = apply_gaussian_blur(resized_img, ksize=int(blur_strength), sigmaX=blur_strength / 2)
+        detected_map = HWC3(img_np[:, :, ::-1]) # BGR to RGB
+        
+        if output_type == "pil":
+            detected_map = Image.fromarray(detected_map)
+        
         return detected_map
