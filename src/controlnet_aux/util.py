@@ -10,6 +10,7 @@ import numpy as np
 import torch
 from huggingface_hub import constants, hf_hub_download
 from torch.hub import get_dir, download_url_to_file
+from ast import literal_eval
 
 
 TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
@@ -34,7 +35,7 @@ except:
     pass
 
 try:
-    USE_SYMLINKS = eval(os.environ['AUX_USE_SYMLINKS'])
+    USE_SYMLINKS = literal_eval(os.environ['AUX_USE_SYMLINKS'])
 except:
     warnings.warn("USE_SYMLINKS not set successfully. Using default value: False to download models.")
     pass
