@@ -58,7 +58,7 @@ class TTPlanet_TileSimple_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/tile"
 
-    def execute(self, image, scale_factor, blur_strength, radius, eps, **kwargs):
+    def execute(self, image, scale_factor, blur_strength):
         from controlnet_aux.tile import TTPLanet_Tile_Detector_Simple
 
         return (common_annotator_call(TTPLanet_Tile_Detector_Simple(), image, scale_factor=scale_factor, blur_strength=blur_strength),)
@@ -72,6 +72,6 @@ NODE_CLASS_MAPPINGS = {
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TilePreprocessor": "Tile",
-    "TTPlanet_TileGF_Preprocessor": "TTPlanet Tile GF",
+    "TTPlanet_TileGF_Preprocessor": "TTPlanet Tile GuidedFilter",
     "TTPlanet_TileSimple_Preprocessor": "TTPlanet Tile Simple"
 }

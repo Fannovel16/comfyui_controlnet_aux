@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from controlnet_aux.util import get_upscale_method, common_input_validate, HWC3
+from .guided_filter import FastGuidedFilter
 
 class TileDetector:
     def __call__(self, input_image=None, pyrUp_iters=3, output_type=None, upscale_method="INTER_AREA", **kwargs):
@@ -31,14 +32,9 @@ def apply_gaussian_blur(image_np, ksize=5, sigmaX=1.0):
     blurred_image = cv2.GaussianBlur(image_np, (ksize, ksize), sigmaX=sigmaX)
     return blurred_image
 
-def apply_guided_filter(image_np, radius, eps):
-    # Convert image to float32 for the guided filter
-    image_np_float = np.float32(image_np) / 255.0
-    # Apply the guided filter
-    filtered_image = cv2.ximgproc.guidedFilter(image_np_float, image_np_float, radius, eps)
-    # Scale back to uint8
-    filtered_image = np.clip(filtered_image * 255, 0, 255).astype(np.uint8)
-    return filtered_image
+def apply_guided_filter(image_np, radius, eps, scale):
+    filter = FastGuidedFilter(image_np, radius, eps, scale)
+    return filter.filter(image_np)
 
 class TTPlanet_Tile_Detector_GF:
     def __call__(self, input_image, scale_factor, blur_strength, radius, eps, output_type=None, **kwargs):
@@ -49,7 +45,7 @@ class TTPlanet_Tile_Detector_GF:
         img_np = apply_gaussian_blur(img_np, ksize=int(blur_strength), sigmaX=blur_strength / 2)            
 
         # Apply Guided Filter
-        img_np = apply_guided_filter(img_np, radius, eps)
+        img_np = apply_guided_filter(img_np, radius, eps, scale_factor)
 
         # Resize image
         height, width = img_np.shape[:2]
