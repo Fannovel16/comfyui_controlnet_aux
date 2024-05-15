@@ -6,7 +6,6 @@ import cv2
 from PIL import ImageColor
 from einops import rearrange
 import torch
-from scipy.special import comb
 import itertools
 
 """
@@ -137,11 +136,139 @@ class FacialPartColoringFromPoseKps:
                 cv2.fillPoly(canvas, pts=[part_contours], color=part_color)
         return canvas
 
+# https://raw.githubusercontent.com/CMU-Perceptual-Computing-Lab/openpose/master/.github/media/keypoints_pose_18.png
+BODY_PART_INDEXES = {
+    "Head": (16, 14, 0, 15, 17),
+    "Neck": (0, 1),
+    "Shoulder": (2, 5),
+    "Torso": (2, 5, 8, 11),
+    "RArm": (2, 3),
+    "RForearm": (3, 4),
+    "LArm": (5, 6),
+    "LForearm": (6, 7),
+    "RThigh": (8, 9),
+    "RLeg": (9, 10),
+    "LThigh": (11, 12),
+    "LLeg": (12, 13)
+}
+BODY_PART_DEFAULT_W_H = {
+    "Head": "256, 256",
+    "Neck": "100, 100",
+    "Shoulder": '',
+    "Torso": "350, 450",
+    "RArm": "128, 256",
+    "RForearm": "128, 256",
+    "LArm": "128, 256",
+    "LForearm": "128, 256",
+    "RThigh": "128, 256",
+    "RLeg": "128, 256",
+    "LThigh": "128, 256",
+    "LLeg": "128, 256"
+}
+
+class SinglePersonProcess:
+    @classmethod 
+    def sort_and_get_max_people(s, pose_kps):
+        for idx in range(len(pose_kps)):
+            pose_kps[idx]["people"] = sorted(pose_kps[idx]["people"], key=lambda person:person["pose_keypoints_2d"][0])
+        return pose_kps, max(len(frame["people"]) for frame in pose_kps)
+    
+    def __init__(self, pose_kps, person_idx=0) -> None:
+        self.width, self.height = pose_kps[0]["canvas_width"], pose_kps[0]["canvas_height"]
+        self.poses = [
+            self.normalize(pose_frame["people"][person_idx]["pose_keypoints_2d"])
+            if person_idx < len(pose_frame["people"]) 
+            else None
+            for pose_frame in pose_kps
+        ]
+    
+    def normalize(self, pose_kps_2d):
+        n = len(pose_kps_2d) // 3
+        pose_kps_2d = rearrange(np.array(pose_kps_2d), "(n c) -> n c", n=n, c=3)
+        pose_kps_2d[np.argwhere(pose_kps_2d[:,2]==0), :] = np.iinfo(np.int32).max // 2 #Safe large value
+        pose_kps_2d = pose_kps_2d[:, :2]
+        if is_normalized(pose_kps_2d):
+            pose_kps_2d *= (self.width, self.height)
+        return pose_kps_2d
+    
+    def get_xyxy_bboxes(self, part_name, bbox_size=(128, 256)):
+        width, height = bbox_size
+        xyxy_bboxes = {}
+        for idx, pose in enumerate(self.poses):
+            if pose is None:
+                xyxy_bboxes[idx] = (np.iinfo(np.int32).max // 2,) * 4
+                continue
+            pts = pose[BODY_PART_INDEXES[part_name], :]
+
+            #top_left = np.min(pts[:,0]), np.min(pts[:,1])
+            #bottom_right = np.max(pts[:,0]), np.max(pts[:,1])
+            #pad_width = np.maximum(width - (bottom_right[0]-top_left[0]), 0) / 2
+            #pad_height = np.maximum(height - (bottom_right[1]-top_left[1]), 0) / 2
+            #xyxy_bboxes.append((
+            #    top_left[0] - pad_width, top_left[1] - pad_height,
+            #    bottom_right[0] + pad_width, bottom_right[1] + pad_height,
+            #))
+
+            x_mid, y_mid = np.mean(pts[:, 0]), np.mean(pts[:, 1])
+            xyxy_bboxes[idx] = (
+                x_mid - width/2, y_mid - height/2,
+                x_mid + width/2, y_mid + height/2 
+            )
+        return xyxy_bboxes
+
+class UpperBodyTrackingFromPoseKps:
+    PART_NAMES = ["Head", "Neck", "Shoulder", "Torso", "RArm", "RForearm", "LArm", "LForearm"]
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "pose_kps": ("POSE_KEYPOINT",),
+                "id_include": ("STRING", {"default": '', "multiline": False}),
+                **{part_name + "_width_height": ("STRING", {"default": BODY_PART_DEFAULT_W_H[part_name], "multiline": False}) for part_name in s.PART_NAMES}
+            }
+        }
+
+    RETURN_TYPES = ("TRACKING", "STRING")
+    RETURN_NAMES = ("tracking", "prompt")
+    FUNCTION = "convert"
+    CATEGORY = "ControlNet Preprocessors/Pose Keypoint Postprocess"
+
+    def convert(self, pose_kps, id_include, **parts_width_height):
+        parts_width_height = {part_name.replace("_width_height", ''): value for part_name, value in parts_width_height.items()}
+        enabled_part_names = [part_name for part_name in self.PART_NAMES if len(parts_width_height[part_name].strip())]
+        tracked = {part_name: {} for part_name in enabled_part_names}
+        id_include = id_include.strip()
+        id_include = list(map(int, id_include.split(','))) if len(id_include) else []
+        prompt_string = ''
+        pose_kps, max_people = SinglePersonProcess.sort_and_get_max_people(pose_kps)
+
+        for person_idx in range(max_people):
+            if len(id_include) and person_idx not in id_include:
+                continue
+            processor = SinglePersonProcess(pose_kps, person_idx)
+            for part_name in enabled_part_names:
+                bbox_size = tuple(map(int, parts_width_height[part_name].split(',')))
+                part_bboxes = processor.get_xyxy_bboxes(part_name, bbox_size)
+                id_coordinates = {idx: part_bbox+(processor.width, processor.height) for idx, part_bbox in part_bboxes.items()}
+                tracked[part_name][person_idx] = id_coordinates
+        
+        for class_name, class_data in tracked.items():
+            for class_id in class_data.keys():
+                class_id_str = str(class_id)
+                # Use the incoming prompt for each class name and ID
+                _class_name = class_name.replace('L', '').replace('R', '').lower()
+                prompt_string += f'"{class_id_str}.{class_name}": "({_class_name})",\n'
+        
+        return (tracked, prompt_string)
+
 NODE_CLASS_MAPPINGS = {
     "SavePoseKpsAsJsonFile": SavePoseKpsAsJsonFile,
-    "FacialPartColoringFromPoseKps": FacialPartColoringFromPoseKps
+    "FacialPartColoringFromPoseKps": FacialPartColoringFromPoseKps,
+    "UpperBodyTrackingFromPoseKps": UpperBodyTrackingFromPoseKps
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "SavePoseKpsAsJsonFile": "Save Pose Keypoints",
-    "FacialPartColoringFromPoseKps": "Colorize Facial Parts from PoseKPS"
+    "FacialPartColoringFromPoseKps": "Colorize Facial Parts from PoseKPS",
+    "UpperBodyTrackingFromPoseKps": "Upper Body Tracking From PoseKps (InstanceDiffusion)",
 }
