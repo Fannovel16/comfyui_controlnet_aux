@@ -27,7 +27,7 @@ class Metric3D_Normal_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return create_node_input_types(
-            backbone=(["vit-small", "vit-large", "vit-big2"], {"default": "vit-large"}),
+            backbone=(["vit-small", "vit-large", "vit-giant2"], {"default": "vit-large"}),
             fx=("INT", {"default": 1000, 'min': 1, 'max': MAX_RESOLUTION}),
             fy=("INT", {"default": 1000, 'min': 1, 'max': MAX_RESOLUTION})
         )
