@@ -21,8 +21,8 @@ class TEDDetector:
         self.device = "cpu"
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=BDS_MODEL_NAME, filename="7_model.pth"):
-        model_path = custom_hf_download(pretrained_model_or_path, filename, subfolder="Annotators")
+    def from_pretrained(cls, pretrained_model_or_path=BDS_MODEL_NAME, filename="7_model.pth", subfolder="Annotators"):
+        model_path = custom_hf_download(pretrained_model_or_path, filename, subfolder=subfolder)
         model = TED()
         model.load_state_dict(torch.load(model_path, map_location='cpu'))
         model.eval()

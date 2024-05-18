@@ -61,7 +61,7 @@ log.info(f"Using ort providers: {ORT_PROVIDERS}")
 # https://github.com/comfyanonymous/ComfyUI/blob/eecd69b53a896343775bcb02a4f8349e7442ffd1/nodes.py#L45
 MAX_RESOLUTION=16384
 
-def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):
+def common_annotator_call(model, tensor_image, input_batch=False, show_pbar=True, **kwargs):
     if "detect_resolution" in kwargs:
         del kwargs["detect_resolution"] #Prevent weird case?
 
@@ -77,7 +77,8 @@ def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):
         return torch.from_numpy(np_results.astype(np.float32) / 255.0)
 
     batch_size = tensor_image.shape[0]
-    pbar = comfy.utils.ProgressBar(batch_size)
+    if show_pbar:
+        pbar = comfy.utils.ProgressBar(batch_size)
     out_tensor = None
     for i, image in enumerate(tensor_image):
         np_image = np.asarray(image.cpu() * 255., dtype=np.uint8)
@@ -86,7 +87,8 @@ def common_annotator_call(model, tensor_image, input_batch=False, **kwargs):
         if out_tensor is None:
             out_tensor = torch.zeros(batch_size, *out.shape, dtype=torch.float32)
         out_tensor[i] = out
-        pbar.update(1)
+        if show_pbar:
+            pbar.update(1)
     return out_tensor
 
 def create_node_input_types(**extra_kwargs):
