@@ -39,7 +39,7 @@ class AnyLinePreprocessor:
     RETURN_NAMES = ("image",)
 
     FUNCTION = "get_anyline"
-    CATEGORY = "TheMisto/image/preprocessor"
+    CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def __init__(self):
         self.device = model_management.get_torch_device()
