@@ -190,6 +190,8 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_scribble.png)
 ### TEED Soft-Edge Lines
 ![](./examples/example_teed.png)
+### Anyline Lineart
+![](./examples/example_anyline.png)
 
 ## Normal and Depth Map
 ### Depth (idk the preprocessor they use)
@@ -204,6 +206,8 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below
 ![](./examples/example_depth_anything.png)
 ## DSINE
 ![](./examples/example_dsine.png)
+## Metric3D
+![](./examples/example_metric3d.png)
 
 ## Faces and Poses
 ### OpenPose
