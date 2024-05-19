@@ -15,6 +15,7 @@ from einops import repeat
 from PIL import Image
 from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, METRIC3D_MODEL_NAME
 import re
+import matplotlib
 
 def load_model(model_selection, model_path):
     if model_selection == "vit-small":
@@ -31,12 +32,21 @@ def load_model(model_selection, model_path):
     model = model
     return model, cfg
 
-def vis_depth(img):
+def gray_to_colormap(img, cmap='rainbow'):
+    """
+    Transfer gray map to matplotlib colormap
+    """
     assert img.ndim == 2
 
-    img = repeat(img, 'h w -> h w 3')
-    grayscale = (img[:, :, :3] * 255).astype(np.uint8)
-    return grayscale
+    img[img<0] = 0
+    mask_invalid = img < 1e-10
+    img = img / (img.max() + 1e-8)
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=1.1)
+    cmap_m = matplotlib.cm.get_cmap(cmap)
+    map = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap_m)
+    colormap = (map.to_rgba(img)[:, :, :3] * 255).astype(np.uint8)
+    colormap[mask_invalid] = 0
+    return colormap
 
 def predict_depth_normal(model, cfg, np_img, fx=1000.0, fy=1000.0, state_cache={}):
     intrinsic = [fx, fy, np_img.shape[1]/2, np_img.shape[0]/2]
@@ -60,7 +70,7 @@ def predict_depth_normal(model, cfg, np_img, fx=1000.0, fy=1000.0, state_cache={
         pred_depth = pred_depth[:, :, pad[0]:H-pad[1], pad[2]:W-pad[3] ]
 
     pred_depth = pred_depth.squeeze().cpu().numpy()
-    pred_color = vis_depth(pred_depth)
+    pred_color = gray_to_colormap(pred_depth, 'Greys')
 
     pred_normal = torch.nn.functional.interpolate(pred_normal, [np_img.shape[0], np_img.shape[1]], mode='bilinear').squeeze()
     pred_normal = pred_normal.permute(1,2,0)
