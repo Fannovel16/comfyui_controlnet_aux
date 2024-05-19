@@ -109,7 +109,7 @@ class Metric3DDetector:
 
         depth_map, normal_map, _ = predict_depth_normal(self.model, self.cfg, input_image, fx=fx, fy=fy)
         # ControlNet uses inverse depth and normal
-        depth_map, normal_map = 255 - depth_map, 255 - normal_map 
+        depth_map, normal_map = depth_map, 255 - normal_map 
         depth_map, remove_pad = resize_image_with_pad(depth_map, detect_resolution, upscale_method)
         normal_map, _ = resize_image_with_pad(normal_map, detect_resolution, upscale_method)
         depth_map, normal_map = remove_pad(depth_map), remove_pad(normal_map)
