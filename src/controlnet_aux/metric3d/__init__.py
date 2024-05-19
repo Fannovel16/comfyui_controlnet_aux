@@ -32,18 +32,11 @@ def load_model(model_selection, model_path):
     return model, cfg
 
 def vis_depth(img):
-    """
-    Transfer gray map to matplotlib colormap
-    """
     assert img.ndim == 2
 
     img = repeat(img, 'h w -> h w 3')
-    img[img<0] = 0
-    mask_invalid = img < 1e-10
-    img = img / (img.max() + 1e-8)
-    colormap = (img[:, :, :3] * 255).astype(np.uint8)
-    colormap[mask_invalid] = 0
-    return colormap
+    grayscale = (img[:, :, :3] * 255).astype(np.uint8)
+    return grayscale
 
 def predict_depth_normal(model, cfg, np_img, fx=1000.0, fy=1000.0, state_cache={}):
     intrinsic = [fx, fy, np_img.shape[1]/2, np_img.shape[0]/2]
@@ -64,9 +57,9 @@ def predict_depth_normal(model, cfg, np_img, fx=1000.0, fy=1000.0, state_cache={
         pred_normal = output['normal_out_list'][0][:, :3, :, :] 
         H, W = pred_normal.shape[2:]
         pred_normal = pred_normal[:, :, pad[0]:H-pad[1], pad[2]:W-pad[3]]
+        pred_depth = pred_depth[:, :, pad[0]:H-pad[1], pad[2]:W-pad[3] ]
 
     pred_depth = pred_depth.squeeze().cpu().numpy()
-    pred_depth[pred_depth<0] = 0
     pred_color = vis_depth(pred_depth)
 
     pred_normal = torch.nn.functional.interpolate(pred_normal, [np_img.shape[0], np_img.shape[1]], mode='bilinear').squeeze()
