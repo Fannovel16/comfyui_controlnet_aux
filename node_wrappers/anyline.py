@@ -77,7 +77,7 @@ class AnyLinePreprocessor:
             _lineart_result  = get_intensity_mask(lineart_result[i], lower_bound=lineart_lower_bound, upper_bound=lineart_upper_bound)
             _cleaned = morphology.remove_small_objects(_lineart_result.astype(bool), min_size=object_min_size, connectivity=object_connectivity)
             _lineart_result = _lineart_result * _cleaned
-            _mteed_result = mteed_result[0]
+            _mteed_result = mteed_result[i]
 
             # Combine the results
             final_result.append(torch.from_numpy(combine_layers(_mteed_result, _lineart_result)))
