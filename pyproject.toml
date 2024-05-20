@@ -1,0 +1,15 @@
+[project]
+name = "comfyui_controlnet_aux"
+description = ""
+version = "1.0.0"
+license = "LICENSE"
+dependencies = ["torch", "importlib_metadata", "huggingface_hub", "scipy", "opencv-python-headless>=4.7.0.72", "filelock", "numpy", "Pillow", "einops", "torchvision", "pyyaml", "scikit-image", "python-dateutil", "mediapipe", "svglib", "fvcore", "yapf", "omegaconf", "ftfy", "addict", "yacs", "trimesh[easy]", "albumentations", "scikit-learn"]
+
+[project.urls]
+Repository = "https://github.com/Fannovel16/comfyui_controlnet_aux"
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "comfyui_controlnet_aux"
+Icon = ""
+Models = [{location = "/checkpoints/model.safetensor", model_url = "https://example.com/model.zip"}]
