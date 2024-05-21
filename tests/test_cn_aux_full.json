@@ -1,6 +1,6 @@
 {
-  "last_node_id": 45,
-  "last_link_id": 44,
+  "last_node_id": 47,
+  "last_link_id": 46,
   "nodes": [
     {
       "id": 24,
@@ -9,12 +9,12 @@
         843,
         -430
       ],
-      "size": [
-        210,
-        246
-      ],
+      "size": {
+        "0": 210,
+        "1": 246
+      },
       "flags": {},
-      "order": 22,
+      "order": 23,
       "mode": 0,
       "inputs": [
         {
@@ -36,32 +36,7 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
-      },
-      "flags": {},
-      "order": 23,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 24
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      }
-    },
-    {
-      "id": 26,
-      "type": "PreviewImage",
-      "pos": [
-        832,
-        -222
-      ],
-      "size": {
-        "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
       "order": 24,
@@ -70,32 +45,7 @@
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 25
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      }
-    },
-    {
-      "id": 27,
-      "type": "PreviewImage",
-      "pos": [
-        1144,
-        -123
-      ],
-      "size": {
-        "0": 210,
-        "1": 26
-      },
-      "flags": {},
-      "order": 25,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 26
+          "link": 24
         }
       ],
       "properties": {
@@ -111,10 +61,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 26,
+      "order": 27,
       "mode": 0,
       "inputs": [
         {
@@ -136,10 +86,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 27,
+      "order": 28,
       "mode": 0,
       "inputs": [
         {
@@ -161,10 +111,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 28,
+      "order": 29,
       "mode": 0,
       "inputs": [
         {
@@ -186,10 +136,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 29,
+      "order": 30,
       "mode": 0,
       "inputs": [
         {
@@ -211,10 +161,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 30,
+      "order": 31,
       "mode": 0,
       "inputs": [
         {
@@ -236,10 +186,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 31,
+      "order": 32,
       "mode": 0,
       "inputs": [
         {
@@ -261,10 +211,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 32,
+      "order": 33,
       "mode": 0,
       "inputs": [
         {
@@ -286,10 +236,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 33,
+      "order": 34,
       "mode": 0,
       "inputs": [
         {
@@ -311,10 +261,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 34,
+      "order": 35,
       "mode": 0,
       "inputs": [
         {
@@ -336,10 +286,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 35,
+      "order": 36,
       "mode": 0,
       "inputs": [
         {
@@ -361,10 +311,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 36,
+      "order": 37,
       "mode": 0,
       "inputs": [
         {
@@ -386,10 +336,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 37,
+      "order": 38,
       "mode": 0,
       "inputs": [
         {
@@ -411,10 +361,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 38,
+      "order": 39,
       "mode": 0,
       "inputs": [
         {
@@ -436,10 +386,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 39,
+      "order": 40,
       "mode": 0,
       "inputs": [
         {
@@ -461,10 +411,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 40,
+      "order": 41,
       "mode": 0,
       "inputs": [
         {
@@ -486,10 +436,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 41,
+      "order": 42,
       "mode": 0,
       "inputs": [
         {
@@ -511,7 +461,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 58
+        "1": 82
       },
       "flags": {},
       "order": 1,
@@ -538,7 +488,8 @@
         "Node name for S&R": "PiDiNetPreprocessor"
       },
       "widgets_values": [
-        "enable"
+        "enable",
+        512
       ]
     },
     {
@@ -550,7 +501,7 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 58
       },
       "flags": {},
       "order": 2,
@@ -575,83 +526,10 @@
       ],
       "properties": {
         "Node name for S&R": "ColorPreprocessor"
-      }
-    },
-    {
-      "id": 4,
-      "type": "CannyEdgePreprocessor",
-      "pos": [
-        433,
-        -245
-      ],
-      "size": {
-        "0": 315,
-        "1": 82
-      },
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 3
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            25
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CannyEdgePreprocessor"
       },
       "widgets_values": [
-        100,
-        200
+        512
       ]
-    },
-    {
-      "id": 5,
-      "type": "SAMPreprocessor",
-      "pos": [
-        427,
-        -108
-      ],
-      "size": {
-        "0": 210,
-        "1": 26
-      },
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 4
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            26
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "SAMPreprocessor"
-      }
     },
     {
       "id": 7,
@@ -662,7 +540,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 106
+        "1": 198
       },
       "flags": {},
       "order": 5,
@@ -683,6 +561,12 @@
           ],
           "shape": 3,
           "slot_index": 0
+        },
+        {
+          "name": "POSE_KEYPOINT",
+          "type": "POSE_KEYPOINT",
+          "links": null,
+          "shape": 3
         }
       ],
       "properties": {
@@ -691,7 +575,10 @@
       "widgets_values": [
         "enable",
         "enable",
-        "enable"
+        "enable",
+        512,
+        "yolox_l.onnx",
+        "dw-ll_ucoco_384_bs5.torchscript.pt"
       ]
     },
     {
@@ -703,7 +590,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 58
+        "1": 82
       },
       "flags": {},
       "order": 6,
@@ -730,7 +617,8 @@
         "Node name for S&R": "BinaryPreprocessor"
       },
       "widgets_values": [
-        100
+        100,
+        512
       ]
     },
     {
@@ -742,7 +630,7 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 58
       },
       "flags": {},
       "order": 7,
@@ -767,7 +655,10 @@
       ],
       "properties": {
         "Node name for S&R": "ScribblePreprocessor"
-      }
+      },
+      "widgets_values": [
+        512
+      ]
     },
     {
       "id": 10,
@@ -778,7 +669,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 82
+        "1": 106
       },
       "flags": {},
       "order": 8,
@@ -806,7 +697,8 @@
       },
       "widgets_values": [
         0.1,
-        0.1
+        0.1,
+        512
       ]
     },
     {
@@ -818,7 +710,7 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 58
       },
       "flags": {},
       "order": 9,
@@ -843,7 +735,10 @@
       ],
       "properties": {
         "Node name for S&R": "UniFormer-SemSegPreprocessor"
-      }
+      },
+      "widgets_values": [
+        512
+      ]
     },
     {
       "id": 12,
@@ -854,7 +749,7 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 58
       },
       "flags": {},
       "order": 10,
@@ -879,7 +774,10 @@
       ],
       "properties": {
         "Node name for S&R": "Zoe-DepthMapPreprocessor"
-      }
+      },
+      "widgets_values": [
+        512
+      ]
     },
     {
       "id": 13,
@@ -890,7 +788,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 82
+        "1": 106
       },
       "flags": {},
       "order": 11,
@@ -918,7 +816,8 @@
       },
       "widgets_values": [
         6.283185307179586,
-        0.1
+        0.1,
+        512
       ]
     },
     {
@@ -930,7 +829,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 82
+        "1": 106
       },
       "flags": {},
       "order": 12,
@@ -958,7 +857,8 @@
       },
       "widgets_values": [
         6.283185307179586,
-        0.1
+        0.1,
+        512
       ]
     },
     {
@@ -970,7 +870,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 106
+        "1": 150
       },
       "flags": {},
       "order": 13,
@@ -991,6 +891,12 @@
           ],
           "shape": 3,
           "slot_index": 0
+        },
+        {
+          "name": "POSE_KEYPOINT",
+          "type": "POSE_KEYPOINT",
+          "links": null,
+          "shape": 3
         }
       ],
       "properties": {
@@ -999,7 +905,8 @@
       "widgets_values": [
         "enable",
         "enable",
-        "enable"
+        "enable",
+        512
       ]
     },
     {
@@ -1010,8 +917,8 @@
         1533
       ],
       "size": {
-        "0": 315,
-        "1": 106
+        "0": 352.79998779296875,
+        "1": 130
       },
       "flags": {},
       "order": 15,
@@ -1040,7 +947,8 @@
       "widgets_values": [
         0,
         0,
-        "enable"
+        "enable",
+        512
       ]
     },
     {
@@ -1052,7 +960,7 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 58
       },
       "flags": {},
       "order": 16,
@@ -1077,7 +985,10 @@
       ],
       "properties": {
         "Node name for S&R": "BAE-NormalMapPreprocessor"
-      }
+      },
+      "widgets_values": [
+        512
+      ]
     },
     {
       "id": 19,
@@ -1088,7 +999,7 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 58
       },
       "flags": {},
       "order": 17,
@@ -1113,7 +1024,10 @@
       ],
       "properties": {
         "Node name for S&R": "OneFormer-COCO-SemSegPreprocessor"
-      }
+      },
+      "widgets_values": [
+        512
+      ]
     },
     {
       "id": 20,
@@ -1123,8 +1037,8 @@
         1941
       ],
       "size": {
-        "0": 210,
-        "1": 26
+        "0": 218.39999389648438,
+        "1": 58
       },
       "flags": {},
       "order": 18,
@@ -1149,7 +1063,10 @@
       ],
       "properties": {
         "Node name for S&R": "OneFormer-ADE20K-SemSegPreprocessor"
-      }
+      },
+      "widgets_values": [
+        512
+      ]
     },
     {
       "id": 22,
@@ -1159,8 +1076,8 @@
         2193
       ],
       "size": {
-        "0": 315,
-        "1": 58
+        "0": 319.20001220703125,
+        "1": 82
       },
       "flags": {},
       "order": 20,
@@ -1187,7 +1104,8 @@
         "Node name for S&R": "FakeScribblePreprocessor"
       },
       "widgets_values": [
-        "enable"
+        "enable",
+        512
       ]
     },
     {
@@ -1199,7 +1117,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 58
+        "1": 82
       },
       "flags": {},
       "order": 19,
@@ -1226,7 +1144,8 @@
         "Node name for S&R": "HEDPreprocessor"
       },
       "widgets_values": [
-        "enable"
+        "enable",
+        512
       ]
     },
     {
@@ -1238,7 +1157,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 58
+        "1": 82
       },
       "flags": {},
       "order": 14,
@@ -1265,7 +1184,8 @@
         "Node name for S&R": "LineArtPreprocessor"
       },
       "widgets_values": [
-        "enable"
+        "enable",
+        512
       ]
     },
     {
@@ -1277,10 +1197,10 @@
       ],
       "size": {
         "0": 210,
-        "1": 26
+        "1": 246
       },
       "flags": {},
-      "order": 42,
+      "order": 43,
       "mode": 0,
       "inputs": [
         {
@@ -1302,7 +1222,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 58
+        "1": 82
       },
       "flags": {},
       "order": 21,
@@ -1329,7 +1249,88 @@
         "Node name for S&R": "TilePreprocessor"
       },
       "widgets_values": [
-        3
+        3,
+        512
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CannyEdgePreprocessor",
+      "pos": [
+        433,
+        -245
+      ],
+      "size": {
+        "0": 315,
+        "1": 106
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            25
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CannyEdgePreprocessor"
+      },
+      "widgets_values": [
+        100,
+        200,
+        512
+      ]
+    },
+    {
+      "id": 5,
+      "type": "SAMPreprocessor",
+      "pos": [
+        437,
+        5
+      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            26
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SAMPreprocessor"
+      },
+      "widgets_values": [
+        512
       ]
     },
     {
@@ -1371,7 +1372,8 @@
             19,
             20,
             21,
-            44
+            44,
+            45
           ],
           "shape": 3,
           "slot_index": 0
@@ -1389,6 +1391,120 @@
       "widgets_values": [
         "pose.png",
         "image"
+      ]
+    },
+    {
+      "id": 26,
+      "type": "PreviewImage",
+      "pos": [
+        832,
+        -222
+      ],
+      "size": {
+        "0": 210,
+        "1": 246
+      },
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 25
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 47,
+      "type": "PreviewImage",
+      "pos": [
+        1055,
+        -219
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 44,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 46
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 27,
+      "type": "PreviewImage",
+      "pos": [
+        1407,
+        -240
+      ],
+      "size": {
+        "0": 210,
+        "1": 246
+      },
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 26
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 46,
+      "type": "EDPFPreprocessor",
+      "pos": [
+        433,
+        -100
+      ],
+      "size": {
+        "0": 315,
+        "1": 58
+      },
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 45
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            46
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EDPFPreprocessor"
+      },
+      "widgets_values": [
+        512
       ]
     }
   ],
@@ -1728,10 +1844,34 @@
       44,
       0,
       "IMAGE"
+    ],
+    [
+      45,
+      1,
+      0,
+      46,
+      0,
+      "IMAGE"
+    ],
+    [
+      46,
+      46,
+      0,
+      47,
+      0,
+      "IMAGE"
     ]
   ],
   "groups": [],
   "config": {},
-  "extra": {},
+  "extra": {
+    "ds": {
+      "scale": 0.620921323059155,
+      "offset": [
+        553.9708801007812,
+        372.455134808526
+      ]
+    }
+  },
   "version": 0.4
 }

@@ -7,7 +7,7 @@ from typing import Dict, Optional, Union
 
 from PIL import Image
 
-from controlnet_aux import (CannyDetector, ContentShuffleDetector, HEDdetector,
+from controlnet_aux import (CannyDetector, EdgeDrawing, ContentShuffleDetector, HEDdetector,
                             LeresDetector, LineartAnimeDetector,
                             LineartDetector, MediapipeFaceDetector,
                             MidasDetector, MLSDdetector, NormalBaeDetector,
@@ -37,13 +37,14 @@ MODELS = {
     'lineart_coarse': {'class': LineartDetector, 'checkpoint': True},
     'lineart_realistic': {'class': LineartDetector, 'checkpoint': True},
     'lineart_anime': {'class': LineartAnimeDetector, 'checkpoint': True},
-    'depth_zoe': {'class': ZoeDetector, 'checkpoint': True}, 
-    'depth_leres': {'class': LeresDetector, 'checkpoint': True}, 
-    'depth_leres++': {'class': LeresDetector, 'checkpoint': True}, 
+    'depth_zoe': {'class': ZoeDetector, 'checkpoint': True},
+    'depth_leres': {'class': LeresDetector, 'checkpoint': True},
+    'depth_leres++': {'class': LeresDetector, 'checkpoint': True},
     # instantiate
     'shuffle': {'class': ContentShuffleDetector, 'checkpoint': False},
     'mediapipe_face': {'class': MediapipeFaceDetector, 'checkpoint': False},
     'canny': {'class': CannyDetector, 'checkpoint': False},
+    'edpf': {'class': EdgeDrawing, 'checkpoint': False},
     'tile': {'class': TileDetector, 'checkpoint': False},
 }
 
@@ -69,6 +70,7 @@ MODEL_PARAMS = {
     'lineart_coarse': {'coarse': True},
     'lineart_anime': {},
     'canny': {},
+    'edpf': {},
     'shuffle': {},
     'depth_zoe': {},
     'depth_leres': {'boost': False},
@@ -87,7 +89,7 @@ class Processor:
         Args:
             processor_id (str): processor name, options are 'hed, midas, mlsd, openpose,
                                 pidinet, normalbae, lineart, lineart_coarse, lineart_anime,
-                                canny, content_shuffle, zoe, mediapipe_face, tile'
+                                canny, edpf, content_shuffle, zoe, mediapipe_face, tile'
             params (Optional[Dict]): parameters for the processor
         """
         LOGGER.info("Loading %s".format(processor_id))

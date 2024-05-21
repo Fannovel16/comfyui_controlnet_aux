@@ -28,6 +28,7 @@ from controlnet_aux.processor import MODELS, Processor
     'lineart_realistic',
     'lineart_anime',
     'canny',
+    'edpf',
     'shuffle',
     'depth_zoe',
     'depth_leres',

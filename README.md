@@ -23,7 +23,7 @@ Install [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager) and do st
 ## Alternative:
 If you're running on Linux, or non-admin account on windows you'll want to ensure `/ComfyUI/custom_nodes` and `comfyui_controlnet_aux` has write permissions.
 
-There is now a **install.bat** you can run to install to portable if detected. Otherwise it will default to system and assume you followed ConfyUI's manual installation steps. 
+There is now a **install.bat** you can run to install to portable if detected. Otherwise it will default to system and assume you followed ConfyUI's manual installation steps.
 
 If you can't run **install.bat** (e.g. you are a Linux user). Open the CMD/Shell and do the following:
   - Navigate to your `/ComfyUI/custom_nodes/` folder
@@ -37,7 +37,7 @@ If you can't run **install.bat** (e.g. you are a Linux user). Open the CMD/Shell
 
 # Nodes
 Please note that this repo only supports preprocessors making hint images (e.g. stickman, canny edge, etc).
-All preprocessors except Inpaint are intergrated into `AIO Aux Preprocessor` node. 
+All preprocessors except Inpaint are intergrated into `AIO Aux Preprocessor` node.
 This node allow you to quickly get the preprocessor but a preprocessor's own threshold parameters won't be able to set.
 You need to use its node directly to set thresholds.
 
@@ -60,6 +60,7 @@ You need to use its node directly to set thresholds.
 | TEED Soft-Edge Lines        | teed                      | [controlnet-sd-xl-1.0-softedge-dexined](https://huggingface.co/SargeZT/controlnet-sd-xl-1.0-softedge-dexined/blob/main/controlnet-sd-xl-1.0-softedge-dexined.safetensors) <br> control_v11p_sd15_softedge (Theoretically)
 | Scribble PiDiNet Lines      | scribble_pidinet          | control_v11p_sd15_scribble <br> control_scribble |
 | AnyLine Lineart             |                           | mistoLine_fp16.safetensors <br> mistoLine_rank256 <br> control_v11p_sd15s2_lineart_anime <br> control_v11p_sd15_lineart |
+| Edge-Drawing Parameter-Free | -                         | [controlnetMyseeEdgeDrawing](https://civitai.com/models/149740) |
 
 ## Normal and Depth Estimators
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
@@ -81,7 +82,7 @@ You need to use its node directly to set thresholds.
 |-----------------------------|---------------------------|-------------------------------------------|
 | DWPose Estimator                 | dw_openpose_full          | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
 | OpenPose Estimator               | openpose (detect_body) <br> openpose_hand (detect_body + detect_hand) <br> openpose_faceonly (detect_face) <br> openpose_full (detect_hand + detect_body + detect_face)    | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
-| MediaPipe Face Mesh         | mediapipe_face            | controlnet_sd21_laion_face_v2             | 
+| MediaPipe Face Mesh         | mediapipe_face            | controlnet_sd21_laion_face_v2             |
 | Animal Estimator                 | animal_openpose           | [control_sd15_animal_openpose_fp16](https://huggingface.co/huchenlei/animal_openpose/blob/main/control_sd15_animal_openpose_fp16.pth) |
 
 ## Optical Flow Estimators
@@ -248,7 +249,7 @@ https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_a
 This repo has a new mechanism which will skip any custom node can't be imported. If you meet this case, please create a issue on [Issues tab](https://github.com/Fannovel16/comfyui_controlnet_aux/issues) with the log from the command line.
 
 ## DWPose/AnimalPose only uses CPU so it's so slow. How can I make it use GPU?
-There are two ways to speed-up DWPose: using TorchScript checkpoints (.torchscript.pt) checkpoints or ONNXRuntime (.onnx). TorchScript way is little bit slower than ONNXRuntime but doesn't require any additional library and still way way faster than CPU. 
+There are two ways to speed-up DWPose: using TorchScript checkpoints (.torchscript.pt) checkpoints or ONNXRuntime (.onnx). TorchScript way is little bit slower than ONNXRuntime but doesn't require any additional library and still way way faster than CPU.
 
 A torchscript bbox detector is compatiable with an onnx pose estimator and vice versa.
 ### TorchScript
@@ -274,7 +275,7 @@ Note that if this is your first time using ComfyUI, please test if it can run on
 # Assets files of preprocessors
 * anime_face_segment:  [bdsqlsz/qinglong_controlnet-lllite/Annotators/UNet.pth](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite/blob/main/Annotators/UNet.pth), [anime-seg/isnetis.ckpt](https://huggingface.co/skytnt/anime-seg/blob/main/isnetis.ckpt)
 * densepose:  [LayerNorm/DensePose-TorchScript-with-hint-image/densepose_r50_fpn_dl.torchscript](https://huggingface.co/LayerNorm/DensePose-TorchScript-with-hint-image/blob/main/densepose_r50_fpn_dl.torchscript)
-* dwpose:  
+* dwpose:
 * * bbox_detector: Either [yzd-v/DWPose/yolox_l.onnx](https://huggingface.co/yzd-v/DWPose/blob/main/yolox_l.onnx), [hr16/yolox-onnx/yolox_l.torchscript.pt](https://huggingface.co/hr16/yolox-onnx/blob/main/yolox_l.torchscript.pt), [hr16/yolo-nas-fp16/yolo_nas_l_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_l_fp16.onnx), [hr16/yolo-nas-fp16/yolo_nas_m_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_m_fp16.onnx), [hr16/yolo-nas-fp16/yolo_nas_s_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_s_fp16.onnx)
 * * pose_estimator: Either [hr16/DWPose-TorchScript-BatchSize5/dw-ll_ucoco_384_bs5.torchscript.pt](https://huggingface.co/hr16/DWPose-TorchScript-BatchSize5/blob/main/dw-ll_ucoco_384_bs5.torchscript.pt), [yzd-v/DWPose/dw-ll_ucoco_384.onnx](https://huggingface.co/yzd-v/DWPose/blob/main/dw-ll_ucoco_384.onnx)
 * animal_pose (ap10k):

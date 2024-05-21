@@ -7,7 +7,7 @@ import pytest
 import requests
 from PIL import Image
 
-from controlnet_aux import (CannyDetector, ContentShuffleDetector, HEDdetector,
+from controlnet_aux import (CannyDetector, EDPF, ContentShuffleDetector, HEDdetector,
                             LeresDetector, LineartAnimeDetector,
                             LineartDetector, MediapipeFaceDetector,
                             MidasDetector, MLSDdetector, NormalBaeDetector,
@@ -44,6 +44,11 @@ def test_canny(img):
     canny = CannyDetector()
     common("canny", canny, img)
     output("canny_img", canny(img=img))
+
+def test_edpf(img):
+    edpf = EDPF()
+    common("edpf", edpf, img)
+    output("edpf_img", edpf(img=img))
 
 def test_hed(img):
     hed = HEDdetector.from_pretrained("lllyasviel/Annotators")

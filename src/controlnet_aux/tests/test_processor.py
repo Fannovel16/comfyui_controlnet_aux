@@ -66,6 +66,12 @@ class TestProcessor(unittest.TestCase):
         processed_image = processor(image)
         self.assertIsInstance(processed_image, bytes)
 
+    def test_edpf(self):
+        processor = Processor('edpf')
+        image = Image.open('test_image.png')
+        processed_image = processor(image)
+        self.assertIsInstance(processed_image, bytes)
+
     def test_content_shuffle(self):
         processor = Processor('content_shuffle')
         image = Image.open('test_image.png')
