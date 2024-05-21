@@ -1,6 +1,6 @@
 [project]
 name = "comfyui_controlnet_aux"
-description = ""
+description = "This is a rework of comfyui_controlnet_preprocessors based on ControlNet auxiliary models by 🤗. I think the old repo isn't good enough to maintain. All old workflow will still be work with this repo but the version option won't do anything. Almost all v1 preprocessors are replaced by v1.1 except those doesn't appear in v1.1. [w/NOTE: Please refrain from using the controlnet preprocessor alongside this installation, as it may lead to conflicts and prevent proper recognition.]"
 version = "1.0.0"
 license = "LICENSE"
 dependencies = ["torch", "importlib_metadata", "huggingface_hub", "scipy", "opencv-python-headless>=4.7.0.72", "filelock", "numpy", "Pillow", "einops", "torchvision", "pyyaml", "scikit-image", "python-dateutil", "mediapipe", "svglib", "fvcore", "yapf", "omegaconf", "ftfy", "addict", "yacs", "trimesh[easy]", "albumentations", "scikit-learn"]
@@ -12,4 +12,3 @@ Repository = "https://github.com/Fannovel16/comfyui_controlnet_aux"
 PublisherId = ""
 DisplayName = "comfyui_controlnet_aux"
 Icon = ""
-Models = [{location = "/checkpoints/model.safetensor", model_url = "https://example.com/model.zip"}]
