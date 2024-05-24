@@ -15,7 +15,7 @@ from einops import repeat
 from PIL import Image
 from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, METRIC3D_MODEL_NAME
 import re
-import matplotlib
+import matplotlib.pyplot as plt
 
 def load_model(model_selection, model_path):
     if model_selection == "vit-small":
