@@ -37,3 +37,4 @@
 * Added Normal DSINE
 * Added TTPlanet Tile (09/05/2024, DD/MM/YYYY)
 * Added AnyLine, Metric3D (18/05/2024)
+* Added Depth Anything V2 (16/06/2024)
