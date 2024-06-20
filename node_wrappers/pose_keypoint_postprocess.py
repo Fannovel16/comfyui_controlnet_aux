@@ -266,6 +266,11 @@ class UpperBodyTrackingFromPoseKps:
         return (tracked, prompt_string)
 
 
+def numpy2torch(np_image: np.ndarray) -> torch.Tensor:
+    """ [H, W, C] => [B=1, H, W, C]"""
+    return torch.from_numpy(np_image.astype(np.float32) / 255).unsqueeze(0)
+
+
 class RenderPeopleKps:
     @classmethod
     def INPUT_TYPES(s):
@@ -282,22 +287,18 @@ class RenderPeopleKps:
     FUNCTION = "render"
     CATEGORY = "ControlNet Preprocessors/Pose Keypoint Postprocess"
 
-    def render(self, kps, render_body, render_hand, render_face) -> tuple[torch.Tensor]:
+    def render(self, kps, render_body, render_hand, render_face) -> tuple[np.ndarray]:
         # TODO: Avoid unnecessary encode/decode here.
         poses, height, width = decode_json_as_poses(json.dumps(kps))
-
-        return (torch.from_numpy(
-            draw_poses(
-                poses,
-                height,
-                width,
-                render_body,
-                render_hand,
-                render_face,
-            )
-            .astype(np.float32) / 255.0
-        ),)
-
+        np_image = draw_poses(
+            poses,
+            height,
+            width,
+            render_body,
+            render_hand,
+            render_face,
+        )
+        return (numpy2torch(np_image),)
 
 class RenderAnimalKps:
     @classmethod
@@ -312,11 +313,9 @@ class RenderAnimalKps:
     FUNCTION = "render"
     CATEGORY = "ControlNet Preprocessors/Pose Keypoint Postprocess"
 
-    def render(self, kps) -> tuple[torch.Tensor]:
-        return (torch.from_numpy(
-            draw_animalposes(kps["animals"], kps["canvas_height"], kps["canvas_width"])
-            .astype(np.float32) / 255.0
-        ),)
+    def render(self, kps) -> tuple[np.ndarray]:
+        np_image = draw_animalposes(kps["animals"], kps["canvas_height"], kps["canvas_width"])
+        return (numpy2torch(np_image),)
 
 
 NODE_CLASS_MAPPINGS = {
