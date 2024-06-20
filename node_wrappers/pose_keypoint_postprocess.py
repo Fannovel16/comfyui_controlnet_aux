@@ -288,8 +288,7 @@ class RenderPeopleKps:
     CATEGORY = "ControlNet Preprocessors/Pose Keypoint Postprocess"
 
     def render(self, kps, render_body, render_hand, render_face) -> tuple[np.ndarray]:
-        # TODO: Avoid unnecessary encode/decode here.
-        poses, height, width = decode_json_as_poses(json.dumps(kps))
+        poses, _, height, width = decode_json_as_poses(kps)
         np_image = draw_poses(
             poses,
             height,
@@ -314,7 +313,8 @@ class RenderAnimalKps:
     CATEGORY = "ControlNet Preprocessors/Pose Keypoint Postprocess"
 
     def render(self, kps) -> tuple[np.ndarray]:
-        np_image = draw_animalposes(kps["animals"], kps["canvas_height"], kps["canvas_width"])
+        _, poses, height, width = decode_json_as_poses(kps)
+        np_image = draw_animalposes(poses, height, width)
         return (numpy2torch(np_image),)
 
 

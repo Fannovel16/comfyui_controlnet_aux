@@ -16,7 +16,7 @@ from . import util
 from .body import Body, BodyResult, Keypoint
 from .hand import Hand
 from .face import Face
-from .types import PoseResult, HandResult, FaceResult
+from .types import PoseResult, HandResult, FaceResult, AnimalPoseResult
 from huggingface_hub import hf_hub_download
 from .wholebody import Wholebody
 import warnings
@@ -122,35 +122,36 @@ def draw_poses(poses: List[PoseResult], H, W, draw_body=True, draw_hand=True, dr
     return canvas
 
 
-def decode_json_as_poses(json_string: str, normalize_coords: bool = False) -> Tuple[List[PoseResult], int, int]:
-    """ Decode the json_string complying with the openpose JSON output format
+def decode_json_as_poses(
+    pose_json: dict,
+) -> Tuple[List[PoseResult], List[AnimalPoseResult], int, int]:
+    """Decode the json_string complying with the openpose JSON output format
     to poses that controlnet recognizes.
     https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md
 
     Args:
         json_string: The json string to decode.
-        normalize_coords: Whether to normalize coordinates of each keypoint by canvas height/width.
-                          `draw_pose` only accepts normalized keypoints. Set this param to True if
-                          the input coords are not normalized.
-    
+
     Returns:
-        poses
+        human_poses
+        animal_poses
         canvas_height
-        canvas_width                      
+        canvas_width
     """
-    pose_json = json.loads(json_string)
-    height = pose_json['canvas_height']
-    width = pose_json['canvas_width']
+    height = pose_json["canvas_height"]
+    width = pose_json["canvas_width"]
 
     def chunks(lst, n):
         """Yield successive n-sized chunks from lst."""
         for i in range(0, len(lst), n):
-            yield lst[i:i + n]
-    
-    def decompress_keypoints(numbers: Optional[List[float]]) -> Optional[List[Optional[Keypoint]]]:
+            yield lst[i : i + n]
+
+    def decompress_keypoints(
+        numbers: Optional[List[float]],
+    ) -> Optional[List[Optional[Keypoint]]]:
         if not numbers:
             return None
-        
+
         assert len(numbers) % 3 == 0
 
         def create_keypoint(x, y, c):
@@ -159,21 +160,21 @@ def decode_json_as_poses(json_string: str, normalize_coords: bool = False) -> Tu
             keypoint = Keypoint(x, y)
             return keypoint
 
-        return [
-            create_keypoint(x, y, c)
-            for x, y, c in chunks(numbers, n=3)
-        ]
-    
+        return [create_keypoint(x, y, c) for x, y, c in chunks(numbers, n=3)]
+
     return (
         [
             PoseResult(
-                body=BodyResult(keypoints=decompress_keypoints(pose.get('pose_keypoints_2d'))),
-                left_hand=decompress_keypoints(pose.get('hand_left_keypoints_2d')),
-                right_hand=decompress_keypoints(pose.get('hand_right_keypoints_2d')),
-                face=decompress_keypoints(pose.get('face_keypoints_2d'))
+                body=BodyResult(
+                    keypoints=decompress_keypoints(pose.get("pose_keypoints_2d"))
+                ),
+                left_hand=decompress_keypoints(pose.get("hand_left_keypoints_2d")),
+                right_hand=decompress_keypoints(pose.get("hand_right_keypoints_2d")),
+                face=decompress_keypoints(pose.get("face_keypoints_2d")),
             )
-            for pose in pose_json['people']
+            for pose in pose_json.get("people", [])
         ],
+        [decompress_keypoints(pose) for pose in pose_json.get("animals", [])],
         height,
         width,
     )

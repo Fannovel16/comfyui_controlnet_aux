@@ -20,6 +20,7 @@ class BodyResult(NamedTuple):
 
 HandResult = List[Keypoint]
 FaceResult = List[Keypoint]
+AnimalPoseResult = List[Keypoint]
 
 
 class PoseResult(NamedTuple):
