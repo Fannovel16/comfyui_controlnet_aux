@@ -1,14 +1,14 @@
 [project]
 name = "comfyui_controlnet_aux"
-description = "This is a rework of comfyui_controlnet_preprocessors based on ControlNet auxiliary models by 🤗. I think the old repo isn't good enough to maintain. All old workflow will still be work with this repo but the version option won't do anything. Almost all v1 preprocessors are replaced by v1.1 except those doesn't appear in v1.1. [w/NOTE: Please refrain from using the controlnet preprocessor alongside this installation, as it may lead to conflicts and prevent proper recognition.]"
+description = "Plug-and-play ComfyUI node sets for making ControlNet hint images"
 version = "1.0.0"
 license = "LICENSE"
-dependencies = ["torch", "importlib_metadata", "huggingface_hub", "scipy", "opencv-python-headless>=4.7.0.72", "filelock", "numpy", "Pillow", "einops", "torchvision", "pyyaml", "scikit-image", "python-dateutil", "mediapipe", "svglib", "fvcore", "yapf", "omegaconf", "ftfy", "addict", "yacs", "trimesh[easy]", "albumentations", "scikit-learn"]
+dependencies = ["torch", "importlib_metadata", "huggingface_hub", "scipy", "opencv-python>=4.7.0.72", "filelock", "numpy", "Pillow", "einops", "torchvision", "pyyaml", "scikit-image", "python-dateutil", "mediapipe", "svglib", "fvcore", "yapf", "omegaconf", "ftfy", "addict", "yacs", "trimesh[easy]", "albumentations", "scikit-learn"]
 
 [project.urls]
 Repository = "https://github.com/Fannovel16/comfyui_controlnet_aux"
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "fannovel16"
 DisplayName = "comfyui_controlnet_aux"
 Icon = ""
