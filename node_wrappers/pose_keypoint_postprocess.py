@@ -8,6 +8,9 @@ from einops import rearrange
 import torch
 import itertools
 
+from ..src.controlnet_aux.dwpose import draw_poses, draw_animalposes, decode_json_as_poses
+
+
 """
 Format of POSE_KEYPOINT (AP10K keypoints):
 [{
@@ -252,23 +255,86 @@ class UpperBodyTrackingFromPoseKps:
                 part_bboxes = processor.get_xyxy_bboxes(part_name, bbox_size)
                 id_coordinates = {idx: part_bbox+(processor.width, processor.height) for idx, part_bbox in part_bboxes.items()}
                 tracked[part_name][person_idx] = id_coordinates
-        
+
         for class_name, class_data in tracked.items():
             for class_id in class_data.keys():
                 class_id_str = str(class_id)
                 # Use the incoming prompt for each class name and ID
                 _class_name = class_name.replace('L', '').replace('R', '').lower()
                 prompt_string += f'"{class_id_str}.{class_name}": "({_class_name})",\n'
-        
+
         return (tracked, prompt_string)
+
+
+def numpy2torch(np_image: np.ndarray) -> torch.Tensor:
+    """ [H, W, C] => [B=1, H, W, C]"""
+    return torch.from_numpy(np_image.astype(np.float32) / 255).unsqueeze(0)
+
+
+class RenderPeopleKps:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "kps": ("POSE_KEYPOINT",),
+                "render_body": ("BOOLEAN", {"default": True}),
+                "render_hand": ("BOOLEAN", {"default": True}),
+                "render_face": ("BOOLEAN", {"default": True}),
+            }
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "render"
+    CATEGORY = "ControlNet Preprocessors/Pose Keypoint Postprocess"
+
+    def render(self, kps, render_body, render_hand, render_face) -> tuple[np.ndarray]:
+        if isinstance(kps, list):
+            kps = kps[0]
+
+        poses, _, height, width = decode_json_as_poses(kps)
+        np_image = draw_poses(
+            poses,
+            height,
+            width,
+            render_body,
+            render_hand,
+            render_face,
+        )
+        return (numpy2torch(np_image),)
+
+class RenderAnimalKps:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "kps": ("POSE_KEYPOINT",),
+            }
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "render"
+    CATEGORY = "ControlNet Preprocessors/Pose Keypoint Postprocess"
+
+    def render(self, kps) -> tuple[np.ndarray]:
+        if isinstance(kps, list):
+            kps = kps[0]
+
+        _, poses, height, width = decode_json_as_poses(kps)
+        np_image = draw_animalposes(poses, height, width)
+        return (numpy2torch(np_image),)
+
 
 NODE_CLASS_MAPPINGS = {
     "SavePoseKpsAsJsonFile": SavePoseKpsAsJsonFile,
     "FacialPartColoringFromPoseKps": FacialPartColoringFromPoseKps,
-    "UpperBodyTrackingFromPoseKps": UpperBodyTrackingFromPoseKps
+    "UpperBodyTrackingFromPoseKps": UpperBodyTrackingFromPoseKps,
+    "RenderPeopleKps": RenderPeopleKps,
+    "RenderAnimalKps": RenderAnimalKps,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "SavePoseKpsAsJsonFile": "Save Pose Keypoints",
     "FacialPartColoringFromPoseKps": "Colorize Facial Parts from PoseKPS",
     "UpperBodyTrackingFromPoseKps": "Upper Body Tracking From PoseKps (InstanceDiffusion)",
+    "RenderPeopleKps": "Render Pose JSON (Human)",
+    "RenderAnimalKps": "Render Pose JSON (Animal)",
 }
