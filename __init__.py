@@ -116,25 +116,63 @@ class AIO_Preprocessor:
 
             return getattr(aux_class(), aux_class.FUNCTION)(**params)
 
+##########################################################################################################################
+WEB_DIRECTORY = "./web"
+from server import PromptServer
+from aiohttp import web
+import folder_paths, comfy.controlnet
+@PromptServer.instance.routes.get("/Preprocessor")
+async def getStylesList(request):
+    cnmodelname = request.rel_url.query["name"]
+    return web.json_response([{"name":i} for i in preprocessor_options()])
 
 class ControlNetPreprocessorSelector:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {
-                "preprocessor": (PREPROCESSOR_OPTIONS,),
-            }
-        }
+        return { "required": { "cn": ( ["none"]+folder_paths.get_filename_list("controlnet"), ), 
+                               "image": ("IMAGE",), },
+                 "hidden": { "prompt": "PROMPT", "my_unique_id": "UNIQUE_ID" }, 
+                 "optional": { "resolution": ("INT", {"default": 512, "min": 64, "max": 4096, "step": 64 } ) }    }
 
-    RETURN_TYPES = (PREPROCESSOR_OPTIONS,)
-    RETURN_NAMES = ("preprocessor",)
+    RETURN_TYPES = ("CONTROL_NET","IMAGE")
     FUNCTION = "get_preprocessor"
-
     CATEGORY = "ControlNet Preprocessors"
+    OUTPUT_NODE = True
 
-    def get_preprocessor(self, preprocessor: str):
-        return (preprocessor,)
+    def get_preprocessor(self, cn, image, resolution=512, prompt=None, my_unique_id=None): 
+        controlnet = comfy.controlnet.load_controlnet( folder_paths.get_full_path("controlnet", cn) )
+        pre = prompt[my_unique_id]["inputs"]['select_styles']
+        print(prompt)
+        if pre == "": return (controlnet, image )
+        else:
+            aux_class = AUX_NODE_MAPPINGS[pre]
+            input_types = aux_class.INPUT_TYPES()
+            input_types = {
+                **input_types["required"],
+                **(input_types["optional"] if "optional" in input_types else {})
+            }
+            params = {}
+            for name, input_type in input_types.items():
+                if name == "image":
+                    params[name] = image
+                    continue
 
+                if name == "resolution":
+                    params[name] = resolution
+                    continue
+
+                if len(input_type) == 2 and ("default" in input_type[1]):
+                    params[name] = input_type[1]["default"]
+                    continue
+
+                default_values = { "INT": 0, "FLOAT": 0.0 }
+                if input_type[0] in default_values: params[name] = default_values[input_type[0]]
+                
+            predict = getattr(aux_class(), aux_class.FUNCTION)(**params)
+
+            if isinstance(predict, dict): return (controlnet,) + predict["result"] 
+            else: return (controlnet,) + predict
+##########################################################################################################################
 
 NODE_CLASS_MAPPINGS = {
     **AUX_NODE_MAPPINGS,
