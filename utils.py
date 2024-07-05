@@ -48,10 +48,10 @@ else:
     USE_SYMLINKS = False
     ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider", "CoreMLExecutionProvider"]
 
-os.environ['AUX_ANNOTATOR_CKPTS_PATH'] = annotator_ckpts_path
-os.environ['AUX_TEMP_DIR'] = str(TEMP_DIR)
-os.environ['AUX_USE_SYMLINKS'] = str(USE_SYMLINKS)
-os.environ['AUX_ORT_PROVIDERS'] = str(",".join(ORT_PROVIDERS))
+os.environ['AUX_ANNOTATOR_CKPTS_PATH'] = os.getenv('AUX_ANNOTATOR_CKPTS_PATH', annotator_ckpts_path)
+os.environ['AUX_TEMP_DIR'] = os.getenv('AUX_TEMP_DIR', str(TEMP_DIR))
+os.environ['AUX_USE_SYMLINKS'] = os.getenv('AUX_USE_SYMLINKS', str(USE_SYMLINKS))
+os.environ['AUX_ORT_PROVIDERS'] = os.getenv('AUX_ORT_PROVIDERS', str(",".join(ORT_PROVIDERS)))
 
 log.info(f"Using ckpts path: {annotator_ckpts_path}")
 log.info(f"Using symlinks: {USE_SYMLINKS}")
