@@ -79,7 +79,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
 
             elif mask_type == "tight_bboxes":
                 mask = np.zeros_like(mask)
-                hand_bboxes = info["abs_boxes"]
+                hand_bboxes = (info or {}).get("abs_boxes") or []
                 for hand_bbox in hand_bboxes: 
                     x_min, x_max, y_min, y_max = hand_bbox
                     mask[y_min:y_max+1, x_min:x_max+1, :] = 255 #HWC
