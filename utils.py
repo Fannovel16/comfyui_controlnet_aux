@@ -10,6 +10,7 @@ import subprocess
 import threading
 import comfy
 import tempfile
+import folder_paths
 
 here = Path(__file__).parent.resolve()
 
