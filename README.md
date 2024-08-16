@@ -3,7 +3,7 @@ Plug-and-play [ComfyUI](https://github.com/comfyanonymous/ComfyUI) node sets for
 
 "anime style, a protest in the street, cyberpunk city, a woman with pink hair and golden eyes (looking at the viewer) is holding a sign with the text "ComfyUI ControlNet Aux" in bold, neon pink" on Flux.1 Dev
 
-![](./CNAuxBanner.jpg)
+![](./examples/CNAuxBanner.jpg)
 
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 
