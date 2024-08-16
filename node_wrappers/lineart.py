@@ -1,11 +1,12 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 
 class LineArt_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            coarse=(["disable", "enable"], {"default": "disable"})
+        return define_preprocessor_inputs(
+            coarse=INPUT.COMBO((["disable", "enable"])),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)

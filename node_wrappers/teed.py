@@ -1,11 +1,12 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 
 class TEED_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            safe_steps=("INT", {"default": 2, "min": 0, "max": 10})
+        return define_preprocessor_inputs(
+            safe_steps=INPUT.INT(default=2, max=10),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)

@@ -1,5 +1,5 @@
 import sys, os
-from .utils import here, create_node_input_types
+from .utils import here, define_preprocessor_inputs, INPUT
 from pathlib import Path
 import threading
 import traceback
@@ -79,7 +79,10 @@ PREPROCESSOR_OPTIONS = preprocessor_options()
 class AIO_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(preprocessor=(PREPROCESSOR_OPTIONS, {"default": "none"}))
+        return define_preprocessor_inputs(
+            preprocessor=INPUT.COMBO(PREPROCESSOR_OPTIONS, default="none"),
+            resolution=INPUT.RESOLUTION()
+        )
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"

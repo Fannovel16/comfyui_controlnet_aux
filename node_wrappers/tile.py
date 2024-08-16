@@ -1,11 +1,12 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 
 
 class Tile_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            pyrUp_iters = ("INT", {"default": 3, "min": 1, "max": 10, "step": 1})
+        return define_preprocessor_inputs(
+            pyrUp_iters=INPUT.INT(default=3, min=1, max=10),
+            resolution=INPUT.RESOLUTION()
         )
         
 
@@ -22,15 +23,13 @@ class Tile_Preprocessor:
 class TTPlanet_TileGF_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {
-                "image": ("IMAGE",),
-                "scale_factor": ("FLOAT", {"default": 1.00, "min": 1.00, "max": 8.00, "step": 0.05}),
-                "blur_strength": ("FLOAT", {"default": 2.0, "min": 1.0, "max": 10.0, "step": 0.1}),
-                "radius": ("INT", {"default": 7, "min": 1, "max": 20, "step": 1}),
-                "eps": ("FLOAT", {"default": 0.01, "min": 0.001, "max": 0.1, "step": 0.001}),
-            }
-        }
+        return define_preprocessor_inputs(
+            scale_factor=INPUT.FLOAT(default=1.00, min=1.000, max=8.00),
+            blur_strength=INPUT.FLOAT(default=2.0, min=1.0, max=10.0),
+            radius=INPUT.INT(default=7, min=1, max=20),
+            eps=INPUT.FLOAT(default=0.01, min=0.001, max=0.1, step=0.001),
+            resolution=INPUT.RESOLUTION()
+        )
     
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
@@ -45,13 +44,10 @@ class TTPlanet_TileGF_Preprocessor:
 class TTPlanet_TileSimple_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {
-                "image": ("IMAGE",),
-                "scale_factor": ("FLOAT", {"default": 1.00, "min": 1.00, "max": 8.00, "step": 0.05}),
-                "blur_strength": ("FLOAT", {"default": 2.0, "min": 1.0, "max": 10.0, "step": 0.1}),
-            }
-        }
+        return define_preprocessor_inputs(
+            scale_factor=INPUT.FLOAT(default=1.00, min=1.000, max=8.00),
+            blur_strength=INPUT.FLOAT(default=2.0, min=1.0, max=10.0),
+        )
     
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"

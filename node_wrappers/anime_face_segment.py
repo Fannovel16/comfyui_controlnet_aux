@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 import torch
 from einops import rearrange
@@ -6,17 +6,12 @@ from einops import rearrange
 class AnimeFace_SemSegPreprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {
-                "image": ("IMAGE",)
-            },
-            "optional": {
-                #This preprocessor is only trained on 512x resolution
-                #https://github.com/siyeong0/Anime-Face-Segmentation/blob/main/predict.py#L25
-                "remove_background_using_abg": ("BOOLEAN", {"default": True}),
-                "resolution": ("INT", {"default": 512, "min": 512, "max": 512, "step": 64})
-            }
-        }
+        #This preprocessor is only trained on 512x resolution
+        #https://github.com/siyeong0/Anime-Face-Segmentation/blob/main/predict.py#L25
+        return define_preprocessor_inputs(
+            remove_background_using_abg=INPUT.BOOLEAN(True),
+            resolution=INPUT.RESOLUTION(default=512, min=512, max=512)
+        )
 
     RETURN_TYPES = ("IMAGE", "MASK")
     RETURN_NAMES = ("IMAGE", "ABG_CHARACTER_MASK (MASK)")

@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call
 import comfy.model_management as model_management
 import torch
 import numpy as np

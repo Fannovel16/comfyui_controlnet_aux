@@ -1,14 +1,15 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 import json
 
 class OpenPose_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            detect_hand = (["enable", "disable"], {"default": "enable"}),
-            detect_body = (["enable", "disable"], {"default": "enable"}),
-            detect_face = (["enable", "disable"], {"default": "enable"})
+        return define_preprocessor_inputs(
+            detect_hand=INPUT.COMBO(["enable", "disable"]),
+            detect_body=INPUT.COMBO(["enable", "disable"]),
+            detect_face=INPUT.COMBO(["enable", "disable"]),
+            resolution=INPUT.RESOLUTION()
         )
         
     RETURN_TYPES = ("IMAGE", "POSE_KEYPOINT")

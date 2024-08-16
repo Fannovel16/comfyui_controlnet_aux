@@ -1,11 +1,12 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 
 class HED_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            safe=(["enable", "disable"], {"default": "enable"})
+        return define_preprocessor_inputs(
+            safe=INPUT.COMBO(["enable", "disable"]),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -24,8 +25,9 @@ class HED_Preprocessor:
 class Fake_Scribble_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            safe=(["enable", "disable"], {"default": "enable"})
+        return define_preprocessor_inputs(
+            safe=INPUT.COMBO(["enable", "disable"]),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
