@@ -6,9 +6,9 @@ class Depth_Anything_Preprocessor:
     def INPUT_TYPES(s):
         return define_preprocessor_inputs(
             ckpt_name=INPUT.COMBO(
-                ["depth_anything_vitl14.pth", "depth_anything_vitb14.pth", "depth_anything_vits14.pth"],
-                resolution=INPUT.RESOLUTION()
-            )
+                ["depth_anything_vitl14.pth", "depth_anything_vitb14.pth", "depth_anything_vits14.pth"]
+            ),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)

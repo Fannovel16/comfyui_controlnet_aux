@@ -22,7 +22,7 @@ class AnimeFaceSegmentor:
         seg_model_path = custom_hf_download("skytnt/anime-seg", seg_filename)
 
         model = UNet()
-        ckpt = torch.load(model_path)
+        ckpt = torch.load(model_path, map_location="cpu")
         model.load_state_dict(ckpt)
         model.eval()
         

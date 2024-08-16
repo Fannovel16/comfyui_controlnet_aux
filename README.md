@@ -1,6 +1,11 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
-![](./examples/example_mesh_graphormer.png)
 Plug-and-play [ComfyUI](https://github.com/comfyanonymous/ComfyUI) node sets for making [ControlNet](https://github.com/lllyasviel/ControlNet/) hint images
+
+"anime style, a protest in the street, cyberpunk city, a woman with pink hair and golden eyes (looking at the viewer) is holding a sign with the text "ComfyUI ControlNet Aux" in bold, neon pink" on Flux.1 Dev
+[Original image with workflow](./examples/ExecuteAll.png)
+![](./examples/ExecuteAll1.jpg)
+![](./examples/ExecuteAll2.jpg)
+
 
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 

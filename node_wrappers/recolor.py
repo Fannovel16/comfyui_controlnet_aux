@@ -22,7 +22,7 @@ class ImageIntensityDetector:
     @classmethod
     def INPUT_TYPES(s):
         #https://github.com/Mikubill/sd-webui-controlnet/blob/416c345072c9c2066101e225964e3986abe6945e/scripts/processor.py#L1229
-        define_preprocessor_inputs(
+        return define_preprocessor_inputs(
             gamma_correction=INPUT.FLOAT(default=1.0, min=0.1, max=2.0),
             resolution=INPUT.RESOLUTION()
         )

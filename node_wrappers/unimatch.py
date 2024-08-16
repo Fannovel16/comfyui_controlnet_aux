@@ -27,7 +27,7 @@ class Unimatch_OptFlowPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Optical Flow"
 
     def estimate(self, image, ckpt_name, backward_flow=False, bidirectional_flow=False):
-        assert len(image) > 1, "[Unimatch] Requiring as least two frames as a optical flow estimator. Only use this node on video input."    
+        assert len(image) > 1, "[Unimatch] Requiring as least two frames as an optical flow estimator. Only use this node on video input."    
         from controlnet_aux.unimatch import UnimatchDetector
         tensor_images = image
         model = UnimatchDetector.from_pretrained(filename=ckpt_name).to(model_management.get_torch_device())
