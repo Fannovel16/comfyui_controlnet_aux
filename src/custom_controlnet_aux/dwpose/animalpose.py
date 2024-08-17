@@ -10,9 +10,8 @@ from .dw_torchscript.jit_det import inference_detector as inference_jit_yolox
 from .dw_torchscript.jit_pose import inference_pose as inference_jit_pose
 from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
-from timeit import default_timer
 from custom_controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype, get_ort_providers, get_model_type, is_model_torchscript
-import json
+from timeit import default_timer
 import torch
 
 def drawBetweenKeypoints(pose_img, keypoints, indexes, color, scaleFactor):
@@ -193,13 +192,12 @@ class AnimalPoseImage:
             self.pose_input_size, _ = guess_onnx_input_shape_dtype(self.pose_filename)
     
     def __call__(self, oriImg):
-        import torch.utils.benchmark.utils.timer as torch_timer
         detect_classes = list(range(14, 23 + 1)) #https://github.com/ultralytics/ultralytics/blob/main/ultralytics/cfg/datasets/coco.yaml
-
+        
+        #Sacrifice accurate time measurement for compatibility 
+        det_start = default_timer()
         if is_model_torchscript(self.det):
-            det_start = torch_timer.timer()
             det_result = inference_jit_yolox(self.det, oriImg, detect_classes=detect_classes)
-            print(f"AnimalPose: Bbox {((torch_timer.timer() - det_start) * 1000):.2f}ms")
         else:
             det_start = default_timer()
             det_onnx_dtype = np.float32 if "yolox" in self.det_filename else np.uint8
@@ -208,7 +206,8 @@ class AnimalPoseImage:
             else:
                 #FP16 and INT8 YOLO NAS accept uint8 input
                 det_result = inference_onnx_yolo_nas(self.det, oriImg, detect_classes=detect_classes, dtype=det_onnx_dtype)
-            print(f"AnimalPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
+        print(f"AnimalPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
+        
         if (det_result is None) or (det_result.shape[0] == 0):
             openpose_dict = {
                 'version': 'ap10k',
@@ -218,15 +217,14 @@ class AnimalPoseImage:
             }
             return np.zeros_like(oriImg), openpose_dict
         
+        pose_start = default_timer()
         if is_model_torchscript(self.pose):
-            pose_start = torch_timer.timer()
             keypoint_sets, scores = inference_jit_pose(self.pose, det_result, oriImg, self.pose_input_size)
-            print(f"AnimalPose: Pose {((torch_timer.timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} animals\n")
         else:
             pose_start = default_timer()
             _, pose_onnx_dtype = guess_onnx_input_shape_dtype(self.pose_filename)
             keypoint_sets, scores = inference_onnx_pose(self.pose, det_result, oriImg, self.pose_input_size, dtype=pose_onnx_dtype)
-            print(f"AnimalPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} animals\n")
+        print(f"AnimalPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} animals\n")
 
         animal_kps_scores = []
         pose_img = np.zeros((oriImg.shape[0], oriImg.shape[1], 3), dtype = np.uint8)

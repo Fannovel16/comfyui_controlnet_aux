@@ -77,31 +77,27 @@ class Wholebody:
             self.pose_input_size, _ = guess_onnx_input_shape_dtype(self.pose_filename)
 
     def __call__(self, oriImg) -> Optional[np.ndarray]:
-        import torch.utils.benchmark.utils.timer as torch_timer
+        #Sacrifice accurate time measurement for compatibility 
+        det_start = default_timer()
         if is_model_torchscript(self.det):
-            det_start = torch_timer.timer()
             det_result = inference_jit_yolox(self.det, oriImg, detect_classes=[0])
-            print(f"DWPose: Bbox {((torch_timer.timer() - det_start) * 1000):.2f}ms")
         else:
-            det_start = default_timer()
             if "yolox" in self.det_filename:
                 det_result = inference_onnx_yolox(self.det, oriImg, detect_classes=[0], dtype=np.float32)
             else:
                 #FP16 and INT8 YOLO NAS accept uint8 input
                 det_result = inference_onnx_yolo_nas(self.det, oriImg, detect_classes=[0], dtype=np.uint8)
-            print(f"DWPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
+        print(f"DWPose: Bbox {((default_timer() - det_start) * 1000):.2f}ms")
         if (det_result is None) or (det_result.shape[0] == 0):
             return None
 
+        pose_start = default_timer()
         if is_model_torchscript(self.pose):
-            pose_start = torch_timer.timer()
             keypoints, scores = inference_jit_pose(self.pose, det_result, oriImg, self.pose_input_size)
-            print(f"DWPose: Pose {((torch_timer.timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} people\n")
         else:
-            pose_start = default_timer()
             _, pose_onnx_dtype = guess_onnx_input_shape_dtype(self.pose_filename)
             keypoints, scores = inference_onnx_pose(self.pose, det_result, oriImg, self.pose_input_size, dtype=pose_onnx_dtype)
-            print(f"DWPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} people\n")
+        print(f"DWPose: Pose {((default_timer() - pose_start) * 1000):.2f}ms on {det_result.shape[0]} people\n")
 
         keypoints_info = np.concatenate(
             (keypoints, scores[..., None]), axis=-1)
