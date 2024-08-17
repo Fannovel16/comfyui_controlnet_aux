@@ -12,7 +12,7 @@ class BAE_Normal_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.normalbae import NormalBaeDetector
+        from custom_controlnet_aux.normalbae import NormalBaeDetector
 
         model = NormalBaeDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution)

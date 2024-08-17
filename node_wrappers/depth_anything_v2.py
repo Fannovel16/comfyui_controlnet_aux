@@ -18,7 +18,7 @@ class Depth_Anything_V2_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, ckpt_name="depth_anything_v2_vitl.pth", resolution=512, **kwargs):
-        from controlnet_aux.depth_anything_v2 import DepthAnythingV2Detector
+        from custom_controlnet_aux.depth_anything_v2 import DepthAnythingV2Detector
 
         model = DepthAnythingV2Detector.from_pretrained(filename=ckpt_name).to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution, max_depth=1)
@@ -39,7 +39,7 @@ class Depth_Anything_V2_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, environment, resolution=512, max_depth=20.0, **kwargs):
-        from controlnet_aux.depth_anything_v2 import DepthAnythingV2Detector
+        from custom_controlnet_aux.depth_anything_v2 import DepthAnythingV2Detector
         filename = dict(indoor="depth_anything_v2_metric_hypersim_vitl.pth", outdoor="depth_anything_v2_metric_vkitti_vitl.pth")[environment]
         model = DepthAnythingV2Detector.from_pretrained(filename=filename).to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution, max_depth=max_depth)

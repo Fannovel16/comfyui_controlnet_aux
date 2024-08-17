@@ -16,7 +16,7 @@ class DSINE_Normal_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, fov=60.0, iterations=5, resolution=512, **kwargs):
-        from controlnet_aux.dsine import DsineDetector
+        from custom_controlnet_aux.dsine import DsineDetector
 
         model = DsineDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, fov=fov, iterations=iterations, resolution=resolution)

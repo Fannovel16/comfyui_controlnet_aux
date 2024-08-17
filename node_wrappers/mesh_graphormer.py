@@ -61,7 +61,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
 
     def execute(self, image, mask_bbox_padding=30, mask_type="based_on_depth", mask_expand=5, resolution=512, rand_seed=88, detect_thr=0.6, presence_thr=0.6, **kwargs):
         install_deps()
-        from controlnet_aux.mesh_graphormer import MeshGraphormerDetector
+        from custom_controlnet_aux.mesh_graphormer import MeshGraphormerDetector
         model = kwargs["model"] if "model" in kwargs \
             else MeshGraphormerDetector.from_pretrained(detect_thr=detect_thr, presence_thr=presence_thr).to(model_management.get_torch_device())
         
@@ -120,7 +120,7 @@ class Mesh_Graphormer_With_ImpactDetector_Depth_Map_Preprocessor:
 
     def execute(self, image, bbox_detector, bbox_threshold=0.5, bbox_dilation=10, bbox_crop_factor=3.0, drop_size=10, resolution=512, **mesh_graphormer_kwargs):
         install_deps()
-        from controlnet_aux.mesh_graphormer import MeshGraphormerDetector
+        from custom_controlnet_aux.mesh_graphormer import MeshGraphormerDetector
         mesh_graphormer_node = Mesh_Graphormer_Depth_Map_Preprocessor()
         model = MeshGraphormerDetector.from_pretrained(detect_thr=0.6, presence_thr=0.6).to(model_management.get_torch_device())
         mesh_graphormer_kwargs["model"] = model

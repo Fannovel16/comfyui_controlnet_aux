@@ -180,6 +180,7 @@ for o in history['outputs']:
 
 # Testing workflow
 https://github.com/Fannovel16/comfyui_controlnet_aux/blob/main/examples/ExecuteAll.png
+Input image: https://github.com/Fannovel16/comfyui_controlnet_aux/blob/main/examples/comfyui-controlnet-aux-logo.png
 
 # Q&A:
 ## Why some nodes doesn't appear after I installed this repo?

@@ -12,7 +12,7 @@ class Zoe_Depth_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.zoe import ZoeDetector
+        from custom_controlnet_aux.zoe import ZoeDetector
 
         model = ZoeDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution)

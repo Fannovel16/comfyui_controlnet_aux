@@ -16,7 +16,7 @@ class Tile_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/tile"
 
     def execute(self, image, pyrUp_iters, resolution=512, **kwargs):
-        from controlnet_aux.tile import TileDetector
+        from custom_controlnet_aux.tile import TileDetector
 
         return (common_annotator_call(TileDetector(), image, pyrUp_iters=pyrUp_iters, resolution=resolution),)
 
@@ -37,7 +37,7 @@ class TTPlanet_TileGF_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/tile"
 
     def execute(self, image, scale_factor, blur_strength, radius, eps, **kwargs):
-        from controlnet_aux.tile import TTPlanet_Tile_Detector_GF
+        from custom_controlnet_aux.tile import TTPlanet_Tile_Detector_GF
 
         return (common_annotator_call(TTPlanet_Tile_Detector_GF(), image, scale_factor=scale_factor, blur_strength=blur_strength, radius=radius, eps=eps),)
 
@@ -55,7 +55,7 @@ class TTPlanet_TileSimple_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/tile"
 
     def execute(self, image, scale_factor, blur_strength):
-        from controlnet_aux.tile import TTPLanet_Tile_Detector_Simple
+        from custom_controlnet_aux.tile import TTPLanet_Tile_Detector_Simple
 
         return (common_annotator_call(TTPLanet_Tile_Detector_Simple(), image, scale_factor=scale_factor, blur_strength=blur_strength),)
 

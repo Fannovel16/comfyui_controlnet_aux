@@ -40,7 +40,7 @@ class AnyLinePreprocessor:
         self.device = model_management.get_torch_device()
 
     def get_anyline(self, image, merge_with_lineart="lineart_standard", resolution=512, lineart_lower_bound=0, lineart_upper_bound=1, object_min_size=36, object_connectivity=1):
-        from controlnet_aux.teed import TEDDetector
+        from custom_controlnet_aux.teed import TEDDetector
         from skimage import morphology
         pbar = comfy.utils.ProgressBar(3)
 
@@ -53,14 +53,14 @@ class AnyLinePreprocessor:
 
         # Process the image with the lineart standard preprocessor
         if merge_with_lineart == "lineart_standard":
-            from controlnet_aux.lineart_standard import LineartStandardDetector
+            from custom_controlnet_aux.lineart_standard import LineartStandardDetector
             lineart_standard_detector = LineartStandardDetector()
             lineart_result = common_annotator_call(lineart_standard_detector, image, guassian_sigma=2, intensity_threshold=3, resolution=resolution, show_pbar=False).numpy()
             del lineart_standard_detector
         else:
-            from controlnet_aux.lineart import LineartDetector
-            from controlnet_aux.lineart_anime import LineartAnimeDetector
-            from controlnet_aux.manga_line import LineartMangaDetector
+            from custom_controlnet_aux.lineart import LineartDetector
+            from custom_controlnet_aux.lineart_anime import LineartAnimeDetector
+            from custom_controlnet_aux.manga_line import LineartMangaDetector
             lineart_detector = dict(lineart_realisitic=LineartDetector, lineart_anime=LineartAnimeDetector, manga_line=LineartMangaDetector)[merge_with_lineart]
             lineart_detector = lineart_detector.from_pretrained().to(self.device)
             lineart_result = common_annotator_call(lineart_detector, image, resolution=resolution, show_pbar=False).numpy()

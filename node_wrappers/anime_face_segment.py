@@ -20,7 +20,7 @@ class AnimeFace_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def execute(self, image, remove_background_using_abg=True, resolution=512, **kwargs):
-        from controlnet_aux.anime_face_segment import AnimeFaceSegmentor
+        from custom_controlnet_aux.anime_face_segment import AnimeFaceSegmentor
 
         model = AnimeFaceSegmentor.from_pretrained().to(model_management.get_torch_device())
         if remove_background_using_abg:

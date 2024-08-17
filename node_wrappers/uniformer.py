@@ -12,7 +12,7 @@ class Uniformer_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image, resolution=512):
-        from controlnet_aux.uniformer import UniformerSegmentor
+        from custom_controlnet_aux.uniformer import UniformerSegmentor
 
         model = UniformerSegmentor.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution)

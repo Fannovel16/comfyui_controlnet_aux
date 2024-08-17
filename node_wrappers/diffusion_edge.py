@@ -24,7 +24,7 @@ class DiffusionEdge_Preprocessor:
 
     def execute(self, image, environment="indoor", patch_batch_size=4, resolution=512, **kwargs):
         install_deps()
-        from controlnet_aux.diffusion_edge import DiffusionEdgeDetector
+        from custom_controlnet_aux.diffusion_edge import DiffusionEdgeDetector
 
         model = DiffusionEdgeDetector \
             .from_pretrained(filename = f"diffusion_edge_{environment}.pt") \

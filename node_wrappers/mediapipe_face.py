@@ -27,7 +27,7 @@ class Media_Pipe_Face_Mesh_Preprocessor:
     def detect(self, image, max_faces=10, min_confidence=0.5, resolution=512):
         #Ref: https://github.com/Fannovel16/comfy_controlnet_preprocessors/issues/70#issuecomment-1677967369
         install_deps()
-        from controlnet_aux.mediapipe_face import MediapipeFaceDetector
+        from custom_controlnet_aux.mediapipe_face import MediapipeFaceDetector
         return (common_annotator_call(MediapipeFaceDetector(), image, max_faces=max_faces, min_confidence=min_confidence, resolution=resolution), )
 
 NODE_CLASS_MAPPINGS = {

@@ -12,7 +12,7 @@ class OneFormer_COCO_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image, resolution=512):
-        from controlnet_aux.oneformer import OneformerSegmentor
+        from custom_controlnet_aux.oneformer import OneformerSegmentor
 
         model = OneformerSegmentor.from_pretrained(filename="150_16_swin_l_oneformer_coco_100ep.pth")
         model = model.to(model_management.get_torch_device())
@@ -31,7 +31,7 @@ class OneFormer_ADE20K_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image, resolution=512):
-        from controlnet_aux.oneformer import OneformerSegmentor
+        from custom_controlnet_aux.oneformer import OneformerSegmentor
 
         model = OneformerSegmentor.from_pretrained(filename="250_16_swin_l_oneformer_ade20k_160k.pth")
         model = model.to(model_management.get_torch_device())

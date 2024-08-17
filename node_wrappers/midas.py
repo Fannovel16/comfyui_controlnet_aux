@@ -17,7 +17,7 @@ class MIDAS_Normal_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, a=np.pi * 2.0, bg_threshold=0.1, resolution=512, **kwargs):
-        from controlnet_aux.midas import MidasDetector
+        from custom_controlnet_aux.midas import MidasDetector
 
         model = MidasDetector.from_pretrained().to(model_management.get_torch_device())
         #Dirty hack :))
@@ -41,7 +41,7 @@ class MIDAS_Depth_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, a=np.pi * 2.0, bg_threshold=0.1, resolution=512, **kwargs):
-        from controlnet_aux.midas import MidasDetector
+        from custom_controlnet_aux.midas import MidasDetector
 
         # Ref: https://github.com/lllyasviel/ControlNet/blob/main/gradio_depth2image.py
         model = MidasDetector.from_pretrained().to(model_management.get_torch_device())

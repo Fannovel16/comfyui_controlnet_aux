@@ -16,7 +16,7 @@ class DensePose_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
     def execute(self, image, model="densepose_r50_fpn_dl.torchscript", cmap="Viridis (MagicAnimate)", resolution=512):
-        from controlnet_aux.densepose import DenseposeDetector
+        from custom_controlnet_aux.densepose import DenseposeDetector
         model = DenseposeDetector \
                     .from_pretrained(filename=model) \
                     .to(model_management.get_torch_device())

@@ -14,7 +14,7 @@ class Shuffle_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/T2IAdapter-only"
 
     def preprocess(self, image, resolution=512, seed=0):
-        from controlnet_aux.shuffle import ContentShuffleDetector
+        from custom_controlnet_aux.shuffle import ContentShuffleDetector
 
         return (common_annotator_call(ContentShuffleDetector(), image, resolution=resolution, seed=seed), )
 

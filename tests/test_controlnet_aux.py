@@ -7,7 +7,7 @@ import pytest
 import requests
 from PIL import Image
 
-from controlnet_aux import (CannyDetector, ContentShuffleDetector, HEDdetector,
+from custom_controlnet_aux import (CannyDetector, ContentShuffleDetector, HEDdetector,
                             LeresDetector, LineartAnimeDetector,
                             LineartDetector, MediapipeFaceDetector,
                             MidasDetector, MLSDdetector, NormalBaeDetector,

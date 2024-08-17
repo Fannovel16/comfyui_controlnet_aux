@@ -17,7 +17,7 @@ class Depth_Anything_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, ckpt_name="depth_anything_vitl14.pth", resolution=512, **kwargs):
-        from controlnet_aux.depth_anything import DepthAnythingDetector
+        from custom_controlnet_aux.depth_anything import DepthAnythingDetector
 
         model = DepthAnythingDetector.from_pretrained(filename=ckpt_name).to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution)
@@ -38,7 +38,7 @@ class Zoe_Depth_Anything_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, environment="indoor", resolution=512, **kwargs):
-        from controlnet_aux.zoe import ZoeDepthAnythingDetector
+        from custom_controlnet_aux.zoe import ZoeDepthAnythingDetector
         ckpt_name = "depth_anything_metric_depth_indoor.pt" if environment == "indoor" else "depth_anything_metric_depth_outdoor.pt"
         model = ZoeDepthAnythingDetector.from_pretrained(filename=ckpt_name).to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution)

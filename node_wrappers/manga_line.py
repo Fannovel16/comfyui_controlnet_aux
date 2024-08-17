@@ -12,7 +12,7 @@ class Manga2Anime_LineArt_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.manga_line import LineartMangaDetector
+        from custom_controlnet_aux.manga_line import LineartMangaDetector
 
         model = LineartMangaDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution)

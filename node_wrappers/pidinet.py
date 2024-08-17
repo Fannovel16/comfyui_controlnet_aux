@@ -15,7 +15,7 @@ class PIDINET_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, safe, resolution=512, **kwargs):
-        from controlnet_aux.pidi import PidiNetDetector
+        from custom_controlnet_aux.pidi import PidiNetDetector
 
         model = PidiNetDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution, safe = safe == "enable")

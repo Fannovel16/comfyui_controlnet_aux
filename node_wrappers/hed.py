@@ -15,7 +15,7 @@ class HED_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.hed import HEDdetector
+        from custom_controlnet_aux.hed import HEDdetector
 
         model = HEDdetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution, safe = kwargs["safe"] == "enable")
@@ -36,7 +36,7 @@ class Fake_Scribble_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.hed import HEDdetector
+        from custom_controlnet_aux.hed import HEDdetector
         
         model = HEDdetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution, scribble=True, safe=kwargs["safe"]=="enable")

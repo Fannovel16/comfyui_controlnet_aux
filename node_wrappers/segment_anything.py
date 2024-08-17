@@ -12,7 +12,7 @@ class SAM_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/others"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.sam import SamDetector
+        from custom_controlnet_aux.sam import SamDetector
 
         mobile_sam = SamDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(mobile_sam, image, resolution=resolution)

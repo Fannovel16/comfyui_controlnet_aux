@@ -17,7 +17,7 @@ class LERES_Depth_Map_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
     def execute(self, image, rm_nearest=0, rm_background=0, resolution=512, boost="disable", **kwargs):
-        from controlnet_aux.leres import LeresDetector
+        from custom_controlnet_aux.leres import LeresDetector
 
         model = LeresDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution, thr_a=rm_nearest, thr_b=rm_background, boost=boost == "enable")

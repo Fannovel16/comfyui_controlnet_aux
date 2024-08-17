@@ -12,7 +12,7 @@ class AnimeLineArt_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.lineart_anime import LineartAnimeDetector
+        from custom_controlnet_aux.lineart_anime import LineartAnimeDetector
 
         model = LineartAnimeDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution)
