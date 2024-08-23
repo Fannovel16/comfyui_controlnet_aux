@@ -22,3 +22,4 @@ yacs
 trimesh[easy]
 albumentations
 scikit-learn
+matplotlib
