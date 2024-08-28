@@ -1,11 +1,12 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 
 class HED_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            safe=(["enable", "disable"], {"default": "enable"})
+        return define_preprocessor_inputs(
+            safe=INPUT.COMBO(["enable", "disable"]),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -14,7 +15,7 @@ class HED_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.hed import HEDdetector
+        from custom_controlnet_aux.hed import HEDdetector
 
         model = HEDdetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution, safe = kwargs["safe"] == "enable")
@@ -24,8 +25,9 @@ class HED_Preprocessor:
 class Fake_Scribble_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            safe=(["enable", "disable"], {"default": "enable"})
+        return define_preprocessor_inputs(
+            safe=INPUT.COMBO(["enable", "disable"]),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -34,7 +36,7 @@ class Fake_Scribble_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.hed import HEDdetector
+        from custom_controlnet_aux.hed import HEDdetector
         
         model = HEDdetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution, scribble=True, safe=kwargs["safe"]=="enable")

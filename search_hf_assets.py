@@ -3,7 +3,7 @@ import os
 import re
 #Thanks ChatGPT
 pattern = r'\bfrom_pretrained\(.*?pretrained_model_or_path\s*=\s*(.*?)(?:,|\))|filename\s*=\s*(.*?)(?:,|\))|(\w+_filename)\s*=\s*(.*?)(?:,|\))'
-aux_dir = Path(__file__).parent / 'src' / 'controlnet_aux'
+aux_dir = Path(__file__).parent / 'src' / 'custom_controlnet_aux'
 VAR_DICT = dict(
     HF_MODEL_NAME = "lllyasviel/Annotators",
     DWPOSE_MODEL_NAME = "yzd-v/DWPose",

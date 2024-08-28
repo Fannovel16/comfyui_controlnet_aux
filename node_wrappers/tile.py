@@ -1,11 +1,12 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 
 
 class Tile_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            pyrUp_iters = ("INT", {"default": 3, "min": 1, "max": 10, "step": 1})
+        return define_preprocessor_inputs(
+            pyrUp_iters=INPUT.INT(default=3, min=1, max=10),
+            resolution=INPUT.RESOLUTION()
         )
         
 
@@ -15,22 +16,20 @@ class Tile_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/tile"
 
     def execute(self, image, pyrUp_iters, resolution=512, **kwargs):
-        from controlnet_aux.tile import TileDetector
+        from custom_controlnet_aux.tile import TileDetector
 
         return (common_annotator_call(TileDetector(), image, pyrUp_iters=pyrUp_iters, resolution=resolution),)
 
 class TTPlanet_TileGF_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {
-                "image": ("IMAGE",),
-                "scale_factor": ("FLOAT", {"default": 1.00, "min": 1.00, "max": 8.00, "step": 0.05}),
-                "blur_strength": ("FLOAT", {"default": 2.0, "min": 1.0, "max": 10.0, "step": 0.1}),
-                "radius": ("INT", {"default": 7, "min": 1, "max": 20, "step": 1}),
-                "eps": ("FLOAT", {"default": 0.01, "min": 0.001, "max": 0.1, "step": 0.001}),
-            }
-        }
+        return define_preprocessor_inputs(
+            scale_factor=INPUT.FLOAT(default=1.00, min=1.000, max=8.00),
+            blur_strength=INPUT.FLOAT(default=2.0, min=1.0, max=10.0),
+            radius=INPUT.INT(default=7, min=1, max=20),
+            eps=INPUT.FLOAT(default=0.01, min=0.001, max=0.1, step=0.001),
+            resolution=INPUT.RESOLUTION()
+        )
     
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
@@ -38,20 +37,17 @@ class TTPlanet_TileGF_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/tile"
 
     def execute(self, image, scale_factor, blur_strength, radius, eps, **kwargs):
-        from controlnet_aux.tile import TTPlanet_Tile_Detector_GF
+        from custom_controlnet_aux.tile import TTPlanet_Tile_Detector_GF
 
         return (common_annotator_call(TTPlanet_Tile_Detector_GF(), image, scale_factor=scale_factor, blur_strength=blur_strength, radius=radius, eps=eps),)
 
 class TTPlanet_TileSimple_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {
-            "required": {
-                "image": ("IMAGE",),
-                "scale_factor": ("FLOAT", {"default": 1.00, "min": 1.00, "max": 8.00, "step": 0.05}),
-                "blur_strength": ("FLOAT", {"default": 2.0, "min": 1.0, "max": 10.0, "step": 0.1}),
-            }
-        }
+        return define_preprocessor_inputs(
+            scale_factor=INPUT.FLOAT(default=1.00, min=1.000, max=8.00),
+            blur_strength=INPUT.FLOAT(default=2.0, min=1.0, max=10.0),
+        )
     
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
@@ -59,7 +55,7 @@ class TTPlanet_TileSimple_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/tile"
 
     def execute(self, image, scale_factor, blur_strength):
-        from controlnet_aux.tile import TTPLanet_Tile_Detector_Simple
+        from custom_controlnet_aux.tile import TTPLanet_Tile_Detector_Simple
 
         return (common_annotator_call(TTPLanet_Tile_Detector_Simple(), image, scale_factor=scale_factor, blur_strength=blur_strength),)
 

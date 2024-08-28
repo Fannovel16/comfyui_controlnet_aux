@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, create_node_input_types, run_script
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT, run_script
 import comfy.model_management as model_management
 import sys
 
@@ -11,9 +11,10 @@ def install_deps():
 class DiffusionEdge_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            environment=(["indoor", "urban", "natrual"], {"default": "indoor"}),
-            patch_batch_size=("INT", {"default": 4, "min": 1, "max": 16})
+        return define_preprocessor_inputs(
+            environment=INPUT.COMBO(["indoor", "urban", "natrual"]),
+            patch_batch_size=INPUT.INT(default=4, min=1, max=16),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -23,7 +24,7 @@ class DiffusionEdge_Preprocessor:
 
     def execute(self, image, environment="indoor", patch_batch_size=4, resolution=512, **kwargs):
         install_deps()
-        from controlnet_aux.diffusion_edge import DiffusionEdgeDetector
+        from custom_controlnet_aux.diffusion_edge import DiffusionEdgeDetector
 
         model = DiffusionEdgeDetector \
             .from_pretrained(filename = f"diffusion_edge_{environment}.pt") \

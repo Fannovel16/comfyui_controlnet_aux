@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, create_node_input_types, MAX_RESOLUTION, run_script
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT, MAX_RESOLUTION, run_script
 import comfy.model_management as model_management
 import numpy as np
 import torch
@@ -43,17 +43,15 @@ def expand_mask(mask, expand, tapered_corners):
 class Mesh_Graphormer_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        types = create_node_input_types(mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}))
-        types["optional"].update(
-            {
-                "mask_type": (["based_on_depth", "tight_bboxes", "original"], {"default": "based_on_depth"}),
-                "mask_expand": ("INT", {"default": 5, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
-                "rand_seed": ("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff}),
-                "detect_thr": ("FLOAT", {"default": 0.6, "min": 0, "max": 1, "step": 0.01}),
-                "presence_thr": ("FLOAT", {"default": 0.6, "min": 0, "max": 1, "step": 0.01}),
-            }
+        return define_preprocessor_inputs(
+            mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}),
+            resolution=INPUT.RESOLUTION(),
+            mask_type=INPUT.COMBO(["based_on_depth", "tight_bboxes", "original"]),
+            mask_expand=INPUT.INT(default=5, min=-MAX_RESOLUTION, max=MAX_RESOLUTION),
+            rand_seed=INPUT.INT(default=88, min=0, max=0xffffffffffffffff),
+            detect_thr=INPUT.FLOAT(default=0.6, min=0.1),
+            presence_thr=INPUT.FLOAT(default=0.6, min=0.1)
         )
-        return types
 
     RETURN_TYPES = ("IMAGE", "MASK")
     RETURN_NAMES = ("IMAGE", "INPAINTING_MASK")
@@ -63,7 +61,7 @@ class Mesh_Graphormer_Depth_Map_Preprocessor:
 
     def execute(self, image, mask_bbox_padding=30, mask_type="based_on_depth", mask_expand=5, resolution=512, rand_seed=88, detect_thr=0.6, presence_thr=0.6, **kwargs):
         install_deps()
-        from controlnet_aux.mesh_graphormer import MeshGraphormerDetector
+        from custom_controlnet_aux.mesh_graphormer import MeshGraphormerDetector
         model = kwargs["model"] if "model" in kwargs \
             else MeshGraphormerDetector.from_pretrained(detect_thr=detect_thr, presence_thr=presence_thr).to(model_management.get_torch_device())
         
@@ -98,17 +96,18 @@ def normalize_size_base_64(w, h):
 class Mesh_Graphormer_With_ImpactDetector_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        types = create_node_input_types(
+        types = define_preprocessor_inputs(
             # Impact pack
-            bbox_threshold=("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
-            bbox_dilation=("INT", {"default": 10, "min": -512, "max": 512, "step": 1}),
-            bbox_crop_factor=("FLOAT", {"default": 3.0, "min": 1.0, "max": 10, "step": 0.1}),
-            drop_size=("INT", {"min": 1, "max": MAX_RESOLUTION, "step": 1, "default": 10}),
+            bbox_threshold=INPUT.FLOAT(default=0.5, min=0.1),
+            bbox_dilation=INPUT.INT(default=10, min=-512, max=512),
+            bbox_crop_factor=INPUT.FLOAT(default=3.0, min=1.0, max=10.0),
+            drop_size=INPUT.INT(default=10, min=1, max=MAX_RESOLUTION),
             # Mesh Graphormer
-            mask_bbox_padding=("INT", {"default": 30, "min": 0, "max": 100}),
-            mask_type=(["based_on_depth", "tight_bboxes", "original"], {"default": "based_on_depth"}),
-            mask_expand=("INT", {"default": 5, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
-            rand_seed=("INT", {"default": 88, "min": 0, "max": 0xffffffffffffffff}),
+            mask_bbox_padding=INPUT.INT(default=30, min=0, max=100),
+            mask_type=INPUT.COMBO(["based_on_depth", "tight_bboxes", "original"]),
+            mask_expand=INPUT.INT(default=5, min=-MAX_RESOLUTION, max=MAX_RESOLUTION),
+            rand_seed=INPUT.INT(default=88, min=0, max=0xffffffffffffffff),
+            resolution=INPUT.RESOLUTION()
         )
         types["required"]["bbox_detector"] = ("BBOX_DETECTOR", )
         return types
@@ -121,7 +120,7 @@ class Mesh_Graphormer_With_ImpactDetector_Depth_Map_Preprocessor:
 
     def execute(self, image, bbox_detector, bbox_threshold=0.5, bbox_dilation=10, bbox_crop_factor=3.0, drop_size=10, resolution=512, **mesh_graphormer_kwargs):
         install_deps()
-        from controlnet_aux.mesh_graphormer import MeshGraphormerDetector
+        from custom_controlnet_aux.mesh_graphormer import MeshGraphormerDetector
         mesh_graphormer_node = Mesh_Graphormer_Depth_Map_Preprocessor()
         model = MeshGraphormerDetector.from_pretrained(detect_thr=0.6, presence_thr=0.6).to(model_management.get_torch_device())
         mesh_graphormer_kwargs["model"] = model

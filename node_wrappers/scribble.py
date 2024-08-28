@@ -1,11 +1,11 @@
-from ..utils import common_annotator_call, create_node_input_types, nms
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT, nms
 import comfy.model_management as model_management
 import cv2
 
 class Scribble_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types()
+        return define_preprocessor_inputs(resolution=INPUT.RESOLUTION())
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
@@ -13,7 +13,7 @@ class Scribble_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.scribble import ScribbleDetector
+        from custom_controlnet_aux.scribble import ScribbleDetector
 
         model = ScribbleDetector()
         return (common_annotator_call(model, image, resolution=resolution), )
@@ -21,8 +21,9 @@ class Scribble_Preprocessor:
 class Scribble_XDoG_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            threshold = ("INT", {"default": 32, "min": 1, "max": 64, "step": 1})
+        return define_preprocessor_inputs(
+            threshold=INPUT.INT(default=32, min=1, max=64),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -30,8 +31,8 @@ class Scribble_XDoG_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, threshold, resolution=512, **kwargs):
-        from controlnet_aux.scribble import ScribbleXDog_Detector
+    def execute(self, image, threshold=32, resolution=512, **kwargs):
+        from custom_controlnet_aux.scribble import ScribbleXDog_Detector
 
         model = ScribbleXDog_Detector()
         return (common_annotator_call(model, image, resolution=resolution, thr_a=threshold), )
@@ -39,8 +40,9 @@ class Scribble_XDoG_Preprocessor:
 class Scribble_PiDiNet_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            safe=(["enable", "disable"], {"default": "enable"})
+        return define_preprocessor_inputs(
+            safe=(["enable", "disable"]),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -48,9 +50,9 @@ class Scribble_PiDiNet_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
-    def execute(self, image, safe, resolution):
+    def execute(self, image, safe="enable", resolution=512):
         def model(img, **kwargs):
-            from controlnet_aux.pidi import PidiNetDetector
+            from custom_controlnet_aux.pidi import PidiNetDetector
             pidinet = PidiNetDetector.from_pretrained().to(model_management.get_torch_device())
             result = pidinet(img, scribble=True, **kwargs)
             result = nms(result, 127, 3.0)

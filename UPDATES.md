@@ -40,3 +40,4 @@
 * Added Depth Anything V2 (16/06/2024)
 * Added Union model of ControlNet and preprocessors
 ![345832280-edf41dab-7619-494c-9f60-60ec1f8789cb](https://github.com/user-attachments/assets/aa55f57c-cad7-48e6-84d3-8f506d847989)
+* Refactor INPUT_TYPES and add Execute All node during the process of learning [Execution Model Inversion](https://github.com/comfyanonymous/ComfyUI/pull/2666)

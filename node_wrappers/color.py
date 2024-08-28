@@ -1,10 +1,10 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, INPUT, define_preprocessor_inputs
 import comfy.model_management as model_management
 
 class Color_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types()
+        return define_preprocessor_inputs(resolution=INPUT.RESOLUTION())
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
@@ -12,7 +12,7 @@ class Color_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/T2IAdapter-only"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.color import ColorDetector
+        from custom_controlnet_aux.color import ColorDetector
 
         return (common_annotator_call(ColorDetector(), image, resolution=resolution), )
 

@@ -3,4 +3,4 @@ from utils import here
 import sys
 sys.path.append(str(Path(here, "src")))
 
-from controlnet_aux import *
+from custom_controlnet_aux import *

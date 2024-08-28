@@ -1,16 +1,14 @@
 import sys, os
-from .utils import here, create_node_input_types
+from .utils import here, define_preprocessor_inputs, INPUT
 from pathlib import Path
-import threading
 import traceback
-import warnings
 import importlib
 from .log import log, blue_text, cyan_text, get_summary, get_label
 from .hint_image_enchance import NODE_CLASS_MAPPINGS as HIE_NODE_CLASS_MAPPINGS
 from .hint_image_enchance import NODE_DISPLAY_NAME_MAPPINGS as HIE_NODE_DISPLAY_NAME_MAPPINGS
 #Ref: https://github.com/comfyanonymous/ComfyUI/blob/76d53c4622fc06372975ed2a43ad345935b8a551/nodes.py#L17
 sys.path.insert(0, str(Path(here, "src").resolve()))
-for pkg_name in ["controlnet_aux", "custom_mmpkg"]:
+for pkg_name in ["custom_controlnet_aux", "custom_mmpkg"]:
     sys.path.append(str(Path(here, "src", pkg_name).resolve()))
 
 #Enable CPU fallback for ops not being supported by MPS like upsample_bicubic2d.out
@@ -62,8 +60,10 @@ def load_nodes():
 
 AUX_NODE_MAPPINGS, AUX_DISPLAY_NAME_MAPPINGS = load_nodes()
 
-AIO_NOT_SUPPORTED = ["InpaintPreprocessor"]
-#For nodes not mapping image to image
+#For nodes not mapping image to image or has special requirements
+AIO_NOT_SUPPORTED = ["InpaintPreprocessor", "MeshGraphormer+ImpactDetector-DepthMapPreprocessor", "DiffusionEdge_Preprocessor"]
+AIO_NOT_SUPPORTED += ["SavePoseKpsAsJsonFile", "FacialPartColoringFromPoseKps", "UpperBodyTrackingFromPoseKps", "RenderPeopleKps", "RenderAnimalKps"]
+AIO_NOT_SUPPORTED += ["Unimatch_OptFlowPreprocessor", "MaskOptFlow"]
 
 def preprocessor_options():
     auxs = list(AUX_NODE_MAPPINGS.keys())
@@ -79,7 +79,10 @@ PREPROCESSOR_OPTIONS = preprocessor_options()
 class AIO_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(preprocessor=(PREPROCESSOR_OPTIONS, {"default": "none"}))
+        return define_preprocessor_inputs(
+            preprocessor=INPUT.COMBO(PREPROCESSOR_OPTIONS, default="none"),
+            resolution=INPUT.RESOLUTION()
+        )
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
@@ -116,6 +119,63 @@ class AIO_Preprocessor:
 
             return getattr(aux_class(), aux_class.FUNCTION)(**params)
 
+class ControlNetAuxSimpleAddText:
+    @classmethod
+    def INPUT_TYPES(s):
+        return dict(
+            required=dict(image=INPUT.IMAGE(), text=INPUT.STRING())
+        )
+    
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "execute"
+    CATEGORY = "ControlNet Preprocessors"
+    def execute(self, image, text):
+        from PIL import Image, ImageDraw, ImageFont
+        import numpy as np
+        import torch
+
+        font = ImageFont.truetype(str((here / "NotoSans-Regular.ttf").resolve()), 40)
+        img = Image.fromarray(image[0].cpu().numpy().__mul__(255.).astype(np.uint8))
+        ImageDraw.Draw(img).text((0,0), text, fill=(0,255,0), font=font)
+        return (torch.from_numpy(np.array(img)).unsqueeze(0) / 255.,)
+
+class ExecuteAllControlNetPreprocessors:
+    @classmethod
+    def INPUT_TYPES(s):
+        return define_preprocessor_inputs(resolution=INPUT.RESOLUTION())
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "execute"
+
+    CATEGORY = "ControlNet Preprocessors"
+
+    def execute(self, image, resolution=512):
+        try:
+            from comfy_execution.graph_utils import GraphBuilder
+        except:
+            raise RuntimeError("ExecuteAllControlNetPreprocessor requries [Execution Model Inversion](https://github.com/comfyanonymous/ComfyUI/commit/5cfe38). Update ComfyUI/SwarmUI to get this feature")
+        
+        graph = GraphBuilder()
+        curr_outputs = []
+        for preprocc in PREPROCESSOR_OPTIONS:
+            preprocc_node = graph.node("AIO_Preprocessor", preprocessor=preprocc, image=image, resolution=resolution)
+            hint_img = preprocc_node.out(0)
+            add_text_node = graph.node("ControlNetAuxSimpleAddText", image=hint_img, text=preprocc)
+            curr_outputs.append(add_text_node.out(0))
+        
+        while len(curr_outputs) > 1:
+            _outputs = []
+            for i in range(0, len(curr_outputs), 2):
+                if i+1 < len(curr_outputs):
+                    image_batch = graph.node("ImageBatch", image1=curr_outputs[i], image2=curr_outputs[i+1])
+                    _outputs.append(image_batch.out(0))
+                else:
+                    _outputs.append(curr_outputs[i])
+            curr_outputs = _outputs
+
+        return {
+            "result": (curr_outputs[0],),
+            "expand": graph.finalize(),
+        }
 
 class ControlNetPreprocessorSelector:
     @classmethod
@@ -141,6 +201,8 @@ NODE_CLASS_MAPPINGS = {
     "AIO_Preprocessor": AIO_Preprocessor,
     "ControlNetPreprocessorSelector": ControlNetPreprocessorSelector,
     **HIE_NODE_CLASS_MAPPINGS,
+    "ExecuteAllControlNetPreprocessors": ExecuteAllControlNetPreprocessors,
+    "ControlNetAuxSimpleAddText": ControlNetAuxSimpleAddText
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -148,4 +210,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "AIO_Preprocessor": "AIO Aux Preprocessor",
     "ControlNetPreprocessorSelector": "Preprocessor Selector",
     **HIE_NODE_DISPLAY_NAME_MAPPINGS,
+    "ExecuteAllControlNetPreprocessors": "Execute All ControlNet Preprocessors"
 }

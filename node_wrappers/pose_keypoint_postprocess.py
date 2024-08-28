@@ -8,7 +8,7 @@ from einops import rearrange
 import torch
 import itertools
 
-from ..src.controlnet_aux.dwpose import draw_poses, draw_animalposes, decode_json_as_poses
+from ..src.custom_controlnet_aux.dwpose import draw_poses, draw_animalposes, decode_json_as_poses
 
 
 """

@@ -1,13 +1,14 @@
-from ..utils import common_annotator_call, create_node_input_types, MAX_RESOLUTION
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT, MAX_RESOLUTION
 import comfy.model_management as model_management
 
 class Metric3D_Depth_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            backbone=(["vit-small", "vit-large", "vit-giant2"], {"default": "vit-small"}),
-            fx=("INT", {"default": 1000, 'min': 1, 'max': MAX_RESOLUTION}),
-            fy=("INT", {"default": 1000, 'min': 1, 'max': MAX_RESOLUTION})
+        return define_preprocessor_inputs(
+            backbone=INPUT.COMBO(["vit-small", "vit-large", "vit-giant2"]),
+            fx=INPUT.INT(default=1000, min=1, max=MAX_RESOLUTION),
+            fy=INPUT.INT(default=1000, min=1, max=MAX_RESOLUTION),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -15,8 +16,8 @@ class Metric3D_Depth_Map_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
-    def execute(self, image, backbone, fx, fy, resolution=512):
-        from controlnet_aux.metric3d import Metric3DDetector
+    def execute(self, image, backbone="vit-small", fx=1000, fy=1000, resolution=512):
+        from custom_controlnet_aux.metric3d import Metric3DDetector
         model = Metric3DDetector.from_pretrained(filename=f"metric_depth_{backbone.replace('-', '_')}_800k.pth").to(model_management.get_torch_device())
         cb = lambda image, **kwargs: model(image, **kwargs)[0]
         out = common_annotator_call(cb, image, resolution=resolution, fx=fx, fy=fy, depth_and_normal=True)
@@ -26,10 +27,11 @@ class Metric3D_Depth_Map_Preprocessor:
 class Metric3D_Normal_Map_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types(
-            backbone=(["vit-small", "vit-large", "vit-giant2"], {"default": "vit-small"}),
-            fx=("INT", {"default": 1000, 'min': 1, 'max': MAX_RESOLUTION}),
-            fy=("INT", {"default": 1000, 'min': 1, 'max': MAX_RESOLUTION})
+        return define_preprocessor_inputs(
+            backbone=INPUT.COMBO(["vit-small", "vit-large", "vit-giant2"]),
+            fx=INPUT.INT(default=1000, min=1, max=MAX_RESOLUTION),
+            fy=INPUT.INT(default=1000, min=1, max=MAX_RESOLUTION),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -37,8 +39,8 @@ class Metric3D_Normal_Map_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Normal and Depth Estimators"
 
-    def execute(self, image, backbone, fx, fy, resolution=512):
-        from controlnet_aux.metric3d import Metric3DDetector
+    def execute(self, image, backbone="vit-small", fx=1000, fy=1000, resolution=512):
+        from custom_controlnet_aux.metric3d import Metric3DDetector
         model = Metric3DDetector.from_pretrained(filename=f"metric_depth_{backbone.replace('-', '_')}_800k.pth").to(model_management.get_torch_device())
         cb = lambda image, **kwargs: model(image, **kwargs)[1]
         out = common_annotator_call(cb, image, resolution=resolution, fx=fx, fy=fy, depth_and_normal=True)

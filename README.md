@@ -1,17 +1,13 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
-![](./examples/example_mesh_graphormer.png)
 Plug-and-play [ComfyUI](https://github.com/comfyanonymous/ComfyUI) node sets for making [ControlNet](https://github.com/lllyasviel/ControlNet/) hint images
+
+"anime style, a protest in the street, cyberpunk city, a woman with pink hair and golden eyes (looking at the viewer) is holding a sign with the text "ComfyUI ControlNet Aux" in bold, neon pink" on Flux.1 Dev
+
+![](./examples/CNAuxBanner.jpg)
 
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 
 All credit & copyright goes to https://github.com/lllyasviel.
-
-# Marigold
-Check out Marigold Depth Estimator which can generate very detailed and sharp depth map from high-resolution still images. The mesh created by it is even 3D-printable. Due to diffusers, it can't be implemented in this extension but there is an Comfy implementation by Kijai
-https://github.com/kijai/ComfyUI-Marigold
-
-![](./examples/example_marigold_flat.jpg)
-![](./examples/example_marigold.png)
 
 # Updates
 Go to [Update page](./UPDATES.md) to follow updates
@@ -179,71 +175,12 @@ for o in history['outputs']:
 # Examples
 > A picture is worth a thousand words
 
-Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below. You can get the same kind of results from preprocessor nodes of this repo.
-## Line Extractors
-### Canny Edge
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_canny.png)
-### HED Lines
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_hed.png)
-### Realistic Lineart
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_lineart.png)
-### Scribble/Fake Scribble
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_scribble.png)
-### TEED Soft-Edge Lines
-![](./examples/example_teed.png)
-### Anyline Lineart
-![](./examples/example_anyline.png)
-
-## Normal and Depth Map
-### Depth (idk the preprocessor they use)
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_depth.png)
-## Zoe - Depth Map
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_zoedepth.png)
-## BAE - Normal Map
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_normalbae.png)
-## MeshGraphormer
-![](./examples/example_mesh_graphormer.png)
-## Depth Anything & Zoe Depth Anything
-![](./examples/example_depth_anything.png)
-## DSINE
-![](./examples/example_dsine.png)
-## Metric3D
-![](./examples/example_metric3d.png)
-## Depth Anything V2
-![](./examples/example_depth_anything_v2.png)
-
-## Faces and Poses
-### OpenPose
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openpose.png)
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openposev2.png)
-
-### Animal Pose (AP-10K)
-![](./examples/example_animal_pose.png)
-
-### DensePose
-![](./examples/example_densepose.png)
-
-## Semantic Segmantation
-### OneFormer ADE20K Segmentor
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_ade20k.png)
-
-### Anime Face Segmentor
-![](./examples/example_anime_face_segmentor.png)
-
-## T2IAdapter-only
-### Color Pallete for T2I-Adapter
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_color.png)
-
-## Optical Flow
-### Unimatch
-![](./examples/example_unimatch.png)
-
-## Recolor
-![](./examples/example_recolor.png)
+![](./examples/ExecuteAll1.jpg)
+![](./examples/ExecuteAll2.jpg)
 
 # Testing workflow
-https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_aux_full.json
-![](https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/pose.png?raw=true)
+https://github.com/Fannovel16/comfyui_controlnet_aux/blob/main/examples/ExecuteAll.png
+Input image: https://github.com/Fannovel16/comfyui_controlnet_aux/blob/main/examples/comfyui-controlnet-aux-logo.png
 
 # Q&A:
 ## Why some nodes doesn't appear after I installed this repo?

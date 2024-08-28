@@ -1,9 +1,12 @@
 import torch
+from ..utils import INPUT
 
 class InpaintPreprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": { "image": ("IMAGE",), "mask": ("MASK",)}}
+        return dict(
+            required=dict(image=INPUT.IMAGE(), mask=INPUT.MASK())
+        )
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "preprocess"
 

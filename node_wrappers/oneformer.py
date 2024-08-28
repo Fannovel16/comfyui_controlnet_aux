@@ -1,10 +1,10 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 
 class OneFormer_COCO_SemSegPreprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types()
+        return define_preprocessor_inputs(resolution=INPUT.RESOLUTION())
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "semantic_segmentate"
@@ -12,7 +12,7 @@ class OneFormer_COCO_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image, resolution=512):
-        from controlnet_aux.oneformer import OneformerSegmentor
+        from custom_controlnet_aux.oneformer import OneformerSegmentor
 
         model = OneformerSegmentor.from_pretrained(filename="150_16_swin_l_oneformer_coco_100ep.pth")
         model = model.to(model_management.get_torch_device())
@@ -23,7 +23,7 @@ class OneFormer_COCO_SemSegPreprocessor:
 class OneFormer_ADE20K_SemSegPreprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types()
+        return define_preprocessor_inputs(resolution=INPUT.RESOLUTION())
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "semantic_segmentate"
@@ -31,7 +31,7 @@ class OneFormer_ADE20K_SemSegPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Semantic Segmentation"
 
     def semantic_segmentate(self, image, resolution=512):
-        from controlnet_aux.oneformer import OneformerSegmentor
+        from custom_controlnet_aux.oneformer import OneformerSegmentor
 
         model = OneformerSegmentor.from_pretrained(filename="250_16_swin_l_oneformer_ade20k_160k.pth")
         model = model.to(model_management.get_torch_device())

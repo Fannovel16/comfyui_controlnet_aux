@@ -1,10 +1,10 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 
 class AnimeLineArt_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
-        return create_node_input_types()
+        return define_preprocessor_inputs(resolution=INPUT.RESOLUTION())
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "execute"
@@ -12,7 +12,7 @@ class AnimeLineArt_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Line Extractors"
 
     def execute(self, image, resolution=512, **kwargs):
-        from controlnet_aux.lineart_anime import LineartAnimeDetector
+        from custom_controlnet_aux.lineart_anime import LineartAnimeDetector
 
         model = LineartAnimeDetector.from_pretrained().to(model_management.get_torch_device())
         out = common_annotator_call(model, image, resolution=resolution)

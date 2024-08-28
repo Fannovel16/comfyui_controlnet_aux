@@ -1,4 +1,4 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call
 import comfy.model_management as model_management
 import torch
 import numpy as np
@@ -27,8 +27,8 @@ class Unimatch_OptFlowPreprocessor:
     CATEGORY = "ControlNet Preprocessors/Optical Flow"
 
     def estimate(self, image, ckpt_name, backward_flow=False, bidirectional_flow=False):
-        assert len(image) > 1, "[Unimatch] Requiring as least two frames as a optical flow estimator. Only use this node on video input."    
-        from controlnet_aux.unimatch import UnimatchDetector
+        assert len(image) > 1, "[Unimatch] Requiring as least two frames as an optical flow estimator. Only use this node on video input."    
+        from custom_controlnet_aux.unimatch import UnimatchDetector
         tensor_images = image
         model = UnimatchDetector.from_pretrained(filename=ckpt_name).to(model_management.get_torch_device())
         flows, vis_flows = [], []
@@ -54,7 +54,7 @@ class MaskOptFlow:
     CATEGORY = "ControlNet Preprocessors/Optical Flow"
     
     def mask_opt_flow(self, optical_flow, mask):
-        from controlnet_aux.unimatch import flow_to_image
+        from custom_controlnet_aux.unimatch import flow_to_image
         assert len(mask) >= len(optical_flow), f"Not enough masks to mask optical flow: {len(mask)} vs {len(optical_flow)}"
         mask = mask[:optical_flow.shape[0]]
         mask = F.interpolate(mask, optical_flow.shape[1:3])

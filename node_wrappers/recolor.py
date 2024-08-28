@@ -1,11 +1,12 @@
-from ..utils import common_annotator_call, create_node_input_types
+from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 
 class ImageLuminanceDetector:
     @classmethod
     def INPUT_TYPES(s):
         #https://github.com/Mikubill/sd-webui-controlnet/blob/416c345072c9c2066101e225964e3986abe6945e/scripts/processor.py#L1229
-        return create_node_input_types(
-            gamma_correction=("FLOAT", {"default": 1.0, "min": 0.1, "max": 2.0, "step": 0.001})
+        return define_preprocessor_inputs(
+            gamma_correction=INPUT.FLOAT(default=1.0, min=0.1, max=2.0),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -13,16 +14,17 @@ class ImageLuminanceDetector:
 
     CATEGORY = "ControlNet Preprocessors/Recolor"
 
-    def execute(self, image, gamma_correction, resolution=512, **kwargs):
-        from controlnet_aux.recolor import Recolorizer
+    def execute(self, image, gamma_correction=1.0, resolution=512, **kwargs):
+        from custom_controlnet_aux.recolor import Recolorizer
         return (common_annotator_call(Recolorizer(), image, mode="luminance", gamma_correction=gamma_correction , resolution=resolution), )
 
 class ImageIntensityDetector:
     @classmethod
     def INPUT_TYPES(s):
         #https://github.com/Mikubill/sd-webui-controlnet/blob/416c345072c9c2066101e225964e3986abe6945e/scripts/processor.py#L1229
-        return create_node_input_types(
-            gamma_correction=("FLOAT", {"default": 1.0, "min": 0.1, "max": 2.0, "step": 0.001})
+        return define_preprocessor_inputs(
+            gamma_correction=INPUT.FLOAT(default=1.0, min=0.1, max=2.0),
+            resolution=INPUT.RESOLUTION()
         )
 
     RETURN_TYPES = ("IMAGE",)
@@ -30,8 +32,8 @@ class ImageIntensityDetector:
 
     CATEGORY = "ControlNet Preprocessors/Recolor"
 
-    def execute(self, image, gamma_correction, resolution=512, **kwargs):
-        from controlnet_aux.recolor import Recolorizer
+    def execute(self, image, gamma_correction=1.0, resolution=512, **kwargs):
+        from custom_controlnet_aux.recolor import Recolorizer
         return (common_annotator_call(Recolorizer(), image, mode="intensity", gamma_correction=gamma_correction , resolution=resolution), )
 
 NODE_CLASS_MAPPINGS = {
