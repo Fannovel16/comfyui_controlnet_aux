@@ -259,6 +259,7 @@ class DwposeDetector:
             include_face = hand_and_face
 
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
+        input_image, _ = resize_image_with_pad(input_image, 0, upscale_method)
         poses = self.detect_poses(input_image)
         
         canvas = draw_poses(poses, input_image.shape[0], input_image.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face)
