@@ -1,10 +1,15 @@
 [project]
 name = "comfyui_controlnet_aux"
 description = "Plug-and-play ComfyUI node sets for making ControlNet hint images"
+<<<<<<< Updated upstream
 
 version = "1.0.4-alpha.7"
 license = { file = "LICENSE.txt" }
 dependencies = ["torch", "importlib_metadata", "huggingface_hub", "scipy", "opencv-python>=4.7.0.72", "filelock", "numpy", "Pillow", "einops", "torchvision", "pyyaml", "scikit-image", "python-dateutil", "mediapipe", "svglib", "fvcore", "yapf", "omegaconf", "ftfy", "addict", "yacs", "trimesh[easy]", "albumentations", "scikit-learn", "matplotlib"]
+=======
+version = "1.0.4-alpha.4"
+dependencies = ["torch", "importlib_metadata", "huggingface_hub", "scipy", "opencv-python>=4.7.0.72", "filelock", "numpy", "Pillow", "einops", "torchvision", "pyyaml", "scikit-image", "python-dateutil", "mediapipe", "svglib", "fvcore", "yapf", "omegaconf", "ftfy", "addict", "yacs", "trimesh[easy]", "albumentations", "scikit-learn"]
+>>>>>>> Stashed changes
 
 [project.urls]
 Repository = "https://github.com/Fannovel16/comfyui_controlnet_aux"
