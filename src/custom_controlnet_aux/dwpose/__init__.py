@@ -91,7 +91,7 @@ def draw_animalpose(canvas: np.ndarray, keypoints: list[Keypoint]) -> np.ndarray
     return canvas
 
 
-def draw_poses(poses: List[PoseResult], H, W, draw_body=True, draw_hand=True, draw_face=True):
+def draw_poses(poses: List[PoseResult], H, W, draw_body=True, draw_hand=True, draw_face=True, xinsr_stick_scaling=False):
     """
     Draw the detected poses on an empty canvas.
 
@@ -110,7 +110,7 @@ def draw_poses(poses: List[PoseResult], H, W, draw_body=True, draw_hand=True, dr
 
     for pose in poses:
         if draw_body:
-            canvas = util.draw_bodypose(canvas, pose.body.keypoints)
+            canvas = util.draw_bodypose(canvas, pose.body.keypoints, xinsr_stick_scaling)
 
         if draw_hand:
             canvas = util.draw_handpose(canvas, pose.left_hand)
@@ -252,7 +252,7 @@ class DwposeDetector:
             keypoints_info = self.dw_pose_estimation(oriImg.copy())
             return Wholebody.format_result(keypoints_info)
     
-    def __call__(self, input_image, detect_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", image_and_json=False, upscale_method="INTER_CUBIC", **kwargs):
+    def __call__(self, input_image, detect_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", image_and_json=False, upscale_method="INTER_CUBIC", xinsr_stick_scaling=False, **kwargs):
         if hand_and_face is not None:
             warnings.warn("hand_and_face is deprecated. Use include_hand and include_face instead.", DeprecationWarning)
             include_hand = hand_and_face
@@ -262,7 +262,7 @@ class DwposeDetector:
         input_image, _ = resize_image_with_pad(input_image, 0, upscale_method)
         poses = self.detect_poses(input_image)
         
-        canvas = draw_poses(poses, input_image.shape[0], input_image.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face)
+        canvas = draw_poses(poses, input_image.shape[0], input_image.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face, xinsr_stick_scaling=xinsr_stick_scaling)
         canvas, remove_pad = resize_image_with_pad(canvas, detect_resolution, upscale_method)
         detected_map = HWC3(remove_pad(canvas))
 

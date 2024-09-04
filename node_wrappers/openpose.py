@@ -9,7 +9,8 @@ class OpenPose_Preprocessor:
             detect_hand=INPUT.COMBO(["enable", "disable"]),
             detect_body=INPUT.COMBO(["enable", "disable"]),
             detect_face=INPUT.COMBO(["enable", "disable"]),
-            resolution=INPUT.RESOLUTION()
+            resolution=INPUT.RESOLUTION(),
+            scale_stick_for_xinsr_cn=INPUT.COMBO(["disable", "enable"])
         )
         
     RETURN_TYPES = ("IMAGE", "POSE_KEYPOINT")
@@ -17,12 +18,13 @@ class OpenPose_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
-    def estimate_pose(self, image, detect_hand, detect_body, detect_face, resolution=512, **kwargs):
+    def estimate_pose(self, image, detect_hand="enable", detect_body="enable", detect_face="enable", scale_stick_for_xinsr_cn="disable", resolution=512, **kwargs):
         from custom_controlnet_aux.open_pose import OpenposeDetector
 
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
         detect_face = detect_face == "enable"
+        scale_stick_for_xinsr_cn = scale_stick_for_xinsr_cn == "enable"
 
         model = OpenposeDetector.from_pretrained().to(model_management.get_torch_device())        
         self.openpose_dicts = []
@@ -31,7 +33,7 @@ class OpenPose_Preprocessor:
             self.openpose_dicts.append(openpose_dict)
             return pose_img
         
-        out = common_annotator_call(func, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, resolution=resolution)
+        out = common_annotator_call(func, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, xinsr_stick_scaling=scale_stick_for_xinsr_cn, resolution=resolution)
         del model
         return {
             'ui': { "openpose_json": [json.dumps(self.openpose_dicts, indent=4)] },
