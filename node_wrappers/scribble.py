@@ -41,7 +41,7 @@ class Scribble_PiDiNet_Preprocessor:
     @classmethod
     def INPUT_TYPES(s):
         return define_preprocessor_inputs(
-            safe=(["enable", "disable"]),
+            safe=(["enable", "disable"],),
             resolution=INPUT.RESOLUTION()
         )
 
