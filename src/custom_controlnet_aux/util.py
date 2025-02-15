@@ -291,7 +291,7 @@ def custom_torch_download(filename, ckpts_dir=annotator_ckpts_path):
 def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, ckpts_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
 
     local_dir = os.path.join(ckpts_dir, pretrained_model_or_path)
-    model_path = os.path.join(local_dir, *subfolder.split('/'), filename)
+    model_path = Path(local_dir).joinpath(*subfolder.split('/'), filename).__str__()
 
     if len(str(model_path)) >= 255:
         warnings.warn(f"Path {model_path} is too long, \n please change annotator_ckpts_path in config.yaml")
@@ -304,7 +304,7 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, c
             if cache_dir_d is None:
                 import platform
                 if platform.system() == "Windows":
-                    cache_dir_d = os.path.join(os.getenv("USERPROFILE"), ".cache", "huggingface", "hub")
+                    cache_dir_d = Path(os.getenv("USERPROFILE")).joinpath(".cache", "huggingface", "hub").__str__()
                 else:
                     cache_dir_d = os.path.join(os.getenv("HOME"), ".cache", "huggingface", "hub")
             try:
@@ -322,7 +322,7 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, c
             except:
                 print("Maybe not able to create symlink. Disable using symlinks.")
                 use_symlinks = False
-                cache_dir_d = os.path.join(cache_dir, "ckpts", pretrained_model_or_path)
+                cache_dir_d = Path(cache_dir).joinpath("ckpts", pretrained_model_or_path).__str__()
             finally:    # always remove test link files
                 with suppress(FileNotFoundError):
                     os.remove(os.path.join(ckpts_dir, f"linktest_{filename}.txt"))
