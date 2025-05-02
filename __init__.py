@@ -199,15 +199,18 @@ class ExecuteAllControlNetPreprocessors:
 
 #     def get_preprocessor(self, preprocessor: str):
 #         return (preprocessor,)
+
 #########################################################################################################################
-# 这是代码修改的部分，替换掉了上面的 ControlNetPreprocessorSelector 节点，采用类似 sd-webui-controlnet 界面，
-# 把controlnet模型和预处理器放在一起统一管理，遗憾的是comfyui最近更新，2025-02-15_0.3.14以后版本这段代码不可用，我还不清楚哪里出了问题。
+# 这是代码修改的部分，替换掉了上面的 ControlNetPreprocessorSelector 节点，
+# 采用类似 sd-webui-controlnet 的统一加载器，把controlnet模型和预处理器放在一起管理。
 from server import PromptServer
 from aiohttp import web
-import folder_paths, comfy.controlnet, git#pip install GitPython
+import folder_paths, comfy.controlnet
+WEB_DIRECTORY = "./web"
 
-comfyui_version = len(list( git.Repo(os.path.dirname(folder_paths.__file__)).iter_commits('HEAD') ))
-WEB_DIRECTORY = "./web1" if int(comfyui_version)>3109 else "./web"
+# import git #pip install GitPython #版本检测代码，留作备用。
+# comfyui_version = len(list( git.Repo(os.path.dirname(folder_paths.__file__)).iter_commits('HEAD') ))
+# WEB_DIRECTORY = "./web1" if int(comfyui_version)>3109 else "./web"
 
 @PromptServer.instance.routes.get("/Preprocessor")
 async def getStylesList(request):
