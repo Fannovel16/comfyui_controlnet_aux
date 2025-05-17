@@ -3,9 +3,8 @@ export const app = window.comfyAPI.app.app;
 export const api = window.comfyAPI.api.api;
 export const $el = window.comfyAPI.ui.$el;
 
-const link = document.createElement("link"); link.rel = "stylesheet";
-link.href = "extensions/comfyui_controlnet_aux/index.css";
-document.head.appendChild(link);
+// document.head.insertAdjacentHTML('beforeend', '<link rel="stylesheet" href="extensions/comfyui_controlnet_aux/index.css">');
+const style = document.createElement("style"); document.head.append(style); 
 
 function listsort(listdata,valuestr) { listdata.sort((a,b)=> valuestr.includes(b.name) - valuestr.includes(a.name)); };
 
@@ -86,3 +85,64 @@ app.registerExtension({
         }
     }
 })
+
+
+
+style.textContent = `
+.Preprocessor .tools {
+    display: flex;
+    justify-content: space-between;
+    height: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--border-color);
+}
+.Preprocessor .tools button.Empty {
+    height: 20px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    font-size: 11px;
+    background: var(--comfy-input-bg);
+    color: var(--error-text);
+    cursor: pointer;
+}
+.Preprocessor .tools textarea.searchpre {
+    flex: 1;
+    margin-left: 10px;
+    height: 20px;
+    line-height:8px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    font-size: 15px;
+    background: var(--comfy-input-bg);
+    color: var(--input-text);
+    padding: 4px 10px;
+    outline: none;
+    resize: none;
+}
+.Preprocessor-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-height: 150px;
+    height: calc(100% - 30px);
+    overflow: auto;
+}
+.Preprocessor-tag {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0px;
+    padding: 0px;
+    color: var(--input-text);
+    background-color: var(--comfy-input-bg);
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    font-size: 11px;
+    cursor: pointer;
+}
+.Preprocessor-tag.hide {
+    display: none;
+}
+.Preprocessor-tag:hover {
+    filter: brightness(2);
+}
+  `;
