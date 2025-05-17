@@ -14,15 +14,15 @@ function addhide(el,searchValue) { el.classList.toggle('hide', !(
     el.dataset.tag.toLowerCase().includes(searchValue.toLowerCase()) ||  
     el.classList.contains('Preprocessor-tag-selected') ) ) };
   
-function getTagList() {  return preprolist[controlnet].map((tag, index) => { 
+function getTagList() {  const taglist = preprolist[controlnet].map((tag, index) => { 
     return $el('label.Preprocessor-tag',   
                 { dataset: { tag: tag.name, name: tag.name, index: index },  
                   $: (el) => { el.firstChild.onclick = () => { 
                     document.querySelectorAll(`.Preprocessor-tag`).forEach(tr => tr.classList.remove("Preprocessor-tag-selected"));
                     el.classList.toggle("Preprocessor-tag-selected"); }; },  },   
                 [ $el("input", { type: 'checkbox', name: tag.name, value: tag.name }), 
-                  $el("span", { textContent: tag.name })  ] 
-            ); })};
+                  $el("span", { textContent: tag.name })  ]  ); } );
+            taglist.push( $el( 'h6', { textContent: '工作流菜单-浏览模板-自定义节点-comfyui_controlnet_aux-示例工作流' } ) ); return taglist; };
 
 let preprolist = {}; let controlnet = 'control_v11p_sd15_canny.pth';
 
