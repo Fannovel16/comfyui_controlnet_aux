@@ -214,7 +214,7 @@ WEB_DIRECTORY = "./web"
 # print(f"[comfyui_controlnet_aux] | INFO -> 当前版本号为{comfyui_version}，使用{WEB_DIRECTORY}文件夹")
 
 @PromptServer.instance.routes.get("/Preprocessor")
-async def getStylesList(request): return web.json_response([{"name":i} for i in PREPROCESSOR_OPTIONS])
+async def getStylesList(request): return web.json_response(PREPROCESSOR_OPTIONS)
 
 class ControlNetPreprocessorSelector:
     @classmethod
