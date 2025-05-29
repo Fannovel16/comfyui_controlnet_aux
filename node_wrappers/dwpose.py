@@ -36,7 +36,7 @@ class DWPose_Preprocessor:
             detect_face=INPUT.COMBO(["enable", "disable"]),
             resolution=INPUT.RESOLUTION(),
             bbox_detector=INPUT.COMBO(
-                ["yolox_l.torchscript.pt", "yolox_l.onnx", "yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx"],
+                ["None"] + ["yolox_l.torchscript.pt", "yolox_l.onnx", "yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx"],
                 default="yolox_l.onnx"
             ),
             pose_estimator=INPUT.COMBO(
@@ -52,7 +52,9 @@ class DWPose_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
     def estimate_pose(self, image, detect_hand="enable", detect_body="enable", detect_face="enable", resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="dw-ll_ucoco_384.onnx", scale_stick_for_xinsr_cn="disable", **kwargs):
-        if bbox_detector == "yolox_l.onnx":
+        if bbox_detector == "None":
+            yolo_repo = DWPOSE_MODEL_NAME 
+        elif bbox_detector == "yolox_l.onnx":
             yolo_repo = DWPOSE_MODEL_NAME
         elif "yolox" in bbox_detector:
             yolo_repo = "hr16/yolox-onnx"
@@ -73,7 +75,7 @@ class DWPose_Preprocessor:
         model = DwposeDetector.from_pretrained(
             pose_repo,
             yolo_repo,
-            det_filename=bbox_detector, pose_filename=pose_estimator,
+            det_filename=(None if bbox_detector == "None" else bbox_detector), pose_filename=pose_estimator,
             torchscript_device=model_management.get_torch_device()
         )
         detect_hand = detect_hand == "enable"
@@ -98,7 +100,7 @@ class AnimalPose_Preprocessor:
     def INPUT_TYPES(s):
         return define_preprocessor_inputs(
             bbox_detector = INPUT.COMBO(
-                ["yolox_l.torchscript.pt", "yolox_l.onnx", "yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx"],
+                ["None"] + ["yolox_l.torchscript.pt", "yolox_l.onnx", "yolo_nas_l_fp16.onnx", "yolo_nas_m_fp16.onnx", "yolo_nas_s_fp16.onnx"],
                 default="yolox_l.torchscript.pt"
             ),
             pose_estimator = INPUT.COMBO(
@@ -114,7 +116,9 @@ class AnimalPose_Preprocessor:
     CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
     def estimate_pose(self, image, resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="rtmpose-m_ap10k_256.onnx", **kwargs):
-        if bbox_detector == "yolox_l.onnx":
+        if bbox_detector == "None":
+            yolo_repo = DWPOSE_MODEL_NAME 
+        elif bbox_detector == "yolox_l.onnx":
             yolo_repo = DWPOSE_MODEL_NAME
         elif "yolox" in bbox_detector:
             yolo_repo = "hr16/yolox-onnx"
@@ -135,7 +139,7 @@ class AnimalPose_Preprocessor:
         model = AnimalposeDetector.from_pretrained(
             pose_repo,
             yolo_repo,
-            det_filename=bbox_detector, pose_filename=pose_estimator,
+            det_filename=(None if bbox_detector == "None" else bbox_detector), pose_filename=pose_estimator,
             torchscript_device=model_management.get_torch_device()
         )
 
