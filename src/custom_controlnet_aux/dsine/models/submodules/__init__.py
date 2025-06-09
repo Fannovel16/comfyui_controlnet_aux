@@ -22,8 +22,8 @@ class Encoder(nn.Module):
 
         basemodel_name = 'tf_efficientnet_b%s_ap' % B
         print('Loading base model ()...'.format(basemodel_name), end='')
-        repo_path = os.path.join(os.path.dirname(__file__), 'efficientnet_repo')
-        basemodel = torch.hub.load(repo_path, basemodel_name, pretrained=False, source='local')
+        from src.custom_timm import create_model
+        basemodel = create_model(basemodel_name, pretrained=False, num_classes=0)
         print('Done.')
 
         # Remove last layer
