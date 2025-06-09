@@ -10,11 +10,8 @@ class Encoder(nn.Module):
 
         basemodel_name = 'tf_efficientnet_b5'
         print('Loading base model ()...'.format(basemodel_name), end='')
-        try:
-            from custom_timm import create_model
-        except ImportError:
-            from src.custom_timm import create_model
-        basemodel = create_model(basemodel_name, pretrained=False, num_classes=0)
+        import timm
+        basemodel = timm.create_model(basemodel_name, pretrained=False, num_classes=0)
         print('Done.')
 
 
