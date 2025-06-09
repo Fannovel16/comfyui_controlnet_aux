@@ -22,7 +22,10 @@ class Encoder(nn.Module):
 
         basemodel_name = 'tf_efficientnet_b%s_ap' % B
         print('Loading base model ()...'.format(basemodel_name), end='')
-        from src.custom_timm import create_model
+        try:
+            from custom_timm import create_model
+        except ImportError:
+            from src.custom_timm import create_model
         basemodel = create_model(basemodel_name, pretrained=False, num_classes=0)
         print('Done.')
 
