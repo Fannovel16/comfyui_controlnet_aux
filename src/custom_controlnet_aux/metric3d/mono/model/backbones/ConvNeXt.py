@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from custom_timm.models.layers import trunc_normal_, DropPath
-from custom_timm.models.registry import register_model
+from timm.layers import trunc_normal_, DropPath
+# Removed custom_timm registry import - not needed for our use case
+# from custom_timm.models.registry import register_model
 
 class Block(nn.Module):
     r""" ConvNeXt Block. There are two equivalent implementations:
