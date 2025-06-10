@@ -23,7 +23,7 @@ class ZoeDetector:
             
         conf = get_config("zoedepth", "infer")
         model = ZoeDepth.build_from_config(conf)
-        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'))['model'])
+        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'))['model'], strict=False)
         model.eval()
 
         return cls(model)
@@ -72,7 +72,7 @@ class ZoeDepthAnythingDetector:
             
         conf = get_config("zoedepth", "infer")
         model = ZoeDepthAnything.build_from_config(conf)
-        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'))['model'])
+        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'))['model'], strict=False)
         model.eval()
 
         return cls(model)

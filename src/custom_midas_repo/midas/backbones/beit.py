@@ -95,13 +95,16 @@ def block_forward(self, x, resolution, shared_rel_pos_bias: Optional[torch.Tenso
     """
     Modification of timm.models.beit.py: Block.forward to support arbitrary window sizes.
     """
+    # PyTorch 2.7 compatibility: handle missing drop_path attribute
+    drop_path = getattr(self, 'drop_path', lambda x: x)
+    
     if self.gamma_1 is None:
-        x = x + self.drop_path(self.attn(self.norm1(x), resolution, shared_rel_pos_bias=shared_rel_pos_bias))
-        x = x + self.drop_path(self.mlp(self.norm2(x)))
+        x = x + drop_path(self.attn(self.norm1(x), resolution, shared_rel_pos_bias=shared_rel_pos_bias))
+        x = x + drop_path(self.mlp(self.norm2(x)))
     else:
-        x = x + self.drop_path(self.gamma_1 * self.attn(self.norm1(x), resolution,
+        x = x + drop_path(self.gamma_1 * self.attn(self.norm1(x), resolution,
                                                         shared_rel_pos_bias=shared_rel_pos_bias))
-        x = x + self.drop_path(self.gamma_2 * self.mlp(self.norm2(x)))
+        x = x + drop_path(self.gamma_2 * self.mlp(self.norm2(x)))
     return x
 
 
