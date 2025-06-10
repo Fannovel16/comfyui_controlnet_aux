@@ -14,10 +14,10 @@ from huggingface_hub import hf_hub_download
 from .models.dsine_arch import DSINE
 from .utils.utils import get_intrins_from_fov
 
-# Local constants - making DSINE self-contained like BAE
+# Local constants
 DIFFUSION_EDGE_MODEL_NAME = "hr16/Diffusion-Edge"
 
-# Local utility functions - copied from util.py to avoid import conflicts
+# Local utility functions
 def HWC3(x):
     assert x.dtype == np.uint8
     if x.ndim == 2:
@@ -95,7 +95,7 @@ def common_input_validate(input_image, output_type, **kwargs):
     return (input_image, output_type)
 
 def custom_hf_download(pretrained_model_or_path, filename, subfolder=''):
-    """Simplified HF download for DSINE - self-contained like BAE"""
+    """Download model files from HuggingFace Hub"""
     annotator_ckpts_path = os.path.join(Path(__file__).parents[3], 'ckpts')
     local_dir = os.path.join(annotator_ckpts_path, pretrained_model_or_path)
     model_path = Path(local_dir).joinpath(*subfolder.split('/'), filename).__str__()
@@ -125,7 +125,7 @@ def load_checkpoint(fpath, model):
         else:
             load_dict[k] = v
 
-    # Smart loading: only load weights that have compatible shapes
+    # Load compatible weights only
     model_state = model.state_dict()
     compatible_dict = {}
     skipped_keys = []

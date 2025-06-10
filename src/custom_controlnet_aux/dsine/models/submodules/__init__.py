@@ -11,16 +11,13 @@ INPUT_CHANNELS_DICT = {
     2: [1408, 120, 48, 24, 16],
     3: [1536, 136, 48, 32, 24],
     4: [1792, 160, 56, 32, 24],
-    5: [2048, 176, 64, None, None],  # PERFECT modern timm EfficientNet-B5: features[10,7,5] - EXACT channel match with perfect spatial alignment!
+    5: [2048, 176, 64, None, None],  # EfficientNet-B5: features[10,7,5]
     6: [2304, 200, 72, 40, 32],
     7: [2560, 224, 80, 48, 32]
 }
 
 
-# Import the standalone encoder to avoid ComfyUI import conflicts
 from .standalone_encoder import StandaloneEncoder
-
-# Use StandaloneEncoder as the main Encoder class
 Encoder = StandaloneEncoder
 
 
