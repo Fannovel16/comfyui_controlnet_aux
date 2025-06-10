@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import custom_timm as timm
+import timm
 import types
 import math
 import torch.nn.functional as F
