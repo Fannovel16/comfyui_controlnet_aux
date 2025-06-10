@@ -1,6 +1,4 @@
 """
-Modern OneFormer implementation using transformers library
+OneFormer implementation using HuggingFace transformers for PyTorch 2.7 compatibility.
 """
-from .transformers_impl import OneformerTransformersSegmentor
-
-OneformerSegmentor = OneformerTransformersSegmentor
+from .minimal_impl import OneformerSegmentor
