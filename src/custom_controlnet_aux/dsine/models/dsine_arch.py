@@ -30,7 +30,7 @@ class Decoder(nn.Module):
         self.hidden_head = get_prediction_head(i_dim+2, h_dim, hidden_dim)
 
     def forward(self, features, uvs):
-        _, _, x_block2, x_block3, x_block4 = features[4], features[5], features[6], features[8], features[11]
+        _, _, x_block2, x_block3, x_block4 = None, None, features[5], features[7], features[10]
         uv_32, uv_16, uv_8 = uvs
 
         x_d0 = self.conv2(torch.cat([x_block4, uv_32], dim=1))
