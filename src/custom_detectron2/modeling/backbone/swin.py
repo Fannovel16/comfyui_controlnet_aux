@@ -229,7 +229,7 @@ class SwinTransformerBlock(nn.Module):
         )
 
         if drop_path > 0.0:
-            from custom_timm.models.layers import DropPath
+            from timm.layers import DropPath
 
             self.drop_path = DropPath(drop_path)
         else:

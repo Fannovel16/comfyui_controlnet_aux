@@ -8,7 +8,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from torch.nn.init import xavier_uniform_, constant_, uniform_, normal_
-from torch.cuda.amp import autocast
+from torch.amp import autocast
 
 from custom_detectron2.config import configurable
 from custom_detectron2.layers import Conv2d, ShapeSpec, get_norm
@@ -311,7 +311,7 @@ class MSDeformAttnPixelDecoder(nn.Module):
         ret["common_stride"] = cfg.MODEL.SEM_SEG_HEAD.COMMON_STRIDE
         return ret
 
-    @autocast(enabled=False)
+    @autocast('cuda', enabled=False)
     def forward_features(self, features):
         srcs = []
         pos = []
