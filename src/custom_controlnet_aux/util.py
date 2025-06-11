@@ -13,7 +13,6 @@ from torch.utils.model_zoo import load_url
 from ast import literal_eval
 
 
-TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
 BDS_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite"
