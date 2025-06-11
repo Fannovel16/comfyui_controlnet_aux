@@ -3,8 +3,8 @@ import torch.nn.functional as F
 import logging
 import os
 import os.path as osp
-from custom_controlnet_aux.metric3d.mono.utils.avg_meter import MetricAverageMeter
-from custom_controlnet_aux.metric3d.mono.utils.visualization import save_val_imgs, create_html, save_raw_imgs, save_normal_val_imgs
+from .avg_meter import MetricAverageMeter
+from .visualization import save_val_imgs, create_html, save_raw_imgs, save_normal_val_imgs
 import cv2
 from tqdm import tqdm
 import numpy as np

@@ -12,8 +12,8 @@ import torch.distributed as dist
 import torch.multiprocessing as mp
 
 try:
-    from custom_mmpkg.custom_mmcv.utils import Config, DictAction
-except:
+    from mmcv.utils import Config, DictAction
+except ImportError:
     from mmengine import Config, DictAction
 from datetime import timedelta
 import random

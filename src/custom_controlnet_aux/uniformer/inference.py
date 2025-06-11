@@ -1,11 +1,27 @@
 
-import torch
+import os
+import sys
+import types
 
-import custom_mmpkg.custom_mmcv as mmcv
-from custom_mmpkg.custom_mmcv.parallel import collate, scatter
-from custom_mmpkg.custom_mmcv.runner import load_checkpoint
-from custom_mmpkg.custom_mmseg.datasets.pipelines import Compose
-from custom_mmpkg.custom_mmseg.models import build_segmentor
+# Prevent NPU import by creating dummy modules
+class DummyNPUModule:
+    def __getattr__(self, name):
+        return DummyNPUModule()
+    
+    def __call__(self, *args, **kwargs):
+        return DummyNPUModule()
+
+# Create dummy modules to block problematic NPU imports
+dummy_npu = DummyNPUModule()
+sys.modules['mmcv.device.npu'] = dummy_npu
+sys.modules['mmcv.device.npu.data_parallel'] = dummy_npu
+
+import torch
+import mmcv
+from mmcv.parallel import collate, scatter
+from mmcv.runner import load_checkpoint
+from mmseg.datasets.pipelines import Compose
+from mmseg.models import build_segmentor
     
 def init_segmentor(config, checkpoint=None, device='cuda:0'):
     """Initialize a segmentor from config file.

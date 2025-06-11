@@ -23,3 +23,6 @@ trimesh[easy]
 albumentations
 scikit-learn
 matplotlib
+mmcv-full==1.7.2
+mmsegmentation==0.30.0
+mmengine

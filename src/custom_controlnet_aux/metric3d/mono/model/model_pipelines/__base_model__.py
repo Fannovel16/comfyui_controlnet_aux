@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from custom_controlnet_aux.metric3d.mono.utils.comm import get_func
+from ...utils.comm import get_func
 
 
 class BaseDepthModel(nn.Module):

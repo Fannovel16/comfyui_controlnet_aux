@@ -1,3 +1,8 @@
+import os
+# Disable NPU device initialization and problematic MMCV ops to prevent RuntimeError
+os.environ['NPU_DEVICE_COUNT'] = '0'
+os.environ['MMCV_WITH_OPS'] = '0'
+
 from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 

@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import os, cv2
 import numpy as np
-from custom_controlnet_aux.metric3d.mono.utils.transform import gray_to_colormap
+from .transform import gray_to_colormap
 import shutil
 import glob
-from custom_controlnet_aux.metric3d.mono.utils.running import main_process
+from .running import main_process
 import torch
 
 def save_raw_imgs( 
