@@ -1,1 +1,1 @@
-from .transformers_impl import DepthAnythingDetector
+from .transformers import DepthAnythingDetector
