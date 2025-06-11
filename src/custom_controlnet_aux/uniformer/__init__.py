@@ -1,4 +1,6 @@
 import os
+# Fix for mmcv distutils conflict with setuptools in Python 3.11+
+os.environ.setdefault('SETUPTOOLS_USE_DISTUTILS', 'stdlib')
 from .inference import init_segmentor, inference_segmentor, show_result_pyplot
 import warnings
 import cv2

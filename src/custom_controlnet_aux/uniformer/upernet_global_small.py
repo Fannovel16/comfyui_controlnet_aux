@@ -6,7 +6,7 @@ _base_ = [
 ]
 
 custom_imports = dict(
-    imports=['custom_controlnet_aux.uniformer.uniformer'],
+    imports=['src.custom_controlnet_aux.uniformer.uniformer'],
     allow_failed_imports=False
 )
 
