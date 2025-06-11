@@ -117,12 +117,6 @@ def _make_encoder(backbone, features, use_pretrained, groups=1, expand=False, ex
         scratch = _make_scratch(
             [96, 192, 384, 768], features, groups=groups, expand=expand
         )  # ViT-B/16 - 84.6% Top1 (backbone)
-    elif backbone == "resnext101_wsl":
-        pretrained = _make_pretrained_resnext101_wsl(use_pretrained)
-        scratch = _make_scratch([256, 512, 1024, 2048], features, groups=groups, expand=expand)  # efficientnet_lite3
-    elif backbone == "efficientnet_lite3":
-        pretrained = _make_pretrained_efficientnet_lite3(use_pretrained, exportable=exportable)
-        scratch = _make_scratch([32, 48, 136, 384], features, groups=groups, expand=expand)  # efficientnet_lite3
     else:
         print(f"Backbone '{backbone}' not implemented")
         assert False
@@ -163,45 +157,6 @@ def _make_scratch(in_shape, out_shape, groups=1, expand=False):
     return scratch
 
 
-def _make_pretrained_efficientnet_lite3(use_pretrained, exportable=False):
-    efficientnet = torch.hub.load(
-        "rwightman/gen-efficientnet-pytorch",
-        "tf_efficientnet_lite3",
-        pretrained=use_pretrained,
-        exportable=exportable
-    )
-    return _make_efficientnet_backbone(efficientnet)
-
-
-def _make_efficientnet_backbone(effnet):
-    pretrained = nn.Module()
-
-    pretrained.layer1 = nn.Sequential(
-        effnet.conv_stem, effnet.bn1, effnet.act1, *effnet.blocks[0:2]
-    )
-    pretrained.layer2 = nn.Sequential(*effnet.blocks[2:3])
-    pretrained.layer3 = nn.Sequential(*effnet.blocks[3:5])
-    pretrained.layer4 = nn.Sequential(*effnet.blocks[5:9])
-
-    return pretrained
-    
-
-def _make_resnet_backbone(resnet):
-    pretrained = nn.Module()
-    pretrained.layer1 = nn.Sequential(
-        resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool, resnet.layer1
-    )
-
-    pretrained.layer2 = resnet.layer2
-    pretrained.layer3 = resnet.layer3
-    pretrained.layer4 = resnet.layer4
-
-    return pretrained
-
-
-def _make_pretrained_resnext101_wsl(use_pretrained):
-    resnet = torch.hub.load("facebookresearch/WSL-Images", "resnext101_32x8d_wsl")
-    return _make_resnet_backbone(resnet)
 
 
 
