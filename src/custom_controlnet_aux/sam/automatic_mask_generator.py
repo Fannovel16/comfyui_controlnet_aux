@@ -115,7 +115,7 @@ class SamAutomaticMaskGenerator:
             "coco_rle",
         ], f"Unknown output_mode {output_mode}."
         if output_mode == "coco_rle":
-            from custom_pycocotools import mask as mask_utils  # type: ignore # noqa: F401
+            from pycocotools import mask as mask_utils  # type: ignore # noqa: F401
 
         if min_mask_region_area > 0:
             import cv2  # type: ignore # noqa: F401
