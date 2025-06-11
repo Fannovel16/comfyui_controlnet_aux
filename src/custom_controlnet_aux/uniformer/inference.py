@@ -37,7 +37,17 @@ def init_segmentor(config, checkpoint=None, device='cuda:0'):
         nn.Module: The constructed segmentor.
     """
     if isinstance(config, str):
-        config = mmcv.Config.fromfile(config)
+        # Add src path for custom_controlnet_aux imports to work
+        import sys
+        original_path = sys.path[:]
+        src_path = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+        if src_path not in sys.path:
+            sys.path.insert(0, src_path)
+        try:
+            config = mmcv.Config.fromfile(config)
+        finally:
+            # Restore original path
+            sys.path[:] = original_path
     elif not isinstance(config, mmcv.Config):
         raise TypeError('config must be a filename or Config object, '
                         'but got {}'.format(type(config)))
