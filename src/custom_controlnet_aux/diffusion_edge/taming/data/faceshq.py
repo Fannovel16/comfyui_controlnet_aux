@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import custom_albumentations as albumentations
+import albumentations
 from torch.utils.data import Dataset
 
 from custom_controlnet_aux.diffusion_edge.taming.data.base import ImagePaths, NumpyPaths, ConcatDatasetWithIndex

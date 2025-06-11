@@ -1,6 +1,6 @@
 import bisect
 import numpy as np
-import custom_albumentations as albumentations
+import albumentations
 from PIL import Image
 from torch.utils.data import Dataset, ConcatDataset
 

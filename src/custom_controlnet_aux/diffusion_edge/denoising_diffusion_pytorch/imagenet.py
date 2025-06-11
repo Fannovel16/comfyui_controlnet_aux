@@ -1,6 +1,6 @@
 import os, yaml, pickle, shutil, tarfile, glob
 import cv2
-import custom_albumentations as albumentations
+import albumentations
 import PIL
 import numpy as np
 import torchvision.transforms.functional as TF
