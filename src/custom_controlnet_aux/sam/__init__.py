@@ -1,1 +1,1 @@
-from .transformers_impl import SamDetector
+from .sam import SamDetector
