@@ -7,7 +7,12 @@ class BaseDepthModel(nn.Module):
     def __init__(self, cfg, **kwargs) -> None:
         super(BaseDepthModel, self).__init__()
         model_type = cfg.model.type
-        self.depth_model = get_func('custom_controlnet_aux.metric3d.mono.model.model_pipelines.' + model_type)(cfg)
+        # Use relative import approach - get the module dynamically
+        from . import dense_pipeline
+        if model_type == 'DensePredModel':
+            self.depth_model = dense_pipeline.DensePredModel(cfg)
+        else:
+            raise NotImplementedError(f"Model type {model_type} not implemented")
 
     def forward(self, data):
         output = self.depth_model(**data)

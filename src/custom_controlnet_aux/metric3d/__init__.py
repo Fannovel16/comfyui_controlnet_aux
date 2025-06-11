@@ -5,7 +5,11 @@ from pathlib import Path
 
 CODE_SPACE=Path(os.path.dirname(os.path.abspath(__file__)))
 
-from mmcv.utils import Config, DictAction
+try:
+    from mmcv.utils import Config, DictAction
+except (ImportError, AssertionError):
+    # Fallback to mmengine for newer environments where mmcv has distutils conflicts
+    from mmengine import Config, DictAction
 from .mono.model.monodepth_model import get_configured_monodepth_model
 from .mono.utils.running import load_ckpt
 from .mono.utils.do_test import transform_test_data_scalecano, get_prediction

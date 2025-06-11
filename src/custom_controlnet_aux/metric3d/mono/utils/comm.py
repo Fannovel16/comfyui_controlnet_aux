@@ -5,10 +5,16 @@ from .avg_meter import AverageMeter
 from collections import defaultdict, OrderedDict
 import os
 import socket
-from mmcv.utils import collect_env as collect_base_env
+try:
+    from mmcv.utils import collect_env as collect_base_env
+except (ImportError, AssertionError):
+    # Fallback function for newer environments where mmcv has distutils conflicts
+    def collect_base_env():
+        """Fallback environment collection function."""
+        return {}
 try:
     from mmcv.utils import get_git_hash
-except:
+except (ImportError, AssertionError):
     from mmengine.utils import get_git_hash
 #import mono.mmseg as mmseg
 # import mmseg
