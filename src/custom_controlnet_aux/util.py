@@ -9,11 +9,10 @@ import cv2
 import numpy as np
 import torch
 from huggingface_hub import constants, hf_hub_download
-from torch.hub import get_dir, download_url_to_file
+from torch.utils.model_zoo import load_url
 from ast import literal_eval
 
 
-TORCHHUB_PATH = Path(__file__).parent / 'depth_anything' / 'torchhub'
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
 BDS_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite"
@@ -264,26 +263,25 @@ def check_hash_from_torch_hub(file_path, filename):
     return curr_hash[:len(ref_hash)] == ref_hash
 
 def custom_torch_download(filename, ckpts_dir=annotator_ckpts_path):
-    local_dir = os.path.join(get_dir(), 'checkpoints')
+    """Download PyTorch models using PyTorch 2.7's built-in download mechanism."""
+    model_url = "https://download.pytorch.org/models/" + filename
+    
+    # Use PyTorch's built-in model downloading with custom cache directory
+    local_dir = os.path.join(ckpts_dir, "torch")
+    if not os.path.exists(local_dir):
+        os.makedirs(local_dir, exist_ok=True)
+    
     model_path = os.path.join(local_dir, filename)
-
+    
     if not os.path.exists(model_path):
-        print(f"Failed to find {model_path}.\n Downloading from pytorch.org")
-        local_dir = os.path.join(ckpts_dir, "torch")
-        if not os.path.exists(local_dir):
-            os.mkdir(local_dir)
-
-        model_path = os.path.join(local_dir, filename)
-
-        if not os.path.exists(model_path):
-            model_url = "https://download.pytorch.org/models/"+filename
-            try:
-                download_url_to_file(url = model_url, dst = model_path)
-            except:
-                warnings.warn(f"SSL verify failed, try use HTTP instead. {filename}'s hash will be checked")
-                download_url_to_file(url = model_url, dst = model_path)
-                assert check_hash_from_torch_hub(model_path, filename), f"Hash check failed as file {filename} is corrupted"
-                print("Hash check passed")
+        print(f"Downloading {filename} from pytorch.org...")
+        try:
+            # Use PyTorch 2.7's load_url which handles caching, progress, and hash checking
+            state_dict = load_url(model_url, model_dir=local_dir, file_name=filename, progress=True, check_hash=True)
+            # The file is already saved by load_url, we just need the path
+        except Exception as e:
+            warnings.warn(f"Download failed with error: {e}")
+            raise
     
     print(f"model_path is {model_path}")
     return model_path

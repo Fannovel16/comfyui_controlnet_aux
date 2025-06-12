@@ -3,7 +3,7 @@ import yaml
 import numpy as np
 from tqdm import tqdm
 from PIL import Image
-import custom_albumentations as albumentations
+import albumentations
 from omegaconf import OmegaConf
 from torch.utils.data import Dataset
 

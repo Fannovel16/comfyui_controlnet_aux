@@ -8,11 +8,10 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple
 
-from .tiny_vit_sam import TinyViT
 from .image_encoder import ImageEncoderViT
-from .mask_decoder import MaskDecoder
+from .mask_decoder import MaskDecoder  
 from .prompt_encoder import PromptEncoder
 
 
@@ -22,7 +21,7 @@ class Sam(nn.Module):
 
     def __init__(
         self,
-        image_encoder: Union[ImageEncoderViT, TinyViT],
+        image_encoder: ImageEncoderViT,
         prompt_encoder: PromptEncoder,
         mask_decoder: MaskDecoder,
         pixel_mean: List[float] = [123.675, 116.28, 103.53],
@@ -51,7 +50,6 @@ class Sam(nn.Module):
     def device(self) -> Any:
         return self.pixel_mean.device
 
-    @torch.no_grad()
     def forward(
         self,
         batched_input: List[Dict[str, Any]],
@@ -65,7 +63,7 @@ class Sam(nn.Module):
         Arguments:
           batched_input (list(dict)): A list over input images, each a
             dictionary with the following keys. A prompt key can be
-            excluded if it is not present.
+            excluded if not known in advance.
               'image': The image as a torch tensor in 3xHxW format,
                 already transformed for input to the model.
               'original_size': (tuple(int, int)) The original size of
@@ -121,7 +119,6 @@ class Sam(nn.Module):
                 input_size=image_record["image"].shape[-2:],
                 original_size=image_record["original_size"],
             )
-            masks = masks > self.mask_threshold
             outputs.append(
                 {
                     "masks": masks,

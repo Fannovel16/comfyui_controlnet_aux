@@ -13,7 +13,7 @@ import torch.utils.checkpoint as checkpoint
 
 from functools import partial
 from collections import OrderedDict
-from custom_timm.models.layers import DropPath, to_2tuple, trunc_normal_
+from timm.layers import DropPath, to_2tuple, trunc_normal_
 from custom_mmpkg.custom_mmseg.utils import get_root_logger
 from custom_mmpkg.custom_mmseg.models.builder import BACKBONES
     

@@ -1,4 +1,9 @@
 import sys, os
+
+# Disable NPU device initialization and problematic MMCV ops to prevent RuntimeError
+# Must be set BEFORE any MMCV imports happen anywhere in ComfyUI
+os.environ['NPU_DEVICE_COUNT'] = '0'
+os.environ['MMCV_WITH_OPS'] = '0'
 from .utils import here, define_preprocessor_inputs, INPUT
 from pathlib import Path
 import traceback

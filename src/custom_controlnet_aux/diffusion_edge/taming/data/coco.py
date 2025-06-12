@@ -1,6 +1,6 @@
 import os
 import json
-import custom_albumentations as albumentations
+import albumentations
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
