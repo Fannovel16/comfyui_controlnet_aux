@@ -999,8 +999,8 @@ class RAFTDepthNormalDPT5(nn.Module):
 
 if __name__ == "__main__":
     try:
-        from mmcv.utils import Config
-    except ImportError:
+        from custom_mmpkg.custom_mmcv.utils import Config
+    except:
         from mmengine import Config
     cfg = Config.fromfile('/cpfs01/shared/public/users/mu.hu/monodepth/mono/configs/RAFTDecoder/vit.raft.full2t.py')
     cfg.model.decode_head.in_channels = [384, 384, 384, 384]

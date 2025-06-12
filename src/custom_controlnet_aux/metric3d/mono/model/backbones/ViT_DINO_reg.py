@@ -1276,8 +1276,8 @@ def vit_giant2_reg(patch_size=14, num_register_tokens=4, checkpoint=None, tuning
 
 if __name__ == '__main__':
     try:
-        from mmcv.utils import Config
-    except ImportError:
+        from custom_mmpkg.custom_mmcv.utils import Config
+    except:
         from mmengine import Config    
     
     #rgb = torch.rand((2, 3, 518, 518)).cuda()

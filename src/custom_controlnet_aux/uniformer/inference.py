@@ -1,27 +1,11 @@
 
-import os
-import sys
-import types
-
-# Prevent NPU import by creating dummy modules
-class DummyNPUModule:
-    def __getattr__(self, name):
-        return DummyNPUModule()
-    
-    def __call__(self, *args, **kwargs):
-        return DummyNPUModule()
-
-# Create dummy modules to block problematic NPU imports
-dummy_npu = DummyNPUModule()
-sys.modules['mmcv.device.npu'] = dummy_npu
-sys.modules['mmcv.device.npu.data_parallel'] = dummy_npu
-
 import torch
-import mmcv
-from mmcv.parallel import collate, scatter
-from mmcv.runner import load_checkpoint
-from mmseg.datasets.pipelines import Compose
-from mmseg.models import build_segmentor
+
+import custom_mmpkg.custom_mmcv as mmcv
+from custom_mmpkg.custom_mmcv.parallel import collate, scatter
+from custom_mmpkg.custom_mmcv.runner import load_checkpoint
+from custom_mmpkg.custom_mmseg.datasets.pipelines import Compose
+from custom_mmpkg.custom_mmseg.models import build_segmentor
     
 def init_segmentor(config, checkpoint=None, device='cuda:0'):
     """Initialize a segmentor from config file.
@@ -37,17 +21,7 @@ def init_segmentor(config, checkpoint=None, device='cuda:0'):
         nn.Module: The constructed segmentor.
     """
     if isinstance(config, str):
-        # Add src path for custom_controlnet_aux imports to work
-        import sys
-        original_path = sys.path[:]
-        src_path = os.path.join(os.path.dirname(__file__), '..', '..', '..')
-        if src_path not in sys.path:
-            sys.path.insert(0, src_path)
-        try:
-            config = mmcv.Config.fromfile(config)
-        finally:
-            # Restore original path
-            sys.path[:] = original_path
+        config = mmcv.Config.fromfile(config)
     elif not isinstance(config, mmcv.Config):
         raise TypeError('config must be a filename or Config object, '
                         'but got {}'.format(type(config)))

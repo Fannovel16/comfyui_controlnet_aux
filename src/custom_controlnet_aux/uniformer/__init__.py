@@ -1,15 +1,13 @@
 import os
-# Fix for mmcv distutils conflict with setuptools in Python 3.11+
-os.environ.setdefault('SETUPTOOLS_USE_DISTUTILS', 'stdlib')
 from .inference import init_segmentor, inference_segmentor, show_result_pyplot
 import warnings
 import cv2
 import numpy as np
 from PIL import Image
-from ..util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, HF_MODEL_NAME
+from custom_controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, HF_MODEL_NAME
 import torch
 
-from mmseg.core.evaluation import get_palette
+from custom_mmpkg.custom_mmseg.core.evaluation import get_palette
 
 config_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),  "upernet_global_small.py")
 

@@ -1428,8 +1428,8 @@ def vit_giant2(patch_size=16, **kwargs):
 
 if __name__ == '__main__':
     try:
-        from mmcv.utils import Config
-    except ImportError:
+        from custom_mmpkg.custom_mmcv.utils import Config
+    except:
         from mmengine import Config    
     
     #rgb = torch.rand((2, 3, 518, 518)).cuda()
