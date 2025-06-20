@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from custom_timm.models.layers import trunc_normal_, DropPath
-from custom_timm.models.registry import register_model
+from timm.layers import trunc_normal_, DropPath
 
 class Block(nn.Module):
     r""" ConvNeXt Block. There are two equivalent implementations:
@@ -153,8 +152,6 @@ def convnext_tiny(pretrained=True,in_22k=False, **kwargs):
     model = ConvNeXt(depths=[3, 3, 9, 3], dims=[96, 192, 384, 768], **kwargs)
     if pretrained:
         checkpoint = torch.load(kwargs['checkpoint'], map_location="cpu")
-        #url = model_urls['convnext_tiny_22k'] if in_22k else model_urls['convnext_tiny_1k']
-        #checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu", check_hash=True)
         model_dict = model.state_dict()
         pretrained_dict = {}
         unmatched_pretrained_dict = {}
@@ -175,8 +172,6 @@ def convnext_small(pretrained=True,in_22k=False, **kwargs):
     model = ConvNeXt(depths=[3, 3, 27, 3], dims=[96, 192, 384, 768], **kwargs)
     if pretrained:
         checkpoint = torch.load(kwargs['checkpoint'], map_location="cpu")
-        #url = model_urls['convnext_small_22k'] if in_22k else model_urls['convnext_small_1k']
-        #checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")
         model_dict = model.state_dict()
         pretrained_dict = {}
         unmatched_pretrained_dict = {}
@@ -197,8 +192,6 @@ def convnext_base(pretrained=True, in_22k=False, **kwargs):
     model = ConvNeXt(depths=[3, 3, 27, 3], dims=[128, 256, 512, 1024], **kwargs)
     if pretrained:
         checkpoint = torch.load(kwargs['checkpoint'], map_location="cpu")
-        #url = model_urls['convnext_base_22k'] if in_22k else model_urls['convnext_base_1k']
-        #checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")
         model_dict = model.state_dict()
         pretrained_dict = {}
         unmatched_pretrained_dict = {}
@@ -219,8 +212,6 @@ def convnext_large(pretrained=True, in_22k=False, **kwargs):
     model = ConvNeXt(depths=[3, 3, 27, 3], dims=[192, 384, 768, 1536], **kwargs)
     if pretrained:
         checkpoint = torch.load(kwargs['checkpoint'], map_location="cpu")
-        #url = model_urls['convnext_large_22k'] if in_22k else model_urls['convnext_large_1k']
-        #checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")
         model_dict = model.state_dict()
         pretrained_dict = {}
         unmatched_pretrained_dict = {}
@@ -242,8 +233,6 @@ def convnext_xlarge(pretrained=True, in_22k=False, **kwargs):
     if pretrained:
         assert in_22k, "only ImageNet-22K pre-trained ConvNeXt-XL is available; please set in_22k=True"
         checkpoint = torch.load(kwargs['checkpoint'], map_location="cpu")
-        #url = model_urls['convnext_xlarge_22k']
-        #checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")
         model_dict = model.state_dict()
         pretrained_dict = {}
         unmatched_pretrained_dict = {}

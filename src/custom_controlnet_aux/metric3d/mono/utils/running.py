@@ -1,7 +1,7 @@
 import os
 import torch
 import torch.nn as nn
-from custom_controlnet_aux.metric3d.mono.utils.comm import main_process
+from .comm import main_process
 import copy
 import inspect
 import logging

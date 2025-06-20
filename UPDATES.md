@@ -42,3 +42,4 @@
 ![345832280-edf41dab-7619-494c-9f60-60ec1f8789cb](https://github.com/user-attachments/assets/aa55f57c-cad7-48e6-84d3-8f506d847989)
 * Refactor INPUT_TYPES and add Execute All node during the process of learning [Execution Model Inversion](https://github.com/comfyanonymous/ComfyUI/pull/2666)
 * Added scale_stick_for_xinsr_cn (https://github.com/Fannovel16/comfyui_controlnet_aux/issues/447) (09/04/2024)
+* PyTorch 2.7 compatibility fixes - eliminated custom_timm, custom_detectron2, and custom_midas_repo dependencies causing hanging issues. Refactored 7 major preprocessors including OneFormer (now using HuggingFace transformers), ZOE, DSINE, MiDaS, BAE, Metric3D, and Uniformer. Resolved ~59 GitHub issues related to import failures, hanging, and extension conflicts. Full modernization to actively maintained packages.

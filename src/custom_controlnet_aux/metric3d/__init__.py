@@ -6,14 +6,14 @@ from pathlib import Path
 CODE_SPACE=Path(os.path.dirname(os.path.abspath(__file__)))
 
 from custom_mmpkg.custom_mmcv.utils import Config, DictAction
-from custom_controlnet_aux.metric3d.mono.model.monodepth_model import get_configured_monodepth_model
-from custom_controlnet_aux.metric3d.mono.utils.running import load_ckpt
-from custom_controlnet_aux.metric3d.mono.utils.do_test import transform_test_data_scalecano, get_prediction
+from .mono.model.monodepth_model import get_configured_monodepth_model
+from .mono.utils.running import load_ckpt
+from .mono.utils.do_test import transform_test_data_scalecano, get_prediction
 import numpy as np
-from custom_controlnet_aux.metric3d.mono.utils.visualization import vis_surface_normal
+from .mono.utils.visualization import vis_surface_normal
 from einops import repeat
 from PIL import Image
-from custom_controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, METRIC3D_MODEL_NAME
+from ..util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, METRIC3D_MODEL_NAME
 import re
 import matplotlib.pyplot as plt
 

@@ -3,10 +3,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from custom_controlnet_aux.dsine.models.submodules import Encoder, ConvGRU, UpSampleBN, UpSampleGN, RayReLU, \
+from .submodules import Encoder, ConvGRU, UpSampleBN, UpSampleGN, RayReLU, \
                                 convex_upsampling, get_unfold, get_prediction_head, \
                                 INPUT_CHANNELS_DICT
-from custom_controlnet_aux.dsine.utils.rotation import axis_angle_to_matrix
+from ..utils.rotation import axis_angle_to_matrix
 
 
 class Decoder(nn.Module):
@@ -30,7 +30,7 @@ class Decoder(nn.Module):
         self.hidden_head = get_prediction_head(i_dim+2, h_dim, hidden_dim)
 
     def forward(self, features, uvs):
-        _, _, x_block2, x_block3, x_block4 = features[4], features[5], features[6], features[8], features[11]
+        _, _, x_block2, x_block3, x_block4 = None, None, features[5], features[7], features[10]  # Skip first two features, use layers 5,7,10
         uv_32, uv_16, uv_8 = uvs
 
         x_d0 = self.conv2(torch.cat([x_block4, uv_32], dim=1))
@@ -64,9 +64,7 @@ class DSINE(nn.Module):
         # ray direction-based ReLU
         self.ray_relu = RayReLU(eps=1e-2)
 
-        # pixel_coords (1, 3, H, W)
-        # NOTE: this is set to some arbitrarily high number, 
-        # if your input is 2000+ pixels wide/tall, increase these values
+        # pixel_coords (1, 3, H, W) - adjust dimensions for larger inputs if needed
         h = 2000
         w = 2000
         pixel_coords = np.ones((3, h, w)).astype(np.float32)
