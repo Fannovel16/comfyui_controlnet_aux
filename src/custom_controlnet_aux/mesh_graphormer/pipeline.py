@@ -101,7 +101,7 @@ class MeshGraphormerMediapipe(Preprocessor):
             for i in range(len(output_feat_dim)):
                 config_class, model_class = BertConfig, Graphormer
                 config = config_class.from_pretrained(args.config_name if args.config_name \
-                        else args.model_name_or_path)
+                        else args.model_name_or_path, attn_implementation="eager")
 
                 config.output_attentions = False
                 config.img_feature_dim = input_feat_dim[i] 
