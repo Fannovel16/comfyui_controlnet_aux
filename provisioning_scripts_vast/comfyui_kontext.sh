@@ -2,7 +2,7 @@
 
 source /venv/main/bin/activate
 COMFYUI_DIR=${WORKSPACE}/ComfyUI
-COMFYUI_VERSION="v0.3.43"
+COMFYUI_VERSION="v0.3.56"
 # Packages are installed after nodes so we can fix them...
 
 APT_PACKAGES=(
@@ -12,6 +12,7 @@ APT_PACKAGES=(
 
 PIP_PACKAGES=(
     "onnxruntime-gpu"
+    "sageattention"
     #"package-1"
     #"package-2"
 )
