@@ -13,7 +13,7 @@ from typing import List, Optional
 from .types import PoseResult, BodyResult, Keypoint
 from timeit import default_timer
 import os
-from custom_controlnet_aux.dwpose.util import guess_onnx_input_shape_dtype, get_model_type, get_ort_providers, is_model_torchscript
+from .util import guess_onnx_input_shape_dtype, get_model_type, get_ort_providers, is_model_torchscript
 import torch
 
 class Wholebody:

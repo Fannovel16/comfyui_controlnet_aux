@@ -2,7 +2,7 @@ from ..utils import common_annotator_call, define_preprocessor_inputs, INPUT
 import comfy.model_management as model_management
 import numpy as np
 import warnings
-from custom_controlnet_aux.dwpose import DwposeDetector, AnimalposeDetector
+from ..src.custom_controlnet_aux.dwpose import DwposeDetector, AnimalposeDetector
 import os
 import json
 
