@@ -18,12 +18,6 @@ class TileDetector:
         for _ in range(pyrUp_iters):
             detected_map = cv2.pyrUp(detected_map)
 
-        shift = 2 ** (pyrUp_iters - 1) if pyrUp_iters > 0 else 0
-        M = np.float32([[1, 0, shift], [0, 1, shift]])
-        corrected_map = cv2.warpAffine(detected_map, M, (W, H), borderMode=cv2.BORDER_REFLECT_101)
-        if H != orig_H or W != orig_W:
-            corrected_map = corrected_map[0:orig_H, 0:orig_W]
-
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
 
