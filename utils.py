@@ -10,6 +10,7 @@ import subprocess
 import threading
 import comfy
 import tempfile
+import folder_paths
 
 here = Path(__file__).parent.resolve()
 
@@ -47,6 +48,10 @@ else:
     TEMP_DIR = tempfile.gettempdir()
     USE_SYMLINKS = False
     ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider", "CoreMLExecutionProvider"]
+
+# 使用comfyui的目录结构 Directory structure for using ComfyUI
+if "controlnet_ckpts" in folder_paths.folder_names_and_paths:
+    annotator_ckpts_path=folder_paths.get_folder_paths('controlnet_ckpts')[0]
 
 os.environ['AUX_ANNOTATOR_CKPTS_PATH'] = os.getenv('AUX_ANNOTATOR_CKPTS_PATH', annotator_ckpts_path)
 os.environ['AUX_TEMP_DIR'] = os.getenv('AUX_TEMP_DIR', str(TEMP_DIR))
