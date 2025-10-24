@@ -43,7 +43,8 @@ class DWPose_Preprocessor:
                 ["dw-ll_ucoco_384_bs5.torchscript.pt", "dw-ll_ucoco_384.onnx", "dw-ll_ucoco.onnx"],
                 default="dw-ll_ucoco_384_bs5.torchscript.pt"
             ),
-            scale_stick_for_xinsr_cn=INPUT.COMBO(["disable", "enable"])
+            scale_stick_for_xinsr_cn=INPUT.COMBO(["disable", "enable"]),
+            keep_model_loaded=INPUT.BOOLEAN(default=False),
         )
 
     RETURN_TYPES = ("IMAGE", "POSE_KEYPOINT")
@@ -51,7 +52,7 @@ class DWPose_Preprocessor:
 
     CATEGORY = "ControlNet Preprocessors/Faces and Poses Estimators"
 
-    def estimate_pose(self, image, detect_hand="enable", detect_body="enable", detect_face="enable", resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="dw-ll_ucoco_384.onnx", scale_stick_for_xinsr_cn="disable", **kwargs):
+    def estimate_pose(self, image, detect_hand="enable", detect_body="enable", detect_face="enable", resolution=512, bbox_detector="yolox_l.onnx", pose_estimator="dw-ll_ucoco_384.onnx", scale_stick_for_xinsr_cn="disable", keep_model_loaded=False, **kwargs):
         if bbox_detector == "None":
             yolo_repo = DWPOSE_MODEL_NAME 
         elif bbox_detector == "yolox_l.onnx":
@@ -76,7 +77,7 @@ class DWPose_Preprocessor:
             pose_repo,
             yolo_repo,
             det_filename=(None if bbox_detector == "None" else bbox_detector), pose_filename=pose_estimator,
-            torchscript_device=model_management.get_torch_device()
+            torchscript_device=model_management.get_torch_device(),
         )
         detect_hand = detect_hand == "enable"
         detect_body = detect_body == "enable"
@@ -89,7 +90,11 @@ class DWPose_Preprocessor:
             return pose_img
 
         out = common_annotator_call(func, image, include_hand=detect_hand, include_face=detect_face, include_body=detect_body, image_and_json=True, resolution=resolution, xinsr_stick_scaling=scale_stick_for_xinsr_cn)
+        
+        if not keep_model_loaded:
+            model.unload()
         del model
+        
         return {
             'ui': { "openpose_json": [json.dumps(self.openpose_dicts, indent=4)] },
             "result": (out, self.openpose_dicts)
