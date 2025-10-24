@@ -12,7 +12,6 @@ pyyaml
 scikit-image
 python-dateutil
 mediapipe
-svglib
 fvcore
 yapf
 omegaconf
