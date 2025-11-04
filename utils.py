@@ -46,7 +46,7 @@ else:
     annotator_ckpts_path = str(Path(here, "./ckpts"))
     TEMP_DIR = tempfile.gettempdir()
     USE_SYMLINKS = False
-    ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider", "CoreMLExecutionProvider"]
+    ORT_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "MIGraphXExecutionProvider", "CPUExecutionProvider", "CoreMLExecutionProvider"]
 
 os.environ['AUX_ANNOTATOR_CKPTS_PATH'] = os.getenv('AUX_ANNOTATOR_CKPTS_PATH', annotator_ckpts_path)
 os.environ['AUX_TEMP_DIR'] = os.getenv('AUX_TEMP_DIR', str(TEMP_DIR))

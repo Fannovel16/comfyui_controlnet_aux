@@ -16,5 +16,5 @@ USE_SYMLINKS: False
 # for example, if you have CUDA installed, you can set it to: ["CUDAExecutionProvider", "CPUExecutionProvider"]
 # empty list or only keep ["CPUExecutionProvider"] means you use cv2.dnn.readNetFromONNX to load onnx models
 # if your onnx models can only run on the CPU or have other issues, we recommend using pt model instead.
-# default value is ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider"]
-EP_list: ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CPUExecutionProvider"]
+# default value is ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "MIGraphXExecutionProvider", "CPUExecutionProvider"]
+EP_list: ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "MIGraphXExecutionProvider", "CPUExecutionProvider"]
