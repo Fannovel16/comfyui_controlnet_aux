@@ -21,6 +21,11 @@ for pkg_name in ["custom_controlnet_aux", "custom_mmpkg"]:
 #https://github.com/Fannovel16/comfyui_controlnet_aux/issues/2#issuecomment-1763579485
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = os.getenv("PYTORCH_ENABLE_MPS_FALLBACK", '1')
 
+import folder_paths
+folder_paths.add_model_folder_path(
+    "controlnet_aux",
+    os.path.join(folder_paths.models_dir, "controlnet_aux")
+)
 
 def load_nodes():
     shorted_errors = []
