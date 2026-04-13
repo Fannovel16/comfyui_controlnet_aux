@@ -11,7 +11,7 @@ torchvision
 pyyaml
 scikit-image
 python-dateutil
-mediapipe
+mediapipe>=0.8.0
 fvcore
 yapf
 omegaconf
