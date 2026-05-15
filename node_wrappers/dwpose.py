@@ -8,7 +8,7 @@ import json
 
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
 #Trigger startup caching for onnxruntime
-GPU_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "CoreMLExecutionProvider"]
+GPU_PROVIDERS = ["CUDAExecutionProvider", "DirectMLExecutionProvider", "OpenVINOExecutionProvider", "ROCMExecutionProvider", "MIGraphXExecutionProvider", "CPUExecutionProvider"]
 def check_ort_gpu():
     try:
         import onnxruntime as ort
