@@ -79,6 +79,10 @@ class Wholebody:
     def __call__(self, oriImg) -> Optional[np.ndarray]:
         #Sacrifice accurate time measurement for compatibility 
         
+        # DWPose models expect BGR input; ComfyUI provides RGB.
+        if oriImg.ndim == 3 and oriImg.shape[2] == 3:
+            oriImg = oriImg[:, :, ::-1].copy()
+
         det_result = None
         
         if self.det is None:
