@@ -1,19 +1,38 @@
+from pathlib import Path
+from types import SimpleNamespace
 from typing import Mapping
+import os
 import warnings
 import numpy
 
 try:
     import mediapipe as mp
-    from mediapipe.framework.formats import landmark_pb2
 except ImportError:
     warnings.warn(
         "The module 'mediapipe' is not installed. The package will have limited functionality. Please install it using the command: pip install 'mediapipe'"
     )
     mp = None
 
+# mediapipe.framework was removed in 0.10.30. Only the old API needs
+# landmark_pb2; the tasks API returns plain NormalizedLandmark objects.
+try:
+    from mediapipe.framework.formats import landmark_pb2
+except ImportError:
+    landmark_pb2 = None
+
+# The tasks API needs a model file; the old API bundled its own.
+FACE_LANDMARKER_TASK = os.environ.get(
+    "CONTROLNET_AUX_FACE_LANDMARKER",
+    str(Path(__file__).resolve().parents[3] / "ckpts" / "mediapipe" / "face_landmarker.task"),
+)
+FACE_LANDMARKER_URL = (
+    "https://storage.googleapis.com/mediapipe-models/face_landmarker/"
+    "face_landmarker/float16/latest/face_landmarker.task"
+)
+
+USE_NEW_API = False
 if mp:
     # Check MediaPipe version and API compatibility
-    USE_NEW_API = False
     try:
         # Try to access new API (MediaPipe 0.10.32+)
         mp.tasks.vision.FaceLandmarker
@@ -59,21 +78,25 @@ if mp:
 
     # Face connection specifications
     face_connection_spec = {}
+    # What draw_landmarks iterates. The old API takes the spec's tuple keys;
+    # the tasks API reads connection.start / connection.end, so it gets the
+    # Connection objects themselves.
+    face_connections = []
     
     if USE_NEW_API:
         # New API face mesh connections - use tuples instead of Connection objects for hashability
-        for edge in mp.tasks.vision.FaceLandmarksConnections.FACE_LANDMARKS_FACE_OVAL:
-            face_connection_spec[(edge.start, edge.end)] = head_draw
-        for edge in mp.tasks.vision.FaceLandmarksConnections.FACE_LANDMARKS_LEFT_EYE:
-            face_connection_spec[(edge.start, edge.end)] = left_eye_draw
-        for edge in mp.tasks.vision.FaceLandmarksConnections.FACE_LANDMARKS_LEFT_EYEBROW:
-            face_connection_spec[(edge.start, edge.end)] = left_eyebrow_draw
-        for edge in mp.tasks.vision.FaceLandmarksConnections.FACE_LANDMARKS_RIGHT_EYE:
-            face_connection_spec[(edge.start, edge.end)] = right_eye_draw
-        for edge in mp.tasks.vision.FaceLandmarksConnections.FACE_LANDMARKS_RIGHT_EYEBROW:
-            face_connection_spec[(edge.start, edge.end)] = right_eyebrow_draw
-        for edge in mp.tasks.vision.FaceLandmarksConnections.FACE_LANDMARKS_LIPS:
-            face_connection_spec[(edge.start, edge.end)] = mouth_draw
+        _conn = mp.tasks.vision.FaceLandmarksConnections
+        for group, spec in (
+            (_conn.FACE_LANDMARKS_FACE_OVAL, head_draw),
+            (_conn.FACE_LANDMARKS_LEFT_EYE, left_eye_draw),
+            (_conn.FACE_LANDMARKS_LEFT_EYEBROW, left_eyebrow_draw),
+            (_conn.FACE_LANDMARKS_RIGHT_EYE, right_eye_draw),
+            (_conn.FACE_LANDMARKS_RIGHT_EYEBROW, right_eyebrow_draw),
+            (_conn.FACE_LANDMARKS_LIPS, mouth_draw),
+        ):
+            for edge in group:
+                face_connection_spec[(edge.start, edge.end)] = spec
+                face_connections.append(edge)
         iris_landmark_spec = {468: right_iris_draw, 473: left_iris_draw}
     else:
         # Old API face mesh connections
@@ -89,6 +112,7 @@ if mp:
             face_connection_spec[edge] = right_eyebrow_draw
         for edge in mp_face_mesh.FACEMESH_LIPS:
             face_connection_spec[edge] = mouth_draw
+        face_connections = list(face_connection_spec.keys())
         iris_landmark_spec = {468: right_iris_draw, 473: left_iris_draw}
 
 
@@ -108,9 +132,16 @@ class FaceMeshWrapper:
     
     def _init_new_api(self):
         """Initialize the new MediaPipe API."""
+        if not os.path.isfile(FACE_LANDMARKER_TASK):
+            # Falling back to the old API cannot work where mp.solutions is gone,
+            # and a silent fallback is how this node returned blank images.
+            raise FileNotFoundError(
+                f"MediaPipe face landmarker model not found at {FACE_LANDMARKER_TASK}. "
+                f"Download {FACE_LANDMARKER_URL} there, or set CONTROLNET_AUX_FACE_LANDMARKER."
+            )
         try:
             # Create face landmarker options
-            base_options = mp.tasks.BaseOptions(model_asset_path="face_landmarker.task")
+            base_options = mp.tasks.BaseOptions(model_asset_path=FACE_LANDMARKER_TASK)
             options = mp.tasks.vision.FaceLandmarkerOptions(
                 base_options=base_options,
                 output_face_blendshapes=False,
@@ -120,6 +151,8 @@ class FaceMeshWrapper:
             )
             self.landmarker = mp.tasks.vision.FaceLandmarker.create_from_options(options)
         except Exception as e:
+            if not hasattr(mp, "solutions"):
+                raise
             warnings.warn(f"Could not initialize new MediaPipe API: {e}. Falling back to old API.")
             self._init_old_api()
     
@@ -153,6 +186,8 @@ class FaceMeshWrapper:
             return result
             
         except Exception as e:
+            if not hasattr(mp, "solutions"):
+                raise
             warnings.warn(f"Error in new API processing: {e}. Falling back to old API.")
             return self._process_old_api(image)
     
@@ -179,6 +214,10 @@ class MediaPipeResultWrapper:
         
         if USE_NEW_API and detection_result.face_landmarks:
             for face_landmarks in detection_result.face_landmarks:
+                if landmark_pb2 is None:
+                    # Same shape the old API returned: an object with .landmark.
+                    self.multi_face_landmarks.append(SimpleNamespace(landmark=list(face_landmarks)))
+                    continue
                 # Convert to old API format
                 landmark_list = landmark_pb2.NormalizedLandmarkList()
                 for landmark in face_landmarks:
@@ -205,9 +244,11 @@ def draw_pupils(image, landmark_list, drawing_spec, halfwidth: int = 2):
     if image_channels != 3:  # BGR channels
         raise ValueError('Input image must contain three channel bgr data.')
     for idx, landmark in enumerate(landmark_list.landmark):
+        visibility = _optional_field(landmark, 'visibility')
+        presence = _optional_field(landmark, 'presence')
         if (
-                (landmark.HasField('visibility') and landmark.visibility < 0.9) or
-                (landmark.HasField('presence') and landmark.presence < 0.5)
+                (visibility is not None and visibility < 0.9) or
+                (presence is not None and presence < 0.5)
         ):
             continue
         if landmark.x >= 1.0 or landmark.x < 0 or landmark.y >= 1.0 or landmark.y < 0:
@@ -223,6 +264,14 @@ def draw_pupils(image, landmark_list, drawing_spec, halfwidth: int = 2):
         elif isinstance(drawing_spec, DrawingSpec):
             draw_color = drawing_spec.color
         image[image_y-halfwidth:image_y+halfwidth, image_x-halfwidth:image_x+halfwidth, :] = draw_color
+
+
+def _optional_field(landmark, name):
+    """A landmark field, or None when unset. Protobuf landmarks report unset
+    fields through HasField; the tasks API's dataclasses hold None."""
+    if hasattr(landmark, 'HasField'):
+        return getattr(landmark, name) if landmark.HasField(name) else None
+    return getattr(landmark, name, None)
 
 
 def reverse_channels(image):
@@ -291,8 +340,8 @@ def generate_annotation(
             for face_landmarks in filtered_landmarks:
                 mp_drawing.draw_landmarks(
                     empty,
-                    face_landmarks,
-                    connections=face_connection_spec.keys(),
+                    face_landmarks.landmark if USE_NEW_API else face_landmarks,
+                    connections=face_connections,
                     landmark_drawing_spec=None,
                     connection_drawing_spec=face_connection_spec
                 )
@@ -304,5 +353,7 @@ def generate_annotation(
             return empty
             
     except Exception as e:
+        # Re-raised: returning a blank image made every face-based node report
+        # "no faces" with nothing in the log to say why.
         warnings.warn(f"Error in generate_annotation: {e}")
-        return numpy.zeros_like(img_rgb)
+        raise
