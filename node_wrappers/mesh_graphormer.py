@@ -19,7 +19,7 @@ def install_deps():
     try:
         import trimesh
     except ImportError:
-        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'trimesh[easy]'])
+        run_script([sys.executable, '-s', '-m', 'pip', 'install', 'trimesh', 'rtree'])
 
 #Sauce: https://github.com/comfyanonymous/ComfyUI/blob/8c6493578b3dda233e9b9a953feeaf1e6ca434ad/comfy_extras/nodes_mask.py#L309
 def expand_mask(mask, expand, tapered_corners):

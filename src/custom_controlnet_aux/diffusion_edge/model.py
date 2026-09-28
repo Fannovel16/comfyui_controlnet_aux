@@ -8,7 +8,7 @@ from custom_controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.encoder_de
 # from custom_controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.transmodel import TransModel
 from custom_controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.uncond_unet import Unet
 from custom_controlnet_aux.diffusion_edge.denoising_diffusion_pytorch.data import *
-from fvcore.common.config import CfgNode
+from yacs.config import CfgNode
 from pathlib import Path
 
 def load_conf(config_file, conf={}):

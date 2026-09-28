@@ -1,4 +1,4 @@
-import fvcore.common.config
+from yacs.config import CfgNode
 import torch
 import torch.nn as nn
 import math
@@ -997,7 +997,7 @@ if __name__ == "__main__":
                  channels=1,
                  window_sizes1=[[8, 8], [4, 4], [2, 2], [1, 1]],
                  window_sizes2=[[8, 8], [4, 4], [2, 2], [1, 1]],
-                 cfg=fvcore.common.config.CfgNode({'cond_pe': False, 'input_size': [80, 80],
+                 cfg=CfgNode({'cond_pe': False, 'input_size': [80, 80],
                       'cond_feature_size': (32, 128), 'cond_net': 'vgg',
                       'num_pos_feats': 96})
                  )
