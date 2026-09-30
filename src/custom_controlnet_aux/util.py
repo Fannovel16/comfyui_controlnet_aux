@@ -12,6 +12,11 @@ from huggingface_hub import constants, hf_hub_download
 from torch.utils.model_zoo import load_url
 from ast import literal_eval
 
+try:
+    import folder_paths
+except ImportError:
+    folder_paths = None
+
 
 HF_MODEL_NAME = "lllyasviel/Annotators"
 DWPOSE_MODEL_NAME = "yzd-v/DWPose"
@@ -262,16 +267,27 @@ def check_hash_from_torch_hub(file_path, filename):
     curr_hash = sha256sum(file_path)
     return curr_hash[:len(ref_hash)] == ref_hash
 
-def custom_torch_download(filename, ckpts_dir=annotator_ckpts_path):
+def _get_annotator_model_path(relative_path, ckpts_dir=None):
+    if ckpts_dir is None:
+        if folder_paths is not None and "annotators" in folder_paths.folder_names_and_paths:
+            model_path = folder_paths.get_full_path("annotators", relative_path)
+            if model_path is not None:
+                return model_path
+            ckpts_dir = folder_paths.get_folder_paths("annotators")[0]
+        else:
+            ckpts_dir = annotator_ckpts_path
+    return str(Path(ckpts_dir, relative_path))
+
+
+def custom_torch_download(filename, ckpts_dir=None):
     """Download PyTorch models using PyTorch 2.7's built-in download mechanism."""
     model_url = "https://download.pytorch.org/models/" + filename
     
     # Use PyTorch's built-in model downloading with custom cache directory
-    local_dir = os.path.join(ckpts_dir, "torch")
+    model_path = _get_annotator_model_path(os.path.join("torch", filename), ckpts_dir)
+    local_dir = os.path.dirname(model_path)
     if not os.path.exists(local_dir):
         os.makedirs(local_dir, exist_ok=True)
-    
-    model_path = os.path.join(local_dir, filename)
     
     if not os.path.exists(model_path):
         print(f"Downloading {filename} from pytorch.org...")
@@ -286,8 +302,16 @@ def custom_torch_download(filename, ckpts_dir=annotator_ckpts_path):
     print(f"model_path is {model_path}")
     return model_path
 
-def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, ckpts_dir=annotator_ckpts_path, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
+def custom_hf_download(pretrained_model_or_path, filename, cache_dir=temp_dir, ckpts_dir=None, subfolder='', use_symlinks=USE_SYMLINKS, repo_type="model"):
 
+    model_path = _get_annotator_model_path(os.path.join(pretrained_model_or_path, *subfolder.split('/'), filename), ckpts_dir)
+    if os.path.exists(model_path):
+        return model_path
+    if ckpts_dir is None:
+        if folder_paths is not None and "annotators" in folder_paths.folder_names_and_paths:
+            ckpts_dir = folder_paths.get_folder_paths("annotators")[0]
+        else:
+            ckpts_dir = annotator_ckpts_path
     local_dir = os.path.join(ckpts_dir, pretrained_model_or_path)
     model_path = Path(local_dir).joinpath(*subfolder.split('/'), filename).__str__()
 
