@@ -36,6 +36,21 @@ def drawBetweenSetofKeypointLists(pose_img, keypoints_set, keypointPairsList, co
         drawBetweenKeypointsList(pose_img, keypoints, keypointPairsList, colorsList, scaleFactor)
 
 
+def encode_animal_keypoints(keypoints: np.ndarray) -> list:
+    """Flatten one animal's (K, 3) keypoint array into the OpenPose JSON layout
+    [x, y, c, ...] that decode_json_as_poses expects, matching the format
+    encode_poses_as_dict uses for people.
+
+    Confidence is binarized (1.0 / 0.0) like the human encoder because
+    decompress_keypoints treats any c < 1.0 as an absent keypoint.
+    """
+    return [
+        value
+        for x, y, score in keypoints
+        for value in (float(x), float(y), 1.0 if score > 0.0 else 0.0)
+    ]
+
+
 def padImg(img, size, blackBorder=True):
     left, right, top, bottom = 0, 0, 0, 0
 
@@ -264,7 +279,7 @@ class AnimalPoseImage:
         
         openpose_dict = {
             'version': 'ap10k',
-            'animals': [keypoints.tolist() for keypoints in animal_kps_scores],
+            'animals': [encode_animal_keypoints(keypoints) for keypoints in animal_kps_scores],
             'canvas_height': oriImg.shape[0],
             'canvas_width': oriImg.shape[1]
         }
