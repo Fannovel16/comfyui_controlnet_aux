@@ -31,6 +31,20 @@ If you can't run **install.bat** (e.g. you are a Linux user). Open the CMD/Shell
 	   - Run `pip install -r requirements.txt`
   - Start ComfyUI
 
+# Model paths
+
+Set a shared folder in ComfyUI's `extra_model_paths.yaml`:
+
+```yaml
+shared_models:
+  is_default: true
+  annotators: C:/AI/models/annotators
+```
+
+The download helpers search registered folders before downloading to the first path. `is_default: true` puts the shared folder first. Keep the repository layout, for example `depth-anything/Depth-Anything-V2-Large/depth_anything_v2_vitl.pth` under the shared folder.
+
+The `config.yaml` / `AUX_ANNOTATOR_CKPTS_PATH` folder remains a fallback, or the default when no shared path is configured. Explicit `ckpts_dir` arguments and standalone use keep their existing behavior.
+
 # Nodes
 Please note that this repo only supports preprocessors making hint images (e.g. stickman, canny edge, etc).
 All preprocessors except Inpaint are intergrated into `AIO Aux Preprocessor` node. 
