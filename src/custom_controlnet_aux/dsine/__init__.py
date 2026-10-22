@@ -106,8 +106,7 @@ def custom_hf_download(pretrained_model_or_path, filename, subfolder=''):
             repo_id=pretrained_model_or_path,
             filename=filename,
             subfolder=subfolder,
-            local_dir=local_dir,
-            local_dir_use_symlinks=False
+            local_dir=local_dir
         )
     
     print(f"model_path is {model_path}")
