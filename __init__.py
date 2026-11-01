@@ -1,9 +1,64 @@
-import sys, os
+import sys, os, subprocess, importlib.util, warnings
 
 # Disable NPU device initialization and problematic MMCV ops to prevent RuntimeError
 # Must be set BEFORE any MMCV imports happen anywhere in ComfyUI
 os.environ['NPU_DEVICE_COUNT'] = '0'
 os.environ['MMCV_WITH_OPS'] = '0'
+
+# Hint printed when the CPU build is the only thing available. onnxruntime-gpu is NOT a safe
+# default: it only works on NVIDIA machines whose CUDA/cuDNN matches the torch build.
+_ORT_VARIANT_HINT = (
+    "    pip uninstall -y (pip freeze | sls onnxruntime)\n"
+    "    pip install onnxruntime-gpu      # NVIDIA CUDA\n"
+    "    pip install onnxruntime-directml # Windows, any DX12 GPU (NVIDIA/AMD/Intel)\n"
+    "    pip install onnxruntime-openvino # Intel CPU/iGPU\n"
+    "    pip install onnxruntime-qnn      # Qualcomm NPU (Windows on ARM)\n"
+    "    pip install onnxruntime-rocm     # AMD ROCm (Linux)"
+)
+
+def _ensure_onnxruntime():
+    """Guarantee a working onnxruntime, installing a CPU build as the baseline when needed.
+
+    No need to tell variants apart: onnxruntime / -gpu / -directml / -openvino / -qnn ... expose
+    the same Python API, and which backend is really used is decided at runtime by
+    ort.get_available_providers(). A working import is all this module has to guarantee.
+
+    A *working* install is never touched. Only when nothing can be imported (missing, or present
+    but broken - usually a CUDA/cuDNN mismatch) is the CPU build installed, which may overwrite
+    files of that broken build; the warning below explains how to get a proper GPU/NPU variant.
+    """
+    try:
+        import onnxruntime  # noqa: F401
+        return
+    except Exception as e:
+        cmd = [sys.executable, "-m", "pip", "install", "onnxruntime",
+               "--disable-pip-version-check", "--no-input"]
+        try:
+            if importlib.util.find_spec("onnxruntime") is not None:
+                cmd += ["--force-reinstall", "--no-deps"]
+        except Exception:
+            pass
+
+        print("[ControlNet Aux] requires onnxruntime, installing the CPU build as a baseline...")
+        try:
+            subprocess.check_call(cmd, timeout=600)
+            warnings.warn(
+                "The CPU build of onnxruntime is installed as a baseline for compatiblity.\n"
+                "If you have an NVIDIA / AMD / Intel GPU, reinstall the matching variant "
+                f"for best performance:\n{_ORT_VARIANT_HINT}"
+            )
+        except Exception as e:
+            warnings.warn(
+                f"Failed to install a working onnxruntime ({e}). ONNX models will fall back to "
+                f"OpenCV DNN. Fix it manually with:\n{_ORT_VARIANT_HINT}"
+            )
+            return
+
+try:
+    _ensure_onnxruntime()
+except Exception as _ort_error:  # never let a dependency issue break node loading
+    print(f"[ControlNet Aux] onnxruntime check failed (ignored): {_ort_error}")
+
 from .utils import here, define_preprocessor_inputs, INPUT
 from pathlib import Path
 import traceback

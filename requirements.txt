@@ -17,7 +17,6 @@ addict
 yacs
 trimesh
 rtree
-albumentationsx
+albumentations
 scikit-learn
 matplotlib
-onnxruntime-gpu; (platform_system == "Windows" or platform_system == "Linux") and (platform_machine == "AMD64" or platform_machine == "x86_64")
