@@ -364,6 +364,18 @@ class MeshGraphormerMediapipe(Preprocessor):
             if hand == "left":
                 cropped = cv2.flip(cropped, 1)
 
+            # An out-of-range hand bbox can produce a negative or empty crop,
+            # and cv2.resize crashes on an empty ssize. Skip this hand the same
+            # way a failed inference is skipped instead of killing the queue.
+            if (
+                cropped is None
+                or cropped.size == 0
+                or cropped.shape[0] == 0
+                or cropped.shape[1] == 0
+            ):
+                depth_failure = True
+                break
+
             if crop_len < 224:
                 graphormer_input = cv2.resize(cropped, (224, 224), interpolation=cv2.INTER_CUBIC)
             else:
