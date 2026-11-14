@@ -188,7 +188,7 @@ class FusedBiasLeakyReLUFunction(Function):
 
 
 class FusedBiasLeakyReLU(nn.Module):
-    """Fused bias leaky ReLU.
+    r"""Fused bias leaky ReLU.
 
     This function is introduced in the StyleGAN2:
     http://arxiv.org/abs/1912.04958
@@ -223,7 +223,7 @@ class FusedBiasLeakyReLU(nn.Module):
 
 
 def fused_bias_leakyrelu(input, bias, negative_slope=0.2, scale=2**0.5):
-    """Fused bias leaky ReLU function.
+    r"""Fused bias leaky ReLU function.
 
     This function is introduced in the StyleGAN2:
     http://arxiv.org/abs/1912.04958
