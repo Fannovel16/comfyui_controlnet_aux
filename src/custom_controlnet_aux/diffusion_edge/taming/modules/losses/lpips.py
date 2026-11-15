@@ -1,13 +1,17 @@
 """Stripped version of https://github.com/richzhang/PerceptualSimilarity/tree/master/models"""
 
-import torch
-import torch.nn as nn
-from torchvision import models
 from collections import namedtuple
+from pathlib import Path
+
+import torch
+from torch import nn
+from torchvision import models
+
+from custom_controlnet_aux.util import custom_torch_download
 
 from .util import get_ckpt_path
 
-from custom_controlnet_aux.util import custom_torch_download
+LPIPS_CKPT_ROOT = str(Path(__file__).parent.parent / "autoencoder" / "lpips")
 
 class LPIPS(nn.Module):
     # Learned perceptual metric
@@ -26,16 +30,16 @@ class LPIPS(nn.Module):
             param.requires_grad = False
 
     def load_from_pretrained(self, name="vgg_lpips"):
-        ckpt = get_ckpt_path(name, "taming/modules/autoencoder/lpips")
+        ckpt = get_ckpt_path(name, LPIPS_CKPT_ROOT)
         self.load_state_dict(torch.load(ckpt, map_location=torch.device("cpu")), strict=False)
-        print("loaded pretrained LPIPS loss from {}".format(ckpt))
+        print(f"loaded pretrained LPIPS loss from {ckpt}")
 
     @classmethod
     def from_pretrained(cls, name="vgg_lpips"):
         if name != "vgg_lpips":
             raise NotImplementedError
         model = cls()
-        ckpt = get_ckpt_path(name)
+        ckpt = get_ckpt_path(name, LPIPS_CKPT_ROOT)
         model.load_state_dict(torch.load(ckpt, map_location=torch.device("cpu")), strict=False)
         return model
 
@@ -57,7 +61,7 @@ class LPIPS(nn.Module):
 
 class ScalingLayer(nn.Module):
     def __init__(self):
-        super(ScalingLayer, self).__init__()
+        super().__init__()
         self.register_buffer('shift', torch.Tensor([-.030, -.088, -.188])[None, :, None, None])
         self.register_buffer('scale', torch.Tensor([.458, .448, .450])[None, :, None, None])
 
@@ -68,7 +72,7 @@ class ScalingLayer(nn.Module):
 class NetLinLayer(nn.Module):
     """ A single linear layer which does a 1x1 conv """
     def __init__(self, chn_in, chn_out=1, use_dropout=False):
-        super(NetLinLayer, self).__init__()
+        super().__init__()
         layers = [nn.Dropout(), ] if (use_dropout) else []
         layers += [nn.Conv2d(chn_in, chn_out, 1, stride=1, padding=0, bias=False), ]
         self.model = nn.Sequential(*layers)
@@ -76,7 +80,7 @@ class NetLinLayer(nn.Module):
 
 class vgg16(torch.nn.Module):
     def __init__(self, requires_grad=False, pretrained=False):
-        super(vgg16, self).__init__()
+        super().__init__()
         vgg16_model = models.vgg16(pretrained=pretrained)
         vgg16_model.load_state_dict(torch.load(custom_torch_download(filename="vgg16-397923af.pth")), strict=True)
         vgg_pretrained_features = vgg16_model.features
