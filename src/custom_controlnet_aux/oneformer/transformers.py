@@ -2,13 +2,18 @@
 OneFormer implementation using HuggingFace transformers for PyTorch 2.7 compatibility.
 Provides equivalent functionality to the original detectron2 implementation.
 """
-import numpy as np
 import cv2
+import numpy as np
 import torch
 from PIL import Image
 
 # Import utilities
-from ..util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, HF_MODEL_NAME
+from ..util import (
+    HF_MODEL_NAME,
+    HWC3,
+    common_input_validate,
+    resize_image_with_pad,
+)
 
 
 class OneformerSegmentor:
@@ -23,13 +28,13 @@ class OneformerSegmentor:
     
     def __init__(self, model_name):
         """Initialize OneFormer with HuggingFace transformers implementation."""
-        from transformers import OneFormerProcessor, OneFormerForUniversalSegmentation
+        from transformers import OneFormerForUniversalSegmentation, OneFormerProcessor
         
         self.model_name = model_name
         try:
             self.processor = OneFormerProcessor.from_pretrained(model_name, local_files_only=True)
             self.model = OneFormerForUniversalSegmentation.from_pretrained(model_name, local_files_only=True)
-        except Exception as e:
+        except Exception:
             self.processor = OneFormerProcessor.from_pretrained(model_name)
             self.model = OneFormerForUniversalSegmentation.from_pretrained(model_name)
         self.device = "cpu"
@@ -53,7 +58,12 @@ class OneformerSegmentor:
 
     def to(self, device):
         """Move model to specified device."""
-        self.model = self.model.to(device) 
+        if device == "mps":
+            # HF's OneFormer post-processing hits numpy-bound float64 ops
+            # that MPS does not support ("Cannot convert a MPS Tensor to
+            # float64"); CPU runs the same map with no noticeable cost.
+            device = "cpu"
+        self.model = self.model.to(device)
         self.device = device
         return self
         
@@ -117,7 +127,7 @@ class OneformerSegmentor:
         for i in range(1, num_classes):
             hue = (i * 137.508) % 360  # Golden angle for good distribution
             saturation = 0.6 + 0.4 * ((i % 3) / 2)  # 60-100% saturation
-            value = 0.7 + 0.3 * ((i % 2))  # 70-100% value
+            value = 0.7 + 0.3 * (i % 2)  # 70-100% value
             
             color_hsv = np.array([[[hue / 2, saturation * 255, value * 255]]], dtype=np.uint8)
             color_rgb = cv2.cvtColor(color_hsv, cv2.COLOR_HSV2RGB)[0, 0]
