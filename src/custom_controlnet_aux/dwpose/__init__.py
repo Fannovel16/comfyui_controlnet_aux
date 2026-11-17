@@ -255,6 +255,10 @@ class DwposeDetector:
             keypoints_info = self.dw_pose_estimation(oriImg.copy())
             return Wholebody.format_result(keypoints_info)
     
+    def unload(self):
+        global global_cached_dwpose
+        global_cached_dwpose = Wholebody()
+
     def __call__(self, input_image, detect_resolution=512, include_body=True, include_hand=False, include_face=False, hand_and_face=None, output_type="pil", image_and_json=False, upscale_method="INTER_CUBIC", xinsr_stick_scaling=False, **kwargs):
         if hand_and_face is not None:
             warnings.warn("hand_and_face is deprecated. Use include_hand and include_face instead.", DeprecationWarning)
